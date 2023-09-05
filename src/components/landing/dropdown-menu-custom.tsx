@@ -37,7 +37,7 @@ export function DropdownMenuProfile({name}: { name: string }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button>Hello, {name} <ChevronDown/> </Button>
+                <Button>Hi, {name} <ChevronDown/> </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>

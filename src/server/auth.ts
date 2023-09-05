@@ -1,10 +1,12 @@
-import { type GetServerSidePropsContext } from "next";
+import {type GetServerSidePropsContext} from "next";
 import {
     getServerSession,
     type NextAuthOptions,
     type DefaultSession,
 } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import {IToken} from "@/types/token.s";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -12,19 +14,27 @@ import GoogleProvider from "next-auth/providers/google";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
+enum userRole {
+    ADMIN = "ADMIN",
+    USER = "USER",
+    MASTER = "MASTER"
+}
+type UserRole = userRole.ADMIN | userRole.USER | userRole.MASTER
 declare module "next-auth" {
     interface Session extends DefaultSession {
-        user: DefaultSession["user"] & {
-            id: string;
-            // ...other properties
-            // role: UserRole;
-        };
+        user: DefaultSession["user"] & User;
     }
 
-    // interface User {
-    //   // ...other properties
-    //   // role: UserRole;
-    // }
+    interface User {
+        id: string;
+        name: string;
+        password: string;
+        email: string;
+        phoneNumber: string;
+        accessToken: IToken;
+        refreshToken: IToken;
+        role: UserRole;
+    }
 }
 
 /**
@@ -33,12 +43,18 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+    session: {
+        strategy: "jwt",
+    },
+    secret: process.env.NEXTAUTH_SECRET,
+    jwt: {
+        maxAge: 5000,
+    },
     callbacks: {
-        session: ({ session, token }) => ({
+        session: ({session, token}) => ({
             ...session,
             user: {
                 ...session.user,
-                id: token.sub,
             },
         }),
     },
@@ -56,6 +72,61 @@ export const authOptions: NextAuthOptions = {
          *
          * @see https://next-auth.js.org/providers/github
          */
+        CredentialsProvider({
+            id: "credentials",
+            name: "Credentials",
+            type: "credentials",
+            credentials: {
+                email: {label: "Username", type: "email", placeholder: "Username"},
+                password: {label: "Password", type: "password"},
+            },
+            async authorize(credentials, req) {
+                if (credentials === undefined || req.headers == null) return null;
+
+                const headers = {
+                    "user-agent": req.headers["user-agent"],
+                    "x-real-ip": req.headers["x-real-ip"],
+                    "cf-ipcountry": req.headers["cf-ipcountry"],
+                    "x-browser": req.headers["x-browser"],
+                };
+
+                const {email, password} = credentials;
+                const hashedPassword = password;
+                try {
+                    const a = await new Promise((resolve, reject) => {
+                        setTimeout(resolve, 1000);
+                    } )
+                    const _user = {
+                        id: 'asdasdsa',
+                        name: "hahaa",
+                        username: "sadsadsa",
+                        password: "123456",
+                        accessToken : {
+                            token: "2312w8ysaudhquwiueqweqwe",
+                            expiresIn: "dashdsajdjksa",
+                        },
+                        refreshToken: {
+                            token: "2312w8ysaudhquwiueqweqwe",
+                            expiresIn: "dashdsajdjksa",
+                        },
+                        email: "thangas@gmail.com",
+                        role:  userRole.USER,
+                        phoneNumber: "0123456789"
+                    }
+
+                    if (!_user) {
+                        return null;
+                    }
+
+                    return {
+                        ..._user,
+                    };
+                } catch (e: any) {
+                    console.error('Error in "CredentialsProvider"', e?.data.message || e);
+                    return null;
+                }
+            },
+        }),
     ],
 };
 

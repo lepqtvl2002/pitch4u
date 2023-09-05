@@ -3,7 +3,7 @@ import {useSession} from "next-auth/react";
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
-import {DropdownMenuNav, DropdownMenuProfile} from "@/components/landing/dropdown-menu-profile";
+import {DropdownMenuNav, DropdownMenuProfile} from "@/components/landing/dropdown-menu-custom";
 
 export default function Navbar() {
     const {data: session} = useSession();
