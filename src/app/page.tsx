@@ -1,113 +1,148 @@
-import Image from 'next/image'
+import {Button} from "@/components/ui/button";
+import Image from "next/image";
+import SearchBar from "@/components/landing/search-bar";
+import Navbar from "@/components/landing/navbar";
+import Footer from "@/components/landing/footer";
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    return (
+        <main className="container flex min-h-screen flex-col items-center justify-between bg-blue-200">
+            <Navbar/>
+            <section id="general" className="flex flex-col lg:flex-row w-full justify-between  pb-20">
+                <div className="flex w-full flex-col space-y-6 lg:p-10 pb-10 z-10">
+                    <div className="text-center text-4xl font-bold md:text-6xl lg:text-7xl xl:text-8xl lg:text-start">
+                        <h1>SÂN ĐẸP</h1>
+                        <h1>ĐỒNG ĐỘI</h1>
+                        <h1>ĐỐI THỦ</h1>
+                    </div>
+                    <span className="text-center text-2xl">Tìm ở đây!!!</span>
+                    <div className="flex space-x-10">
+                        <a href="#general" className={"w-1/2"}>
+                            <Button className={"w-full rounded-full"}>Tải app ngay</Button>
+                        </a>
+                        <a href="#find-pitch" className={"w-1/2"}>
+                            <Button className={"w-full rounded-full"}>Tìm sân</Button>
+                        </a>
+                    </div>
+                </div>
+                <div className="w-full p-10 lg:p-0 flex justify-center absolute top-24 left-0 lg:relative lg:top-0">
+                    <Image
+                        alt="Team"
+                        src={"/pitch4u-photo01.webp"}
+                        width={500}
+                        height={500}
+                        className="flex-1 opacity-50 lg:opacity-100 md:p-20 lg:p-0"
+                    />
+                </div>
+            </section>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+            <section
+                id="find-pitch"
+                className=" w-full p-2 md:pl-10 lg:pl-20 flex-col justify-between  py-10 md:py-20 z-10 bg-cyan-200 bg-opacity-50 rounded"
+            >
+                <h2 className={"pb-6 md:pb-10 text-3xl font-bold"}>Nhanh và dễ dàng</h2>
+                <h4 className="text-bold pb-4 md:pb-8 text-sm md:text-xl">
+                    Chúng tôi tìm sân đẹp, chất lượng theo yêu cầu và đặt sân nhanh chóng
+                    chỉ trong vài bước
+                </h4>
+                <SearchBar/>
+            </section>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+            <section className=" flex w-full flex-col items-center justify-between py-10 md:py-20">
+                <h2 className={"pb-10 text-center text-3xl font-bold"}>Our Features</h2>
+                <div className="flex w-full flex-col justify-around md:flex-row">
+                    <div
+                        className="card mb-4 rounded-lg bg-white p-4 shadow"
+                        style={{
+                            borderTopRightRadius: "100%",
+                            borderBottomLeftRadius: "100%",
+                            borderTopLeftRadius: "0",
+                            borderBottomRightRadius: "0",
+                        }}
+                    >
+                        <Image
+                            alt="Feature 1"
+                            src={"/pitch4u-photo03.webp"}
+                            width={200}
+                            height={200}
+                        />
+                        <h3 className="text-xl font-bold">Feature 1</h3>
+                        <p>Some content about feature 1</p>
+                    </div>
+                    <div
+                        className="card mb-4 rounded-lg bg-white p-4 shadow"
+                        style={{
+                            borderTopRightRadius: "100%",
+                            borderBottomLeftRadius: "100%",
+                            borderTopLeftRadius: "0",
+                            borderBottomRightRadius: "0",
+                        }}
+                    >
+                        <Image
+                            alt="Feature 2"
+                            src={"/pitch4u-photo04.webp"}
+                            width={200}
+                            height={200}
+                        />
+                        <h3 className="text-xl font-bold">Feature 2</h3>
+                        <p>Some content about feature 2</p>
+                    </div>
+                    <div
+                        className="card mb-4 rounded-lg bg-white p-4 shadow"
+                        style={{
+                            borderTopRightRadius: "100%",
+                            borderBottomLeftRadius: "100%",
+                            borderTopLeftRadius: "0",
+                            borderBottomRightRadius: "0",
+                        }}
+                    >
+                        <Image
+                            alt="Feature 3"
+                            src={"/pitch4u-photo05.webp"}
+                            width={200}
+                            height={200}
+                        />
+                        <h3 className="text-xl font-bold">Feature 3</h3>
+                        <p>Some content about feature 3</p>
+                    </div>
+                </div>
+                <Button className={"min-w-[100px] rounded-full"}>Click Here</Button>
+            </section>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+            <section className=" flex w-full flex-col justify-between py-10 md:py-20 md:flex-row">
+                <div className="flex w-full flex-col items-start space-y-2 md:space-y-8">
+                    <h2 className="pb-2 text-3xl font-bold">Heading</h2>
+                    <h4 className="text-bold text-xl">Title</h4>
+                    <p className="">Description</p>
+                    <Button className={"min-w-[100px] rounded-full"}>Click Here</Button>
+                </div>
+                <div className="flex w-full justify-center">
+                    <Image
+                        alt="Image"
+                        src={"/pitch4u-photo06.webp"}
+                        width={400}
+                        height={400}
+                    />
+                </div>
+            </section>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+            <section className=" flex w-full flex-col-reverse justify-between py-10 md:py-20 md:flex-row">
+                <div className=" flex w-full justify-center">
+                    <Image
+                        alt="Image"
+                        src={"/pitch4u-photo07.webp"}
+                        width={400}
+                        height={400}
+                    />
+                </div>
+                <div className="flex w-full flex-col items-start space-y-2 md:space-y-8">
+                    <h2 className="pb-2 text-3xl font-bold">Heading</h2>
+                    <h4 className="text-bold text-xl">Title</h4>
+                    <p className="">Description</p>
+                    <Button className={"min-w-[100px] rounded-full"}>Click Here</Button>
+                </div>
+            </section>
+            <Footer/>
+        </main>
+    );
 }
