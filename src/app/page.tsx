@@ -6,7 +6,7 @@ import Footer from "@/components/landing/footer";
 
 export default function Home() {
     return (
-        <main className="container flex min-h-screen flex-col items-center justify-between bg-blue-200">
+        <main className="container flex min-h-screen flex-col items-center justify-between bg-main">
             <Navbar/>
             <section id="general" className="flex flex-col lg:flex-row w-full justify-between  pb-20">
                 <div className="flex w-full flex-col space-y-6 lg:p-10 pb-10 z-10">

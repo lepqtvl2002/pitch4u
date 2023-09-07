@@ -33,6 +33,9 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --main: 150 51.8% 82.9%;
+    --main-foreground: 150 51.8% 82.9%;
   }
 
   .dark {

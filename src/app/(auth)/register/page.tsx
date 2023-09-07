@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { UserAuthForm } from "@/components/auth/user-auth-form"
 
 export const metadata: Metadata = {
-    title: "Đăng nhập",
+    title: "Đăng ký tài khoản",
     description: "Authentication forms built using the components.",
 }
 
@@ -45,7 +45,7 @@ export default function AuthenticationPage() {
                     </div>
                 </div>
                 <div className="lg:p-8">
-                    <UserAuthForm type={"login"} />
+                    <UserAuthForm type={"register"} />
                 </div>
             </div>
         </>
