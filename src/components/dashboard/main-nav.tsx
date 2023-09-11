@@ -6,36 +6,13 @@ import {usePathname} from "next/navigation";
 import {Search} from "@/components/dashboard/search";
 import {UserNav} from "@/components/dashboard/user-nav";
 import {ModeToggle} from "@/components/theme-button";
-
-
-const items = [
-    {
-        title: "Tổng quan",
-        href: "/dashboard",
-    },
-    {
-        title: "Quản lý sân",
-        href: "/dashboard/stadium"
-    },
-    {
-        title: "Nhân viên",
-        href: "/dashboard/staff"
-    },
-    {
-        title: "Phiếu giảm giá",
-        href: "/dashboard/voucher"
-    },
-    {
-        title: "Doanh thu",
-        href: "/dashboard/revenue"
-    },
-]
+import {Bell, MessageCircle} from "lucide-react";
+import {Badge} from "@/components/ui/badge";
 
 export function MainNav({
                             className,
                             ...props
                         }: React.HTMLAttributes<HTMLElement>) {
-    const pathName = usePathname();
 
     return (
         <nav
@@ -44,6 +21,14 @@ export function MainNav({
         >
             <Search/>
             <div className="ml-auto flex items-center space-x-4">
+                <Link href={"/dashboard/message"} className={"relative hover:bg-gray-200 p-2 rounded-full"}>
+                    <Badge className={"absolute top-0 right-0 px-1.5 rounded-full border-none"} variant={"destructive"}>1</Badge>
+                    <MessageCircle/>
+                </Link>
+                <button className={"relative hover:bg-gray-200 rounded-full p-2"} >
+                    <Badge className={"absolute top-0 right-0 px-1.5 rounded-full border-none"} variant={"destructive"}>1</Badge>
+                    <Bell/>
+                </button>
                 <UserNav/>
                 <ModeToggle/>
             </div>

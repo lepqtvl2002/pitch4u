@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { dashboardConfigOperator, siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-import { type IUser } from "@/types/user";
 import { DashboardNav } from "@/components/dashboard/dashboard-nav";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -56,7 +55,7 @@ function DashboardSidebar({ user }: Props) {
             >
                 <Link
                     href="/"
-                    className="mx-auto mb-4 hidden items-center space-x-2 md:flex"
+                    className="mx-auto mb-4 hidden items-center space-x-2 md:flex border-b pb-3"
                 >
                     <Icons.logo />
                     <AnimatePresence key={"title"} initial={false}>
