@@ -3,24 +3,31 @@ import Link from "next/link"
 
 import {cn} from "@/lib/utils"
 import {usePathname} from "next/navigation";
+import {Search} from "@/components/dashboard/search";
+import {UserNav} from "@/components/dashboard/user-nav";
+import {ModeToggle} from "@/components/theme-button";
 
 
 const items = [
     {
-        title: "Overview",
+        title: "Tổng quan",
         href: "/dashboard",
     },
     {
-        title: "Customers",
-        href: "/dashboard/customer"
-    },
-    {
-        title: "Stadiums",
+        title: "Quản lý sân",
         href: "/dashboard/stadium"
     },
     {
-        title: "Staffs",
+        title: "Nhân viên",
         href: "/dashboard/staff"
+    },
+    {
+        title: "Phiếu giảm giá",
+        href: "/dashboard/voucher"
+    },
+    {
+        title: "Doanh thu",
+        href: "/dashboard/revenue"
     },
 ]
 
@@ -32,12 +39,14 @@ export function MainNav({
 
     return (
         <nav
-            className={cn("flex items-center space-x-4 lg:space-x-6", className)}
+            className={cn("w-full flex items-center justify-between space-x-4 lg:space-x-6", className)}
             {...props}
         >
-            {items.map(item => <Link
-                className={cn("text-sm font-medium transition-colors hover:text-primary", item.href === pathName ? "" : "text-muted-foreground")}
-                key={item.href} href={item.href}>{item.title}</Link>)}
+            <Search/>
+            <div className="ml-auto flex items-center space-x-4">
+                <UserNav/>
+                <ModeToggle/>
+            </div>
         </nav>
     )
 }

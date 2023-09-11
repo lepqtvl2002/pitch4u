@@ -1,0 +1,20 @@
+export type IVoucher = {
+    _id: string;
+    hasCondition: boolean;
+    userIDs: Array<string>;
+    thumbnailUrl: string;
+    description: string;
+    type: VoucherType;
+    reduceByAmount: number;
+    reduceByPercent: number;
+    maxReduce: number;
+    minimumBillPrice: number;
+    maximumBillPrice: number;
+    minimumBillCount: number;
+    minimumBillDuration: number;
+    code: string;
+    startDate: Date;
+    endDate: Date;
+    createdAt: Date;
+    updatedAt: Date;
+};

@@ -1,0 +1,30 @@
+export type IUser = {
+    _id: string;
+    fbuuid: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string;
+    role: string;
+    accountBalance: number;
+    gender: string;
+    isActive: boolean;
+    isOnline: boolean;
+    isBanned: boolean;
+    banReason: string;
+    isVerified: boolean;
+    vouchers: Array<string>;
+    services: Array<any>;
+    avatarUrls: Array<string>;
+    createdAt: string;
+    updatedAt: string;
+    currentLat: number;
+    currentLng: number;
+    location: {
+        type: string;
+        coordinates: Array<number>;
+    };
+    totalRate: number;
+    totalRateCount: number;
+};
