@@ -2,7 +2,6 @@
 import Link from "next/link"
 
 import {cn} from "@/lib/utils"
-import {usePathname} from "next/navigation";
 import {Search} from "@/components/dashboard/search";
 import {UserNav} from "@/components/dashboard/user-nav";
 import {ModeToggle} from "@/components/theme-button";

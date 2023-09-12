@@ -123,7 +123,7 @@ export function DataTable<TData, TValue>({
                 </section>
                 <section
                     id="table-search"
-                    className="flex h-fit items-center gap-2 px-2"
+                    className="flex h-fit items-center gap-2"
                 >
                     {otherButton &&
                         (otherButton.url ? (
