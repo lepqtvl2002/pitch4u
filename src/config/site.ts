@@ -29,13 +29,18 @@ export const dashboardConfig: DashboardConfig = {
             icon: "layoutPanelLeft",
         },
         {
-            title: "Người dùng",
-            href: "/dashboard/user",
+            title: "Quản lý sân",
+            href: "/dashboard/pitch",
+            icon: "managerPitch",
+        },
+        {
+            title: "Nhân viên",
+            href: "/dashboard/staff",
             icon: "userSquare",
         },
         {
-            title: "Giao dịch",
-            href: "/dashboard/transaction",
+            title: "Doanh thu",
+            href: "/dashboard/revenua",
             icon: "scrollText",
         },
         {
@@ -56,13 +61,18 @@ export const dashboardConfig: DashboardConfig = {
             icon: "layoutPanelLeft",
         },
         {
-            title: "Người dùng",
-            href: "/dashboard/user",
+            title: "Quản lý sân",
+            href: "/dashboard/pitch",
+            icon: "managerPitch",
+        },
+        {
+            title: "Nhân viên",
+            href: "/dashboard/staff",
             icon: "userSquare",
         },
         {
-            title: "Giao dịch",
-            href: "/dashboard/transaction",
+            title: "Doanh thu",
+            href: "/dashboard/revenue",
             icon: "scrollText",
         },
         {
@@ -76,6 +86,18 @@ export const dashboardConfig: DashboardConfig = {
             icon: "megaPhone",
         },
     ],
+    notificationNav: [
+        {
+            title: "Tin nhắn",
+            href: "/dashboard/message",
+            icon: "message",
+        },
+        {
+            title: "Thông báo",
+            href: "/dashboard/notification",
+            icon: "notification",
+        },
+    ]
 };
 
 export const dashboardConfigOperator: DashboardConfig = {
@@ -87,11 +109,11 @@ export const dashboardConfigOperator: DashboardConfig = {
             href: "/dashboard/service",
             icon: "coffee",
         },
-        {
-            title: "Quản trị viên",
-            href: "/dashboard/admin",
-            icon: "shield",
-        },
+        // {
+        //     title: "Quản trị viên",
+        //     href: "/dashboard/admin",
+        //     icon: "shield",
+        // },
     ],
 };
 

@@ -29,6 +29,7 @@ import {
     LogOut,
     Megaphone,
     Menu,
+    MessageCircle,
     MonitorUp,
     Moon,
     MoreVertical,
@@ -52,7 +53,7 @@ import {
     type LucideProps,
     ArrowUpToLine,
     TrendingUp,
-    TrendingDown, LucideIcon,
+    TrendingDown, LucideIcon, ClipboardSignature,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -176,6 +177,9 @@ export const Icons = {
     post: FileText,
     ticket: Ticket,
     megaPhone: Megaphone,
+    message: MessageCircle,
+    notification: Bell,
+    managerPitch: ClipboardSignature,
     bell: Bell,
     bellDot: BellDot,
     arrowUpToLine: ArrowUpToLine,

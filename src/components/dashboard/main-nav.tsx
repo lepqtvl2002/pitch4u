@@ -2,42 +2,35 @@
 import Link from "next/link"
 
 import {cn} from "@/lib/utils"
-import {usePathname} from "next/navigation";
-
-
-const items = [
-    {
-        title: "Overview",
-        href: "/dashboard",
-    },
-    {
-        title: "Customers",
-        href: "/dashboard/customer"
-    },
-    {
-        title: "Stadiums",
-        href: "/dashboard/stadium"
-    },
-    {
-        title: "Staffs",
-        href: "/dashboard/staff"
-    },
-]
+import {Search} from "@/components/dashboard/search";
+import {UserNav} from "@/components/dashboard/user-nav";
+import {ModeToggle} from "@/components/theme-button";
+import {Bell, MessageCircle} from "lucide-react";
+import {NotificationBadge} from "@/components/notification-badge";
 
 export function MainNav({
                             className,
                             ...props
                         }: React.HTMLAttributes<HTMLElement>) {
-    const pathName = usePathname();
 
     return (
         <nav
-            className={cn("flex items-center space-x-4 lg:space-x-6", className)}
+            className={cn("w-full flex items-center justify-between space-x-4 lg:space-x-6", className)}
             {...props}
         >
-            {items.map(item => <Link
-                className={cn("text-sm font-medium transition-colors hover:text-primary", item.href === pathName ? "" : "text-muted-foreground")}
-                key={item.href} href={item.href}>{item.title}</Link>)}
+            <Search/>
+            <div className="ml-auto flex items-center space-x-4">
+                <Link href={"/dashboard/message"} className={"relative hover:bg-gray-200 p-2 rounded-full"}>
+                    <NotificationBadge number={1}/>
+                    <MessageCircle/>
+                </Link>
+                <button className={"relative hover:bg-gray-200 rounded-full p-2"}>
+                    <NotificationBadge number={10}/>
+                    <Bell/>
+                </button>
+                <UserNav/>
+                <ModeToggle/>
+            </div>
         </nav>
     )
 }
