@@ -17,9 +17,10 @@ import {IToken} from "@/types/token.s";
 enum userRole {
     ADMIN = "ADMIN",
     USER = "USER",
-    MASTER = "MASTER"
+    MASTER = "MASTER",
+    STAFF = "STAFF"
 }
-type UserRole = userRole.ADMIN | userRole.USER | userRole.MASTER
+type UserRole = userRole.ADMIN | userRole.USER | userRole.MASTER | userRole.STAFF
 declare module "next-auth" {
     interface Session extends DefaultSession {
         user: DefaultSession["user"] & User;
@@ -51,12 +52,18 @@ export const authOptions: NextAuthOptions = {
         maxAge: 5000,
     },
     callbacks: {
-        session: ({session, token}) => ({
-            ...session,
-            user: {
-                ...session.user,
-            },
-        }),
+        session: ({session, token}) => {
+            return {
+                ...session,
+                user: {
+                    ...session.user,
+                },
+            }
+        },
+        async jwt({token}) {
+            token.userRole = "ADMIN";
+            return token;
+        }
     },
     providers: [
         GoogleProvider({
@@ -97,9 +104,9 @@ export const authOptions: NextAuthOptions = {
                         setTimeout(resolve, 1000);
                     } )
                     const _user = {
-                        id: 'asdasdsa',
-                        name: "hahaa",
-                        username: "sadsadsa",
+                        id: 'thisisid123',
+                        name: email.substring(0, email.indexOf('@')),
+                        username: "Tran Duc Bo",
                         password: "123456",
                         accessToken : {
                             token: "2312w8ysaudhquwiueqweqwe",
@@ -109,7 +116,7 @@ export const authOptions: NextAuthOptions = {
                             token: "2312w8ysaudhquwiueqweqwe",
                             expiresIn: "dashdsajdjksa",
                         },
-                        email: "thangas@gmail.com",
+                        email: email,
                         role:  userRole.USER,
                         phoneNumber: "0123456789"
                     }

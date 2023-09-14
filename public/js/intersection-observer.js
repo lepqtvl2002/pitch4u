@@ -2,7 +2,6 @@
 const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
         if (entry.isIntersecting) {
-            console.log(entry);
             // Section is in the viewport, remove the "hidden" class
             entry.target.classList.add('opacity-100');
             entry.target.classList.remove('blur', '-translate-x-full');
