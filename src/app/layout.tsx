@@ -4,6 +4,7 @@ import AuthProvider from "@/providers/auth-provider";
 import {Toaster} from "@/components/ui/toaster";
 import ClientProvider from "@/providers/client-provider";
 import {siteConfig} from "@/config/site";
+import {cn} from "@/lib/utils";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -37,7 +38,7 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (<html lang="en">
-        <body className={inter.className}>
+        <body className={cn(inter.className, "scroll-smooth")}>
         <ClientProvider>
             <AuthProvider>
                 {children}
