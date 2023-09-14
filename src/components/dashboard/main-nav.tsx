@@ -6,7 +6,7 @@ import {Search} from "@/components/dashboard/search";
 import {UserNav} from "@/components/dashboard/user-nav";
 import {ModeToggle} from "@/components/theme-button";
 import {Bell, MessageCircle} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
+import {NotificationBadge} from "@/components/notification-badge";
 
 export function MainNav({
                             className,
@@ -21,11 +21,11 @@ export function MainNav({
             <Search/>
             <div className="ml-auto flex items-center space-x-4">
                 <Link href={"/dashboard/message"} className={"relative hover:bg-gray-200 p-2 rounded-full"}>
-                    <Badge className={"absolute top-0 right-0 px-1.5 rounded-full border-none"} variant={"destructive"}>1</Badge>
+                    <NotificationBadge number={1}/>
                     <MessageCircle/>
                 </Link>
-                <button className={"relative hover:bg-gray-200 rounded-full p-2"} >
-                    <Badge className={"absolute top-0 right-0 px-1.5 rounded-full border-none"} variant={"destructive"}>1</Badge>
+                <button className={"relative hover:bg-gray-200 rounded-full p-2"}>
+                    <NotificationBadge number={10}/>
                     <Bell/>
                 </button>
                 <UserNav/>
