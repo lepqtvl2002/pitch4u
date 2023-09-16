@@ -1,8 +1,9 @@
 import React from 'react';
+import {cn} from "@/lib/utils";
 
-export default function Footer() {
+export default function Footer({className, ...props}: { className?: string }) {
     return (
-        <footer className="flex flex-col md:flex-row justify-between w-full py-10">
+        <footer className={cn("flex flex-col md:flex-row justify-between w-full py-10", className)} {...props}>
             <div className="w-full md:w-1/2">
                 <h2 className="font-bold text-3xl">CONTACT WITH US</h2>
             </div>

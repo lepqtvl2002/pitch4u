@@ -11,8 +11,8 @@ export default function ImageGallery({ pitch } : {pitch: any}) {
     };
 
     return (
-        <div className={"rounded"}>
-            <div className={"flex justify-center w-full h-[460px] p-4 border border-main rounded"}>
+        <div className={"md:rounded"}>
+            <div className={"flex justify-center w-full h-[460px] p-2 md:p-4 border border-main md:rounded"}>
                 <Image
                     src={bigImage}
                     alt="Big Image"
@@ -21,7 +21,7 @@ export default function ImageGallery({ pitch } : {pitch: any}) {
                     className={"w-auto h-full content-center"}
                 />
             </div>
-            <div className="flex space-x-4 w-full overflow-auto mt-4 items-center border border-main rounded">
+            <div className="flex space-x-2 md:space-x-4 w-full overflow-auto mt-2 md:mt-4 items-center border border-main md:rounded">
                 {pitch.imageUrls.map((imageUrl : string, index : number) => (
                     <Image
                         key={imageUrl + index}

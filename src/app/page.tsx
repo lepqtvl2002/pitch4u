@@ -7,7 +7,7 @@ import Script from "next/script";
 
 export default function Home() {
     return (
-        <main className="container flex min-h-screen flex-col items-center justify-between bg-main">
+        <main className="md:container px-2 flex min-h-screen flex-col items-center justify-between bg-main">
             <Navbar/>
             <section id="general" className="opacity-0 flex flex-col lg:flex-row w-full justify-between  pb-20">
                 <div className="flex w-full flex-col space-y-6 lg:p-10 pb-10 z-10">
@@ -18,10 +18,10 @@ export default function Home() {
                     </div>
                     <span className="text-center text-2xl">Tìm ở đây!!!</span>
                     <div className="flex space-x-10">
-                        <a href="#general" className={"w-1/2 scroll-link"}>
+                        <a href="/dashboard/#general" className={"w-1/2 scroll-link"}>
                             <Button className={"w-full rounded-full"}>Tải app ngay</Button>
                         </a>
-                        <a href="#find-pitch" className={"w-1/2 scroll-link"}>
+                        <a href="/dashboard/#find-pitch" className={"w-1/2 scroll-link"}>
                             <Button className={"w-full rounded-full"}>Tìm sân</Button>
                         </a>
                     </div>
@@ -54,15 +54,9 @@ export default function Home() {
                      className="opacity-0 transition duration-1000 flex w-full flex-col items-center justify-between py-10 md:py-20">
                 <h2 className={"pb-10 text-center text-3xl font-bold"}>Our Features</h2>
                 <div
-                    className="flex w-full flex-col justify-around md:flex-row">
+                    className="flex w-full flex-col justify-around md:flex-row rounded-none">
                     <div
-                        className="card mb-4 rounded-lg bg-white p-4 shadow"
-                        style={{
-                            borderTopRightRadius: "100%",
-                            borderBottomLeftRadius: "100%",
-                            borderTopLeftRadius: "0",
-                            borderBottomRightRadius: "0",
-                        }}
+                        className="card mb-4 bg-white p-4 shadow rounded-tr-[100px] rounded-bl-[100px]"
                     >
                         <Image
                             alt="Feature 1"
@@ -76,13 +70,7 @@ export default function Home() {
                         <p>Some content about feature 1</p>
                     </div>
                     <div
-                        className="card mb-4 rounded-lg bg-white p-4 shadow"
-                        style={{
-                            borderTopRightRadius: "100%",
-                            borderBottomLeftRadius: "100%",
-                            borderTopLeftRadius: "0",
-                            borderBottomRightRadius: "0",
-                        }}
+                        className="card mb-4 bg-white p-4 shadow rounded-tr-[100px] rounded-bl-[100px]"
                     >
                         <Image
                             alt="Feature 2"
@@ -96,13 +84,7 @@ export default function Home() {
                         <p>Some content about feature 2</p>
                     </div>
                     <div
-                        className="card mb-4 rounded-lg bg-white p-4 shadow"
-                        style={{
-                            borderTopRightRadius: "100%",
-                            borderBottomLeftRadius: "100%",
-                            borderTopLeftRadius: "0",
-                            borderBottomRightRadius: "0",
-                        }}
+                        className="card mb-4 bg-white p-4 shadow rounded-tr-[100px] rounded-bl-[100px]"
                     >
                         <Image
                             alt="Feature 3"

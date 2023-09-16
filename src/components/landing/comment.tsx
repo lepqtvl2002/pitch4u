@@ -23,14 +23,14 @@ const Comment = ({comment, className, ...props}: { comment: CommentProps, classN
                 <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className={"flex flex-1 flex-col space-y-1"}>
-                <h2 className="commentAuthor font-semibold">
+                <h2 className="commentAuthor text-sm font-semibold">
                     {comment.author}
                 </h2>
-                <span className={"text-gray-500"}>10/10/2023</span>
+                <span className={"text-xs md:text-sm text-gray-500"}>10/10/2023</span>
                 <Stars rating={5}/>
-                {comment.text}
+                <span className={"text-sm"}>{comment.text}</span>
                 <div className={"flex"}>
-                    <Button className={"flex space-x-2"} variant={"ghost"}>
+                    <Button className={"flex space-x-2 text-xs"} variant={"ghost"}>
                         <ThumbsUp/> <span>10</span>
                     </Button>
                     <Button className={"flex space-x-2"} variant={"ghost"}>
@@ -40,7 +40,7 @@ const Comment = ({comment, className, ...props}: { comment: CommentProps, classN
             </div>
             <DropdownMenu>
                 <DropdownMenuTrigger>
-                    <Button variant={"ghost"}>
+                    <Button className={"p-0 md:p-2"} variant={"ghost"}>
                         <MoreVertical/>
                     </Button>
                 </DropdownMenuTrigger>

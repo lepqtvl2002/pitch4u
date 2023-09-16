@@ -4,11 +4,11 @@ import OrderSelections from "@/app/(general)/[id]/components/order-selections";
 
 const PitchOrder = ({pitch}: { pitch: any }) => {
     return (
-        <div className="flex bg-white rounded p-4 space-x-8">
-            <div className="w-1/2">
+        <div className="flex flex-col md:flex-row bg-white md:rounded p-2 md:p-4 md:space-x-8">
+            <div className="w-full md:w-1/2">
                 <ImageGallery pitch={pitch}/>
             </div>
-            <div className="flex flex-col space-y-8 w-1/2">
+            <div className="w-full md:w-1/2">
                 <OrderSelections pitch={pitch}/>
             </div>
         </div>

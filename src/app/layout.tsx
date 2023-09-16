@@ -29,7 +29,7 @@ export const metadata = {
         icon: "/favicon.ico",
         shortcut: "/favicon-16x16.png",
     },
-    manifest: `${siteConfig.url}/site.webmanifest`,
+    // manifest: `${siteConfig.url}/site.webmanifest`,
 };
 
 export default function RootLayout({

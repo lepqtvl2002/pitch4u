@@ -5,7 +5,7 @@ import {SelectSimple} from "@/app/(general)/[id]/components/select-custom";
 import {DatePickerDemo} from "@/components/ui/date-picker";
 import {Stars} from "@/components/ui/vote-stars";
 import Link from "next/link";
-import {Heart} from "lucide-react";
+import {Heart, MessageCircle} from "lucide-react";
 
 export default function OrderSelections({pitch}: { pitch: any }) {
     const [price, setPrices] = React.useState(0);
@@ -19,8 +19,8 @@ export default function OrderSelections({pitch}: { pitch: any }) {
 
     return (<div className={"relative flex flex-col space-y-2"}>
         <Button variant={"ghost"} className={"absolute top-0 right-0"}>Tố cáo</Button>
-        <h2 className="text-bold text-4xl">{pitch.name}</h2>
-        <h3 className="">{pitch.address}</h3>
+        <h2 className="text-bold text-xl md:text-4xl">{pitch.name}</h2>
+        <h3 className="text-sm md:text-lg">{pitch.address}</h3>
         <div className={"flex space-x-2 items-center"}>
             <Link href={"#voting"} className={"flex space-x-2 items-center"}>
                 <Label className={""}>5/5</Label>
@@ -54,13 +54,24 @@ export default function OrderSelections({pitch}: { pitch: any }) {
                               defaultValue={subPitch}/>
             </div>
         </div>
-        {price ? <div className={"text-primary text-3xl space-x-2 pt-4"}>
+        {price ? <div className={"text-primary text-3xl space-x-2 p-4 text-end md:text-start"}>
             <Label>Giá</Label>
             <span>{price}</span>
         </div> : null}
-        <div className={"flex space-x-2 pt-20"}>
-            <Button variant={"outline"}><Heart className={"mr-2"} /> Thêm vào danh sách yêu thích</Button>
-            <Button disabled={!price}>Đặt sân ngay</Button>
+        <div className={"fixed bottom-0 right-0 left-0 md:relative flex md:space-x-2 md:pt-20 bg-white z-10"}>
+            <Button className={"hidden md:flex"} variant={"outline"}>
+                <Heart className={"mr-2"}/>
+                <span className={"text-sm"}>Thêm vào danh sách yêu thích</span>
+            </Button>
+            <Button className={"w-1/4 md:hidden rounded-none flex-col p-0 m-0"} variant={"outline"}>
+                <Heart/>
+                <span className={"text-xs"}>Yêu thích</span>
+            </Button>
+            <Button className={"w-1/4 md:hidden rounded-none flex-col p-0 m-0"} variant={"outline"}>
+                <MessageCircle/>
+                <span className={"text-xs"}>Chat ngay</span>
+            </Button>
+            <Button className={"w-1/2 md:w-auto rounded-none md:rounded-md bg-[#28cb8e] hover:bg-main-foreground"} disabled={!price}>Đặt sân ngay</Button>
         </div>
     </div>)
 }

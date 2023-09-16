@@ -50,7 +50,7 @@ const pitch = {
 
 const PitchDetail = () => {
     const params = useParams();
-    console.log(params.id);
+    console.log("param id",params.id);
     // const pitch = params.id
     const [userRating, setUserRating] = React.useState(0);
 
@@ -60,10 +60,10 @@ const PitchDetail = () => {
     return (
         <div className={"w-full flex flex-col"}>
             <PitchOrder pitch={pitch}/>
-            <div className={"flex flex-col space-y-4 p-4 mt-10 bg-white rounded"}>
-                <h2 className={"text-3xl"}>Đánh giá, bình luận</h2>
+            <div className={"flex flex-col space-y-4 p-4 mt-10 bg-white md:rounded"}>
+                <h2 className={"md:text-3xl"}>Đánh giá, bình luận</h2>
                 <section id={"voting"}>
-                    <div className={"border border-main rounded p-4"}>
+                    <div className={"border border-main md:rounded p-4"}>
                         <p><span className={"text-xl"}>5</span> Trên 5</p>
                         <Stars rating={4.2} className={"text-yellow-400 text-xl"}/>
                     </div>
