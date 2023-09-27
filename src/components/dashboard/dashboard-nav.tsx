@@ -35,10 +35,10 @@ export function DashboardNav({ items, isShrink }: DashboardNavProps) {
                                 layout={"size"}
                                 className={cn(
                                     "group flex h-10 w-full items-center justify-start gap-2 rounded-md px-3 text-sm font-medium transition-all duration-200 ease-in-out",
-                                    path.includes(item.href) && item.href != '/dashboard'
+                                    path.includes(item.href) && item.href != '/dashboard' && item.href != '/admin'
                                         ? "bg-primary/80 text-primary-foreground"
                                         : "transparent hover:bg-accent hover:text-accent-foreground",
-                                    item.href == '/dashboard' && path === item.href
+                                    item.href == '/dashboard' || item.href == '/admin' && path === item.href
                                         ? "bg-primary/80 text-primary-foreground"
                                         : "transparent hover:bg-accent hover:text-accent-foreground",
                                     item.disabled && "cursor-not-allowed opacity-80"
