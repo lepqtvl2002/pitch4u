@@ -6,7 +6,7 @@ import {
 } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {IToken} from "@/types/token.s";
+import {IToken} from "@/types/token";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`

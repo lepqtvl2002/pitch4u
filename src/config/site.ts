@@ -120,9 +120,23 @@ export const dashboardConfigOperator: DashboardConfig = {
 export const publicNavbarConfig: DashboardConfig = {
     mainNav: [
         {
-            title: "Trang chủ",
-            href: "/",
+            title: "Tìm sân",
+            href: "/#find-pitch",
         },
+        {
+            title: "Đăng ký làm chủ sân",
+            href: "/register-fieldmaster",
+        },
+        {
+            title: "Cộng đồng",
+            href: "/community",
+        },
+        {
+            title: "Liên hệ",
+            href: "/contact",
+        },
+    ],
+    sidebarNav: [
         {
             title: "Tìm sân",
             href: "/#find-pitch",
@@ -140,7 +154,6 @@ export const publicNavbarConfig: DashboardConfig = {
             href: "/contact",
         },
     ],
-    sidebarNav: [],
 };
 
 export const accountNavConfig: DashboardConfig = {

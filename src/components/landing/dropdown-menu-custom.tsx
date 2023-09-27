@@ -32,12 +32,18 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {signOut} from "next-auth/react";
+import {publicNavbarConfig} from "@/config/site";
+import Link from "next/link";
 
-export function DropdownMenuProfile({name}: { name: string }) {
+export function DropdownMenuProfile({user, className, ...props}: {
+    user: {
+        name: string
+    },
+    className?: string
+}) {
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button>Hi, {name} <ChevronDown/> </Button>
+        <DropdownMenu {...props}>
+            <DropdownMenuTrigger className={className}>Hi, {user.name} <ChevronDown/>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -123,18 +129,17 @@ export function DropdownMenuProfile({name}: { name: string }) {
     )
 }
 
-export function DropdownMenuNav({...props}) {
-    return <DropdownMenu>
-        <DropdownMenuTrigger {...props}>
+export function DropdownMenuNav({user, className, ...props}: { user: any, className?: string }) {
+    return <DropdownMenu {...props}>
+        <DropdownMenuTrigger className={className}>
             <Menu/>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            {publicNavbarConfig.sidebarNav.map(item => <DropdownMenuItem key={item.title} className="flex-1"><Link
+                href={item.href || "/#"}>{item.title}</Link></DropdownMenuItem>)}
             <DropdownMenuSeparator/>
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            {user ? <DropdownMenuProfile user={user} className={"flex px-2 w-full"}/> :
+                <Link href={"/login"}><Button className={"flex px-2 w-full"}>Đăng nhập</Button></Link>}
         </DropdownMenuContent>
     </DropdownMenu>
 }

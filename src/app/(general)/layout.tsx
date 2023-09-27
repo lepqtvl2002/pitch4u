@@ -7,7 +7,7 @@ export default function GeneralLayout({
     children: React.ReactNode
 }) {
     return (
-        <main className="container flex min-h-screen flex-col items-center justify-between bg-main">
+        <main className="md:container flex min-h-screen flex-col items-center justify-between bg-main">
             <Navbar/>
             {children}
             <Footer/>
