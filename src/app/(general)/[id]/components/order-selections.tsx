@@ -19,7 +19,7 @@ export default function OrderSelections({pitch}: { pitch: any }) {
 
     return (<div className={"relative flex flex-col space-y-2"}>
         <Button variant={"ghost"} className={"absolute top-0 right-0"}>Tố cáo</Button>
-        <h2 className="text-bold text-xl md:text-4xl">{pitch.name}</h2>
+        <h2 className="font-bold text-xl md:text-4xl">{pitch.name}</h2>
         <h3 className="text-sm md:text-lg">{pitch.address}</h3>
         <div className={"flex space-x-2 items-center"}>
             <Link href={"#voting"} className={"flex space-x-2 items-center"}>

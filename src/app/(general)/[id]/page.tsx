@@ -19,7 +19,9 @@ const pitch = {
         "/pitch4u-photo06.webp",
         "/pitch4u-photo07.webp",
         "/pitch4u-photo06.webp",
-        "/pitch4u-photo07.webp"
+        "/pitch4u-photo07.webp",
+        "/pitch4u-photo07.webp",
+        "/pitch4u-photo07.webp",
     ],
     prices: {
         "6:00 - 7:00": 200,
@@ -60,8 +62,8 @@ const PitchDetail = () => {
     return (
         <div className={"w-full flex flex-col"}>
             <PitchOrder pitch={pitch}/>
-            <div className={"flex flex-col space-y-4 p-4 mt-10 bg-white md:rounded"}>
-                <h2 className={"md:text-3xl"}>Đánh giá, bình luận</h2>
+            <div className={"flex flex-col space-y-4 p-2 md:p-4 mt-10 bg-white md:rounded"}>
+                <h2 className={"md:text-3xl font-bold"}>Đánh giá, bình luận</h2>
                 <section id={"voting"}>
                     <div className={"border border-main md:rounded p-4"}>
                         <p><span className={"text-xl"}>5</span> Trên 5</p>
