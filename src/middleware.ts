@@ -13,7 +13,10 @@ export default withAuth(
                 if (req.nextUrl.pathname === "/admin") {
                     return token?.userRole === "ADMIN"
                 }
-                return !!token
+                if (req.nextUrl.pathname === "/dashboard") {
+                    return token?.userRole === "MASTER" || token?.userRole === "STAFF"
+                }
+                return false;
             },
         },
     }

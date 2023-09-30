@@ -44,9 +44,9 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
     useEffect(() => {
         const requestInterceptor = $fetch.interceptors.request.use(
             (config) => {
-                if (data?.user.accessToken?.token) {
-                    console.log("The token is attached: ", data?.user.accessToken?.token);
-                    config.headers.Authorization = `Bearer ${data?.user.accessToken?.token}`;
+                if (data?.accessToken?.token) {
+                    console.log("The token is attached: ", data?.accessToken?.token);
+                    config.headers.Authorization = `Bearer ${data?.accessToken?.token}`;
                 }
                 return config;
             },
@@ -93,7 +93,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
             $fetch.interceptors.response.eject(responseInterceptor);
             $fetch.interceptors.request.eject(requestInterceptor);
         };
-    }, [data, router, update]);
+    }, [data, router, status, update]);
 
     return <>{children}</>;
 }

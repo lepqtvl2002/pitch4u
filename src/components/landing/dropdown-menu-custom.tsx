@@ -37,13 +37,14 @@ import Link from "next/link";
 
 export function DropdownMenuProfile({user, className, ...props}: {
     user: {
-        name: string
+        name: string,
+        email: string,
     },
     className?: string
 }) {
     return (
         <DropdownMenu {...props}>
-            <DropdownMenuTrigger className={className}>Hi, {user.name} <ChevronDown/>
+            <DropdownMenuTrigger className={className}>Hi, {user.name || user.email} <ChevronDown/>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
