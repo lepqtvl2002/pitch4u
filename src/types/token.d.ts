@@ -4,6 +4,8 @@ export interface IToken {
 }
 
 export interface IRefreshReturn {
-    accessToken: IToken;
-    refreshToken: IToken;
+    accessToken?: IToken;
+    refreshToken?: IToken;
+    access?: IToken;
+    refresh?: IToken;
 }

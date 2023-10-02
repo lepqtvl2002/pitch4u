@@ -34,6 +34,7 @@ declare module "next-auth" {
     access: IToken;
     refresh: IToken;
     role: UserRole;
+    userRole: "ADMIN" | "USER" | "STAFF" | "MASTER";
   }
 }
 
@@ -62,6 +63,7 @@ export const authOptions: NextAuthOptions = {
           ...session,
           user: {
             ...session.user,
+            userRole : token?.userRole,
           },
         };
       }

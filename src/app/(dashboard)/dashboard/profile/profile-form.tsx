@@ -28,20 +28,17 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 
 const profileFormSchema = z.object({
-    username: z
+    fullname: z
         .string()
-        .min(2, {
-            message: "Username must be at least 2 characters.",
-        })
-        .max(30, {
-            message: "Username must not be longer than 30 characters.",
+        .min(3, {
+            message: "Tên phải chứa tối thiểu 3 ký tự.",
         }),
     email: z
         .string({
-            required_error: "Please select an email to display.",
+            required_error: "Vui lòng điền chính xác email.",
         })
         .email(),
-    bio: z.string().max(160).min(4),
+    address: z.string().max(160).min(4),
     urls: z
         .array(
             z.object({
@@ -55,7 +52,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 // This can come from your database or API.
 const defaultValues: Partial<ProfileFormValues> = {
-    bio: "I own a computer.",
+    address: "I own a computer.",
     urls: [
         { value: "https://shadcn.com" },
         { value: "http://twitter.com/shadcn" },
@@ -90,10 +87,10 @@ export function ProfileForm() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
                     control={form.control}
-                    name="username"
+                    name="fullname"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Username</FormLabel>
+                            <FormLabel>Full name</FormLabel>
                             <FormControl>
                                 <Input placeholder="shadcn" {...field} />
                             </FormControl>
@@ -133,10 +130,10 @@ export function ProfileForm() {
                 />
                 <FormField
                     control={form.control}
-                    name="bio"
+                    name="address"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Bio</FormLabel>
+                            <FormLabel>address</FormLabel>
                             <FormControl>
                                 <Textarea
                                     placeholder="Tell us a little bit about yourself"
