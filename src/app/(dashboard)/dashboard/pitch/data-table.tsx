@@ -29,20 +29,6 @@ function PitchTable() {
             pageSize: 10,
         });
 
-    // const { data, isError, isFetched } = api.voucher.getManyVouchers.useQuery(
-    //   {
-    //     limit: pageSize,
-    //     page: pageIndex,
-    //     type: types.length > 0 ? types : undefined,
-    //     search: search ? search : undefined,
-    //     sort: sort.direction,
-    //   },
-    //   {
-    //     keepPreviousData: true,
-    //     cacheTime: 100,
-    //   }
-    // );
-
     const { data, isError, isFetched } = PostUseQuery.search({q: debouncedSearch})
     console.log(data)
 

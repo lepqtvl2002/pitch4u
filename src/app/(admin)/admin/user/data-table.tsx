@@ -10,7 +10,7 @@ import {PostUseQuery} from "@/server/queries/post-query";
 type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";
 type VoucherStatuses = "RUNNING" | "EXPIRED";
 
-function StaffTable() {
+function UserTable() {
     const [types, setTypes] = React.useState<VoucherTypes[]>([]);
     const [statuses, setStatuses] = React.useState<VoucherStatuses[]>([]);
     const [search, setSearch] = React.useState<string>();
@@ -93,4 +93,4 @@ function StaffTable() {
     );
 }
 
-export default StaffTable;
+export default UserTable;
