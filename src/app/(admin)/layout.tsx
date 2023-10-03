@@ -26,7 +26,7 @@ export default async function AdminLayout({
             <div className="relative grid flex-1 md:grid-cols-[auto_1fr]">
                 <DashboardSidebar user={user} items={adminConfig.sidebarNav}/>
                 <div className="hidden flex-col md:flex border-l">
-                    <MainNav className="px-6 h-10 md:h-16 border-b"/>
+                    <MainNav area={"admin"} className="px-6 h-10 md:h-16 border-b"/>
                     {children}
                 </div>
             </div>
