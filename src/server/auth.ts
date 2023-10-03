@@ -55,6 +55,14 @@ export const authOptions: NextAuthOptions = {
     maxAge: 5000,
   },
   callbacks: {
+    async signIn({ account, profile }) {
+      if (account?.provider === "google") {
+        // return profile?.email_verified && profile?.email?.endsWith("@example.com")
+        console.log(profile);
+        return true;
+      }
+      return true // Do different verification for other providers that don't have `email_verified`
+    },
     async session({ session, token}) {
       session.accessToken = (token?.accessToken) as IToken;
       session.refreshToken = (token?.refreshToken) as IToken;
@@ -71,7 +79,7 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user}) {
       if (user) {
-        token.userRole = (user?.role.name.toUpperCase() as "ADMIN" | "USER" | "STAFF" | "MASTER") || undefined;
+        token.userRole = (user?.role?.name.toUpperCase() as "ADMIN" | "USER" | "STAFF" | "MASTER") || undefined;
         token.accessToken = user?.access;
         token.refreshToken = user?.refresh;
       }

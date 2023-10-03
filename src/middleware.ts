@@ -14,7 +14,8 @@ export default withAuth(
                     return token?.userRole === "ADMIN"
                 }
                 if (req.nextUrl.pathname.startsWith("/dashboard")) {
-                    return token?.userRole === "MASTER" || token?.userRole === "STAFF"
+                    // return token?.userRole === "MASTER" || token?.userRole === "STAFF"
+                    return !!token
                 }
                 return false;
             },

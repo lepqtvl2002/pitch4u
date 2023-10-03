@@ -22,11 +22,11 @@ export default function MessagePage() {
     <div className={"flex h-full"}>
       <div
         className={cn(
-          "flex flex-col border-r border-r-gray-300 overflow-hidden",
+          "relative flex flex-col border-r border-r-gray-300 overflow-hidden",
           isOpenSearch ? "w-auto" : "w-20"
         )}
       >
-        <div className={"flex justify-end p-2 border-b border-b-gray-300"}>
+        <div className={"flex justify-center p-2 border-b border-b-gray-300"}>
           <Input
             autoFocus={true}
             className={cn("flex-1", isOpenSearch ? "block" : "hidden")}
@@ -40,21 +40,48 @@ export default function MessagePage() {
             {isOpenSearch ? <PanelLeftClose /> : <Search />}
           </Button>
         </div>
-        <div className={"flex flex-col space-y-3 p-2"}>
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 1"} />
+        <div className={"absolute top-16 bottom-0 left-0 right-0 flex flex-col space-y-3 p-2 overflow-y-auto"}>
+          <MessageCard
+            avatarUrl={"asdda.png"}
+            name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
+          />
+          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
+          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
+          <MessageCard
+            avatarUrl={"asdda.png"}
+            name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
+          />
+          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
+          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
+          <MessageCard
+            avatarUrl={"asdda.png"}
+            name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
+          />
+          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
+          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
+          <MessageCard
+            avatarUrl={"asdda.png"}
+            name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
+          />
+          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
+          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
+          <MessageCard
+            avatarUrl={"asdda.png"}
+            name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
+          />
           <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
           <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
         </div>
       </div>
 
-      <div className={"flex-1 bg-gray-100 h-full relative"}>
+      <div className={"flex-1 bg-gray-50 h-full relative"}>
         <div
           className={
             "flex justify-between items-center bg-white p-2 border-b border-b-gray-300 shadow"
           }
         >
           <div className={"flex items-center space-x-2"}>
-            <Avatar className="h-8 w-8">
+            <Avatar className="h-10 w-10s">
               <AvatarImage src={"avatarUrl"} alt={"name"} />
               <AvatarFallback>{"name".charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
@@ -90,7 +117,7 @@ function MessageCard({ avatarUrl, name }: any) {
   return (
     <div
       className={
-        "flex space-x-2 items-center hover:bg-gray-300 cursor-pointer p-2 rounded"
+        "flex space-x-2 items-center hover:bg-gray-300 cursor-pointer p-2 rounded max-w-xs"
       }
     >
       <Avatar className="h-8 w-8">
@@ -205,39 +232,50 @@ const messageList = [
 function MessageList({ messages }: { messages: any }) {
   return (
     <div className="flex flex-col w-full space-y-0.5 max-h-full">
-      {messages.map((message: any, index: number) => (
-        <div
-          key={message.id}
-          className={cn(
-            "w-full flex relative",
-            message.sender === 1 ? "justify-end" : "justify-start"
-          )}
-        >
+      {messages.map((message: any, index: number) => {
+        const isFirstMessageBySender =
+          index === 0 || messages[index - 1].sender !== message.sender;
+        const isLastMessageBySender =
+          index === messages.length - 1 ||
+          messages[index + 1].sender !== message.sender;
+        return (
           <div
+            key={message.id}
             className={cn(
-              "flex items-start py-2 px-4 rounded-full bg-blue-200",
-              message.sender === 1 ? "rounded-br" : "rounded-bl"
+              "w-full flex relative",
+              message.sender === 1 ? "justify-end" : "justify-start"
             )}
           >
-            {(index + 1 === messages.length ||
-              messages[index + 1].sender === 1) &&
-            message.sender !== 1 ? (
-              <Avatar className="h-8 w-8 border absolute -left-10 -bottom-4">
-                <AvatarImage
-                  src={message.sender.toString()}
-                  alt={message.sender.toString()}
-                />
-                <AvatarFallback>
-                  {message.sender.toString().charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-            ) : null}
-            <p className={cn("max-w-sm xl:max-w-xl break-words")}>
-              {message.content}
-            </p>
+            <div
+              className={cn(
+                "flex items-start py-2 px-4 rounded-3xl bg-blue-200",
+                message.sender === 1
+                  ? isFirstMessageBySender
+                    ? "rounded-br"
+                    : isLastMessageBySender ? "rounded-tr" : "rounded-r"
+                  : isFirstMessageBySender
+                    ? "rounded-bl"
+                    : isLastMessageBySender ? "rounded-tl" : "rounded-l"
+              )}
+            >
+              {isLastMessageBySender && message.sender !== 1 ? (
+                <Avatar className="h-8 w-8 border absolute -left-10">
+                  <AvatarImage
+                    src={message.sender.toString()}
+                    alt={message.sender.toString()}
+                  />
+                  <AvatarFallback>
+                    {message.sender.toString().charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              ) : null}
+              <p className={cn("max-w-sm xl:max-w-lg break-all")}>
+                {message.content}
+              </p>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
