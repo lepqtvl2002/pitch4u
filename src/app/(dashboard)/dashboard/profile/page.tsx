@@ -1,7 +1,11 @@
+import { ProfileForm } from "@/components/dashboard/profile-form"
 import { Separator } from "@/components/ui/separator"
-import {ProfileForm} from "@/app/(dashboard)/dashboard/profile/profile-form";
+import { UserUseQuery } from "@/server/queries/user-queries"
 
 export default function SettingsProfilePage() {
+    const {data, isFetching, isError} = UserUseQuery.getProfile();
+    if (isFetching) return <div>Loading...</div>
+    if (isError) return <div>Error</div>
     return (
         <div className="space-y-6">
             <div>
@@ -11,7 +15,7 @@ export default function SettingsProfilePage() {
                 </p>
             </div>
             <Separator />
-            <ProfileForm />
+            <ProfileForm userProfile={data.result} />
         </div>
     )
 }
