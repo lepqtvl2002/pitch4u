@@ -18,19 +18,26 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
 import {signOut, useSession} from "next-auth/react";
+import {useRouter} from "next/navigation";
 
 export function UserNav() {
     const  {data: session, status} = useSession();
+    const router = useRouter();
+
     if (status === "unauthenticated") {
-        return <>unauthenticated</>
+        signOut()
+            .then(() => {
+            router.push("/login");
+        })
+            .catch(console.error);
     }
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full" disabled={status === "loading"}>
                     <Avatar className="h-8 w-8">
-                        <AvatarImage src="/avatars/01.png" alt="@shadcn"/>
-                        <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
+                        <AvatarImage src={session?.user?.image as string} alt="user avatar"/>
+                        <AvatarFallback>{session?.user.email.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
@@ -46,7 +53,7 @@ export function UserNav() {
                 <DropdownMenuSeparator/>
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
-                        <Link className="w-full" href={"/dashboard/profile"}>
+                        <Link className="w-full" href={session?.user?.userRole === 'ADMIN' ? "admin/profile" : "dashboard/profile"}>
                             Profile
                         </Link>
                     </DropdownMenuItem>

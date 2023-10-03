@@ -10,8 +10,9 @@ import {NotificationBadge} from "@/components/notification-badge";
 
 export function MainNav({
                             className,
+                            area = "dashboard",
                             ...props
-                        }: React.HTMLAttributes<HTMLElement>) {
+                        }: React.HTMLAttributes<HTMLElement> & {area?: "admin" | "dashboard"}) {
 
     return (
         <nav
@@ -20,7 +21,7 @@ export function MainNav({
         >
             <Search/>
             <div className="ml-auto flex items-center space-x-4">
-                <Link href={"/dashboard/message"} className={"relative hover:bg-gray-200 p-2 rounded-full"}>
+                <Link href={`/${area}/message`} className={"relative hover:bg-gray-200 p-2 rounded-full"}>
                     <NotificationBadge number={1}/>
                     <MessageCircle/>
                 </Link>
