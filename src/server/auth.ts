@@ -57,29 +57,46 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ account, profile }) {
       if (account?.provider === "google") {
+        // console.log("Google account", account);
+        // console.log(profile);
         // return profile?.email_verified && profile?.email?.endsWith("@example.com")
-        console.log(profile);
         return true;
       }
-      return true // Do different verification for other providers that don't have `email_verified`
+      return true; // Do different verification for other providers that don't have `email_verified`
     },
-    async session({ session, token}) {
-      session.accessToken = (token?.accessToken) as IToken;
-      session.refreshToken = (token?.refreshToken) as IToken;
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (url.includes("login?callbackUrl")) {
+        const callbackUrl = new URL(url, baseUrl);
+        const redirectUrl = callbackUrl.searchParams.get("callbackUrl");
+        if (redirectUrl) {
+          return redirectUrl;
+        }
+      } else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
+    async session({ session, token }) {
+      session.accessToken = token?.accessToken as IToken;
+      session.refreshToken = token?.refreshToken as IToken;
       if (session?.user) {
         return {
           ...session,
           user: {
             ...session.user,
-            userRole : token?.userRole,
+            userRole: token?.userRole,
           },
         };
       }
       return session;
     },
-    async jwt({ token, user}) {
+    async jwt({ token, user }) {
       if (user) {
-        token.userRole = (user?.role?.name.toUpperCase() as "ADMIN" | "USER" | "STAFF" | "MASTER") || undefined;
+        token.userRole =
+          (user?.role?.name.toUpperCase() as
+            | "ADMIN"
+            | "USER"
+            | "STAFF"
+            | "MASTER") || undefined;
         token.accessToken = user?.access;
         token.refreshToken = user?.refresh;
       }

@@ -7,7 +7,7 @@ import Script from "next/script";
 
 export default function Home() {
     return (
-        <main className="md:container px-2 flex min-h-screen flex-col items-center justify-between bg-main">
+        <main className="md:container px-2 flex min-h-screen flex-col items-center justify-between bg-main scroll-smooth">
             <Navbar/>
             <section id="general" className="opacity-0 flex flex-col lg:flex-row w-full justify-between  pb-20">
                 <div className="flex w-full flex-col space-y-6 lg:p-10 pb-10 z-10">
@@ -18,10 +18,10 @@ export default function Home() {
                     </div>
                     <span className="text-center text-2xl">Tìm ở đây!!!</span>
                     <div className="flex space-x-10">
-                        <a href="/dashboard/#general" className={"w-1/2 scroll-link"}>
+                        <a href="#general" className={"w-1/2 scroll-link"}>
                             <Button className={"w-full rounded-full"}>Tải app ngay</Button>
                         </a>
-                        <a href="/dashboard/#find-pitch" className={"w-1/2 scroll-link"}>
+                        <a href="#find-pitch" className={"w-1/2 scroll-link"}>
                             <Button className={"w-full rounded-full"}>Tìm sân</Button>
                         </a>
                     </div>
@@ -40,7 +40,7 @@ export default function Home() {
 
             <section
                 id="find-pitch"
-                className="opacity-0 transition duration-1000 w-full max-h-screen overflow-hidden p-2 md:pl-10 lg:pl-20 flex-col justify-between  py-10 md:py-20 z-10 bg-cyan-200 bg-opacity-50 rounded"
+                className="opacity-0 transition duration-1000 w-full p-2 md:pl-10 lg:pl-20 flex-col justify-between  py-10 md:py-20 z-10 bg-cyan-200 bg-opacity-50 rounded"
             >
                 <h2 className={"pb-6 md:pb-10 text-3xl font-bold"}>Nhanh và dễ dàng</h2>
                 <h4 className="text-bold pb-4 md:pb-8 text-sm md:text-xl">

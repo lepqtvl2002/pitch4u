@@ -19,17 +19,33 @@ import {
 import Link from "next/link";
 import {signOut, useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
+import { toast } from "../ui/use-toast";
+import { ToastAction } from "../ui/toast";
 
 export function UserNav() {
     const  {data: session, status} = useSession();
     const router = useRouter();
 
     if (status === "unauthenticated") {
-        signOut()
-            .then(() => {
-            router.push("/login");
-        })
-            .catch(console.error);
+        toast({
+            title: "Phiên đăng nhập hết hạn",
+            description: "Vui lòng đăng nhập lại",
+            variant: "destructive",
+            action: (
+                <ToastAction
+                    onClick={() => {
+                        signOut()
+                            .then(() => {
+                                router.push("/login");
+                            })
+                            .catch(console.error);
+                    }}
+                    altText={"relogin"}
+                >
+                    Đăng nhập
+                </ToastAction>
+            ),
+        });
     }
     return (
         <DropdownMenu>
@@ -53,7 +69,7 @@ export function UserNav() {
                 <DropdownMenuSeparator/>
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
-                        <Link className="w-full" href={session?.user?.userRole === 'ADMIN' ? "admin/profile" : "dashboard/profile"}>
+                        <Link className="w-full" href={session?.user?.userRole === 'ADMIN' ? "/admin/profile" : "/dashboard/profile"}>
                             Profile
                         </Link>
                     </DropdownMenuItem>
