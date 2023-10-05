@@ -1,11 +1,12 @@
+"use client";
 import React from "react";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
-import {SelectSimple} from "@/app/(general)/[id]/components/select-custom";
 import {DatePickerDemo} from "@/components/ui/date-picker";
 import {Stars} from "@/components/ui/vote-stars";
 import Link from "next/link";
 import {Heart, MessageCircle} from "lucide-react";
+import { SelectSimple } from "./select-custom";
 
 export default function OrderSelections({pitch}: { pitch: any }) {
     const [price, setPrices] = React.useState(0);

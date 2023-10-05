@@ -15,4 +15,16 @@ export class PitchUseQuery {
             keepPreviousData: true
         })
     }
+    static getPitchBySlug = ({slug} : {slug: string}) => {
+        return useQuery({
+            queryKey: ["pitch", slug],
+            queryFn: () =>
+                $globalFetch(`/v1/pitches/slugs/${slug}`, {
+                    method: "GET"
+                }).then(res => res.data)
+            ,
+            cacheTime:100,
+            keepPreviousData: true
+        })
+    }
 }

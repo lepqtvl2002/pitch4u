@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/use-debounce";
 import { IPitch } from "@/types/pitch";
 import { PitchUseQuery } from "@/server/queries/pitch-query";
+import Link from "next/link";
 
 const Conditions = ["Gần bạn", "Chất lượng", "Giá cả"];
 
@@ -89,9 +90,10 @@ const SearchBar: React.FC = () => {
       </div>
       <div className="mt-4 list-inside list-disc max-h-screen overflow-y-auto">
         {pitches.map((pitch : IPitch) => (
-          <li
+          <Link
             key={pitch?.pitch_id}
-            className="bg-white shadow rounded-lg p-4 mb-4"
+            href={`/${pitch?.slug}`}
+            className="flex bg-white shadow rounded-lg p-4 mb-4"
             style={{ listStyleType: "none" }}
           >
             <div className="flex justify-between items-center">
@@ -108,7 +110,7 @@ const SearchBar: React.FC = () => {
                 {/*<p className="text-gray-800 font-semibold">{pitch.distance}</p>*/}
               </div>
             </div>
-          </li>
+          </Link>
         ))}
       </div>
     </div>
