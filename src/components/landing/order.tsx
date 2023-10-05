@@ -1,6 +1,6 @@
+import ImageGallery from "@/app/(general)/[slug]/components/image-show";
+import OrderSelections from "@/app/(general)/[slug]/components/order-selections";
 import React from "react";
-import ImageGallery from "@/app/(general)/[id]/components/image-show";
-import OrderSelections from "@/app/(general)/[id]/components/order-selections";
 
 const PitchOrder = ({pitch}: { pitch: any }) => {
     return (
