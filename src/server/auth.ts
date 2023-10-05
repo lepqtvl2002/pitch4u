@@ -72,8 +72,7 @@ export const authOptions: NextAuthOptions = {
         if (redirectUrl) {
           return redirectUrl;
         }
-      }
-      else if (new URL(url).origin === baseUrl) return url;
+      } else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
     async session({ session, token }) {

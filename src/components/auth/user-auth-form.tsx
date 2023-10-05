@@ -13,15 +13,12 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../ui/form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "../ui/use-toast";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -34,10 +31,7 @@ const formSchema = z.object({
 });
 
 export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
-  const router = useRouter();
   const [loading, setLoading] = React.useState(false);
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,18 +50,15 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
         setLoading(true);
 
         const res = await signIn("credentials", {
-          redirect: false,
+          redirect: true,
           email: values.email,
           password: values.password,
-          callbackUrl,
         });
 
         setLoading(false);
 
         console.log(res);
-        if (!res?.error) {
-          router.push(callbackUrl);
-        } else {
+        if (res?.error) {
           toast({
             title: "Đăng nhập thất bại",
             description: "Email hoặc mật khẩu không đúng",
