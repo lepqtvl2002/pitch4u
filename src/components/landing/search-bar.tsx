@@ -1,31 +1,12 @@
 "use client";
-/**
- * This TypeScript program implements a search bar component using ReactJS.
- * The search bar allows users to enter a search query and perform a search operation.
- */
-
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PostApi } from "@/server/actions/search";
 import useDebounce from "@/hooks/use-debounce";
-
-type postProps = {
-  id: number;
-  userId: number;
-  title: string;
-  body: string;
-};
+import { IPitch } from "@/types/pitch";
+import { PitchUseQuery } from "@/server/queries/pitch-query";
 
 const Conditions = ["Gần bạn", "Chất lượng", "Giá cả"];
-const Pitches = [
-  {
-    name: "Sân bóng 1",
-    address: "123 abc",
-    price: 100000,
-    quality: 5,
-    distance: 10,
-  },
-];
+
 /**
  * SearchBar component.
  *
@@ -34,9 +15,13 @@ const Pitches = [
 const SearchBar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [conditions, setConditions] = useState<string[]>([]);
-  const [posts, setPosts] = useState<postProps[]>([]);
+  const [pitches, setPitches] = useState<IPitch[]>([]);
   const debouncedSearch = useDebounce(searchQuery);
-  const { data: postList, isFetching } = PostApi.search({ q: debouncedSearch });
+  const { data, isFetching, isError } = PitchUseQuery.search({
+    q: debouncedSearch,
+    limit: 10,
+    page: 1,
+  });
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -70,13 +55,12 @@ const SearchBar: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(postList);
-    if (postList) setPosts(postList);
-  }, [postList]);
+    if (data?.result?.data) setPitches(data?.result?.data);
+  }, [data]);
 
   return (
     <div className="flex flex-col space-y-4 w-full md:w-2/3 xl:w-1/2">
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 md:space-x-4">
         <input
           type="text"
           className="rounded-full w-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -88,7 +72,7 @@ const SearchBar: React.FC = () => {
           Search
         </Button>
       </div>
-      <div className="mt-4 flex justify-around space-x-4 ">
+      <div className="mt-4 flex justify-around space-x-2 md:space-x-4 ">
         {Conditions.map((condition) => (
           <Button
             key={condition}
@@ -103,22 +87,22 @@ const SearchBar: React.FC = () => {
           </Button>
         ))}
       </div>
-      <div className="mt-4 list-inside list-disc">
-        {posts.map((pitch) => (
+      <div className="mt-4 list-inside list-disc max-h-screen overflow-y-auto">
+        {pitches.map((pitch : IPitch) => (
           <li
-            key={pitch?.id}
+            key={pitch?.pitch_id}
             className="bg-white shadow rounded-lg p-4 mb-4"
             style={{ listStyleType: "none" }}
           >
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-xl font-bold text-gray-800">
-                  {pitch?.title}
+                  {pitch?.name}
                 </h3>
-                <p className="text-gray-600">{pitch?.userId}</p>
+                <p className="text-gray-600">{pitch?.address}</p>
               </div>
               <div>
-                <p className="text-gray-800 font-semibold">{pitch?.body}</p>
+                <p className="text-gray-800 font-semibold">{pitch?.address}</p>
                 {/*<p className="text-gray-800 font-semibold">{pitch.price}</p>*/}
                 {/*<p className="text-gray-800 font-semibold">{pitch.quality}</p>*/}
                 {/*<p className="text-gray-800 font-semibold">{pitch.distance}</p>*/}

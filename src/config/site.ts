@@ -7,7 +7,7 @@ export const siteConfig = {
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
       : process.env.NEXT_PUBLIC_APP_URL,
-  ogImage: "https://necter.com/og.jpg",
+  ogImage: "https://pitch4u.com/og.jpg",
   links: {},
   authors: [
     {

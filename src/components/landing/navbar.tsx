@@ -1,15 +1,14 @@
-"use client";
-import {useSession} from "next-auth/react";
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {DropdownMenuNav, DropdownMenuProfile} from "@/components/landing/dropdown-menu-custom";
 import {cn} from "@/lib/utils";
 import {publicNavbarConfig} from "@/config/site";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/server/auth";
 
-export default function Navbar({className, ...props}: { className?: string }) {
-    const {data: session, status} = useSession();
-
+export default async function Navbar({className, ...props}: { className?: string }) {
+    const session = await getServerSession(authOptions);
     return <nav className={cn("w-full md:p-4 md:m-0", className)} {...props}>
         <div
             className="mx-auto flex justify-between items-center w-full h-fit md:justify-between">
@@ -28,7 +27,7 @@ export default function Navbar({className, ...props}: { className?: string }) {
             <ul className="md:flex items-center md:space-x-0 lg:space-x-8 hidden text-center">
                 {publicNavbarConfig.mainNav.map(item => <li key={item.title} className="flex-1"><Link
                     href={item.href}>{item.title}</Link></li>)}
-                {status === "loading" ? <Button disabled={true}>Loading...</Button> : session ?
+                {session?.user ?
                     <DropdownMenuProfile user={session?.user} className={"flex"}/> :
                     <Link href={"/login"}><Button>Đăng nhập</Button></Link>}
             </ul>
