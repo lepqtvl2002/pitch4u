@@ -11,10 +11,10 @@ export const metadata: Metadata = {
     description: "Authentication forms built using the components.",
 }
 
-export default function AuthenticationPage() {
+export default function LoginPage() {
     return (
         <>
-            <div className="container relative hidden h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+            <div className="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
                 <Link
                     href="/"
                     className={cn(
@@ -44,7 +44,7 @@ export default function AuthenticationPage() {
                         </blockquote>
                     </div>
                 </div>
-                <div className="lg:p-8">
+                <div className="pt-8 lg:p-8">
                     <UserAuthForm type={"login"} />
                 </div>
             </div>

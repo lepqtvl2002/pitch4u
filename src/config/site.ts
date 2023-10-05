@@ -193,7 +193,7 @@ export const publicNavbarConfig: DashboardConfig = {
     },
     {
       title: "Đăng ký làm chủ sân",
-      href: "/register-fieldmaster",
+      href: "/pitch/register",
     },
     {
       title: "Cộng đồng",
