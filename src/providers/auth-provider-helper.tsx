@@ -31,13 +31,16 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       } catch (error) {
         toast({
           title: "Phiên đăng nhập hết hạn",
-          description: "Vui lòng đăng nhập lại",
+          description: "Vui lòng đăng nhập lại, error when refresh token",
           variant: "destructive",
           action: (
             <ToastAction
               onClick={() => {
-                signOut();
-                router.push("/login");
+                const callbackUrl = new URL(window.location.href);
+                signOut({
+                  redirect: true,
+                  callbackUrl: `/login?callbackUrl=${callbackUrl}`,
+                });
               }}
               altText={"relogin"}
             >
@@ -75,13 +78,16 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           originalRequest._retry = true;
           toast({
             title: "Phiên đăng nhập hết hạn",
-            description: "Vui lòng đăng nhập lại",
+            description: "Vui lòng đăng nhập lại, have no session",
             variant: "destructive",
             action: (
               <ToastAction
                 onClick={() => {
-                  signOut();
-                  router.push("/login");
+                  const callbackUrl = new URL(window.location.href);
+                  signOut({
+                    redirect: true,
+                    callbackUrl: `/login?callbackUrl=${callbackUrl}`,
+                  });
                 }}
                 altText={"relogin"}
               >
@@ -102,13 +108,16 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
             } else {
               toast({
                 title: "Phiên đăng nhập hết hạn",
-                description: "Vui lòng đăng nhập lại",
+                description: "Vui lòng đăng nhập lại, can not refresh token",
                 variant: "destructive",
                 action: (
                   <ToastAction
                     onClick={() => {
-                      signOut();
-                      router.push("/login");
+                      const callbackUrl = new URL(window.location.href);
+                      signOut({
+                        redirect: true,
+                        callbackUrl: `/login?callbackUrl=${callbackUrl}`,
+                      });
                     }}
                     altText={"relogin"}
                   >

@@ -220,54 +220,56 @@ export function PitchRegisterForm({
                 )}
               </div>
               {step === 3 && (
-                <div className="grid gap-4">
-                  {fields.map((field, index) => (
-                    <div key={field.id} className="grid gap-2">
-                      <div className="flex justify-between items-center">
-                        <FormLabel className={cn("text-lg")}>
-                          Sân {index + 1}
-                        </FormLabel>
-                        <Button
-                          variant="ghost"
-                          onClick={() => {
-                            remove(index);
-                          }}
-                        >
-                          <Icons.trash className="h-4 w-4" />
-                        </Button>
+                <>
+                  <div className="grid gap-4 max-h-72 overflow-y-auto px-2 -mx-2">
+                    {fields.map((field, index) => (
+                      <div key={field.id} className="grid gap-2">
+                        <div className="flex justify-between items-center">
+                          <FormLabel className={cn("text-lg")}>
+                            Sân {index + 1}
+                          </FormLabel>
+                          <Button
+                            variant="ghost"
+                            onClick={() => {
+                              remove(index);
+                            }}
+                          >
+                            <Icons.trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name={`pitchList.${index}.pitch_name`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  placeholder={`Tên sân ${index + 1}`}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`pitchList.${index}.pitch_address`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  placeholder={`Địa chỉ sân ${index + 1}`}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
-                      <FormField
-                        control={form.control}
-                        name={`pitchList.${index}.pitch_name`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                placeholder={`Tên sân ${index + 1}`}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`pitchList.${index}.pitch_address`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                placeholder={`Địa chỉ sân ${index + 1}`}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                   <Button
                     type="button"
                     variant="outline"
@@ -279,7 +281,7 @@ export function PitchRegisterForm({
                   >
                     Thêm sân
                   </Button>
-                </div>
+                </>
               )}
 
               <div className="grid gap-2">
@@ -312,7 +314,17 @@ export function PitchRegisterForm({
                     variant="outline"
                     disabled={loading}
                     type="button"
-                    onClick={goNextStep}
+                    onClick={() => {
+                      const currentValues = form.getValues();
+                      if (currentValues.address && currentValues.phone) {
+                        goNextStep();
+                      } else {
+                        toast({
+                          title: "Vui lòng điền đầy đủ thông tin",
+                          description: "Điền đầy đủ thông tin để tiếp tục",
+                        });
+                      }
+                    }}
                   >
                     {loading && (
                       <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
