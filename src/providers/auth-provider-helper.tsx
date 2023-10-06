@@ -10,10 +10,10 @@ import { IRefreshReturn } from "@/types/token";
 function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const { update, data, status } = useSession();
   const router = useRouter();
-
+  console.log("session: ", data);
   const refreshAccessToken = useCallback(
     async (refreshToken?: string | null) => {
-        console.log("fetch refresh token");
+      console.log("refreshToken: ", refreshToken);
       try {
         const { data } = await $globalFetch.post<IRefreshReturn>(
           "/v1/auth/refresh-tokens",
@@ -29,11 +29,28 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         );
         return data;
       } catch (error) {
-        console.log(error);
-        throw error;
+        toast({
+          title: "Phiên đăng nhập hết hạn",
+          description: "Vui lòng đăng nhập lại, error when refresh token",
+          variant: "destructive",
+          action: (
+            <ToastAction
+              onClick={() => {
+                const callbackUrl = new URL(window.location.href);
+                signOut({
+                  redirect: true,
+                  callbackUrl: `/login?callbackUrl=${callbackUrl}`,
+                });
+              }}
+              altText={"relogin"}
+            >
+              Đăng nhập
+            </ToastAction>
+          ),
+        });
       }
     },
-    []
+    [router]
   );
 
   useEffect(() => {
@@ -61,16 +78,16 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           originalRequest._retry = true;
           toast({
             title: "Phiên đăng nhập hết hạn",
-            description: "Vui lòng đăng nhập lại",
+            description: "Vui lòng đăng nhập lại, have no session",
             variant: "destructive",
             action: (
               <ToastAction
                 onClick={() => {
-                  signOut()
-                    .then(() => {
-                      router.push("/login");
-                    })
-                    .catch(console.error);
+                  const callbackUrl = new URL(window.location.href);
+                  signOut({
+                    redirect: true,
+                    callbackUrl: `/login?callbackUrl=${callbackUrl}`,
+                  });
                 }}
                 altText={"relogin"}
               >
@@ -83,10 +100,32 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         } else if (error.response.status === 401 && !originalRequest._retry) {
           try {
             const tokens = await refreshAccessToken(data?.refreshToken?.token);
-            await update({
-              accessToken: tokens?.access,
-              refreshToken: tokens?.refresh,
-            });
+            if (tokens) {
+              await update({
+                accessToken: tokens?.access,
+                refreshToken: tokens?.refresh,
+              });
+            } else {
+              toast({
+                title: "Phiên đăng nhập hết hạn",
+                description: "Vui lòng đăng nhập lại, can not refresh token",
+                variant: "destructive",
+                action: (
+                  <ToastAction
+                    onClick={() => {
+                      const callbackUrl = new URL(window.location.href);
+                      signOut({
+                        redirect: true,
+                        callbackUrl: `/login?callbackUrl=${callbackUrl}`,
+                      });
+                    }}
+                    altText={"relogin"}
+                  >
+                    Đăng nhập
+                  </ToastAction>
+                ),
+              });
+            }
           } catch (error) {
             console.log(error);
           }
@@ -98,7 +137,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       $fetch.interceptors.response.eject(responseInterceptor);
       $fetch.interceptors.request.eject(requestInterceptor);
     };
-  }, [data, router, status, update]);
+  }, [data, refreshAccessToken, router, status, update]);
 
   return <>{children}</>;
 }
