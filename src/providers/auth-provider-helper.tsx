@@ -50,7 +50,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         });
       }
     },
-    [router]
+    []
   );
 
   useEffect(() => {
