@@ -80,7 +80,7 @@ export function PitchRegisterForm({
     // ✅ This will be type-safe and validated.
     try {
       setLoading(true);
-
+      console.log(values);
       const res = await mutateAsync({
         card_id: "99999999",
         fullname: "Ho Duc Hoang",
@@ -286,23 +286,9 @@ export function PitchRegisterForm({
 
               <div className="grid gap-2">
                 <Button
-                  disabled={loading}
+                  disabled={loading || form.getValues().email === "" || form.getValues().fullname === ""}
                   type={step === 1 ? "button" : "submit"}
-                  onClick={() => {
-                    const currentValues = form.getValues();
-                    if (step === 1) {
-                      if (currentValues.fullname && currentValues.email) {
-                        goNextStep();
-                      } else {
-                        toast({
-                          title: "Vui lòng điền đầy đủ thông tin",
-                          description: "Điền đầy đủ thông tin để tiếp tục",
-                        });
-                      }
-                    } else {
-                      console.log(currentValues);
-                    }
-                  }}
+                  onClick={step === 1 ? goNextStep : undefined}
                 >
                   {loading && (
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
@@ -312,19 +298,9 @@ export function PitchRegisterForm({
                 {step === 2 && (
                   <Button
                     variant="outline"
-                    disabled={loading}
+                    disabled={loading || form.getValues().address === "" || form.getValues().phone === ""}
                     type="button"
-                    onClick={() => {
-                      const currentValues = form.getValues();
-                      if (currentValues.address && currentValues.phone) {
-                        goNextStep();
-                      } else {
-                        toast({
-                          title: "Vui lòng điền đầy đủ thông tin",
-                          description: "Điền đầy đủ thông tin để tiếp tục",
-                        });
-                      }
-                    }}
+                    onClick={goNextStep}
                   >
                     {loading && (
                       <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
