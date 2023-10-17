@@ -21,7 +21,7 @@ const PitchDetail = async ({
   const res = await $globalFetch.get(`/v1/pitches/slugs/${slug}`);
   const pitch = {
     ...res.data.result,
-    types: ["san5", "san7", "san11"],
+    types: ["PITCH5", "PITCH7", "PITCH11"],
     imageUrls: [
       "/pitch4u-photo01.webp",
       "/pitch4u-photo06.webp",

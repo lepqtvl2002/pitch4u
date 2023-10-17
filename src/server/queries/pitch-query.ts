@@ -27,4 +27,17 @@ export class PitchUseQuery {
             keepPreviousData: true
         })
     }
+    static getBookingStatus = (query : Record<string, any>) => {
+        return useQuery({
+            queryKey: ["pitchBookingStatus", query],
+            queryFn: () =>
+                $globalFetch(`/v1/pitches/booking-status`, {
+                    method: "GET",
+                    params: query
+                }).then(res => res.data)
+            ,
+            cacheTime:100,
+            keepPreviousData: true
+        })
+    }
 }

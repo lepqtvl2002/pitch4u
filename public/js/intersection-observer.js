@@ -23,3 +23,5 @@ const hiddenImages = document.querySelectorAll('.hidden-image');
 for (let i = 0; i < hiddenImages.length; i++) {
     observer.observe(hiddenImages.item(i))
 }
+
+console.log("loaded js file");
