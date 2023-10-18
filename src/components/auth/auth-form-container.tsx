@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 export default function AuthFormContainer({children}: {children: React.ReactNode}) {
   return (
     <div className="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-      <Link
+      <a
         href="/"
         className={cn(
           buttonVariants({ variant: "ghost" }),
@@ -15,12 +14,12 @@ export default function AuthFormContainer({children}: {children: React.ReactNode
         )}
       >
         Home
-      </Link>
+      </a>
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
         <div className="absolute inset-0 bg-main" />
-        <Link
+        <a
           href="/"
-          className="relative z-20 flex items-center text-lg font-medium"
+          className="relative z-20 flex items-center text-lg font-medium"          
         >
           <Image
             src={"/pitch4u-logo.png"}
@@ -29,7 +28,7 @@ export default function AuthFormContainer({children}: {children: React.ReactNode
             height={30}
           />
           PITCH4U
-        </Link>
+        </a>
         <div className={"flex justify-center items-center z-10"}>
           <Image
             src={"/pitch4u-photo01.webp"}
