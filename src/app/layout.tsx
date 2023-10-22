@@ -16,7 +16,7 @@ export const metadata = {
         template: `%s | ${siteConfig.name}`,
     },
     description: siteConfig.description,
-    keywords: ["picth4u", "pitch", "football", "soccer", "booking"],
+    keywords: ["pitch4u", "pitch", "football", "soccer", "booking"],
     creator: "? Team",
     openGraph: {
         type: "website",
@@ -39,7 +39,7 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (<html lang="en" className={cn("scroll-smooth mdl-js")}>
-        <body className={cn(inter.className)}>
+        <body className={cn(inter.className, "bg-main")}>
         <ClientProvider>
             <AuthProvider>
                 <AuthProviderHelper>
