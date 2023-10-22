@@ -1,3 +1,5 @@
+import { ISubPitch } from "./subPitch";
+
 export interface IPitch {
     pitch_id: number;
     name: string;
@@ -11,4 +13,17 @@ export interface IPitch {
     updatedAt: string;
     deletedAt: null | string;
     rate: string;
+    config?: {
+        pitch_config_id: number | string,
+        pitch_id: number | string,
+        open_at: number,
+        close_at: number,
+        time_frames: number[number[]],
+        open_days: string,
+        active: boolean,
+        createdAt: Date,
+        updatedAt: Date | null,
+        deletedAt: Date | null
+    },
+    sub_pitches?: ISubPitch[]
 }

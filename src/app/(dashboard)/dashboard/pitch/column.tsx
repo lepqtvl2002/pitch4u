@@ -2,7 +2,9 @@
 
 import { type DataFacetedOptionsType } from "@/components/dashboard/table-facet";
 import { type ColumnDef } from "@tanstack/react-table";
-import {IPost} from "@/types/post";
+import { IPost } from "@/types/post";
+import { IPitch } from "@/types/pitch";
+import DropdownMenuPitch from "./dropdown-menu-action";
 
 export const vouchersTypes: DataFacetedOptionsType[] = [
     {
@@ -28,33 +30,26 @@ export const voucherStatus: DataFacetedOptionsType[] = [
     },
 ];
 
-export const columns: ColumnDef<IPost>[] = [
+export const columns: ColumnDef<IPitch>[] = [
     {
         header: "ID",
-        cell : (ctx) => {
+        cell: (ctx) => {
             const id = ctx.row.id;
             return <div className={"text-bold"}>{id}</div>
         }
     },
     {
-        header: "UserID",
-        cell : (ctx) => {
-            const userId = ctx.row.original.userId;
-            return <div className={"text-bold"}>{userId}</div>
+        header: "Tên sân",
+        cell: (ctx) => {
+            const name = ctx.row.original.name;
+            return <div className={"text-bold"}>{name}</div>
         }
     },
     {
-        header: "Title",
-        cell : (ctx) => {
-            const title = ctx.row.original.title;
-            return <div className={"text-bold"}>{title}</div>
-        }
-    },
-    {
-        header: "Body",
-        cell : (ctx) => {
-            const body = ctx.row.original.body;
-            return <div className={"text-bold"}>{body}</div>
+        header: "Địa chỉ",
+        cell: (ctx) => {
+            const address = ctx.row.original.address;
+            return <div className={"text-bold"}>{address}</div>
         }
     }
     // {
@@ -111,15 +106,15 @@ export const columns: ColumnDef<IPost>[] = [
     //     );
     //     },
     // },
-    // {
-    //     id: "actions",
-    //     cell: ({ row }) => {
-    //         return (
-    //             <DropdownMenuVoucher
-    //                 voucherId={row.original._id}
-    //         url={`/dashboard/voucher/${row.original._id}`}
-    //         />
-    //     );
-    //     },
-    // },
+    , {
+        id: "actions",
+        cell: ({ row }) => {
+            return (
+                <DropdownMenuPitch
+                    pitchId={row.original.pitch_id}
+                    url={`/dashboard/pitch/${row.original.pitch_id}`}
+                />
+            );
+        },
+    },
 ];
