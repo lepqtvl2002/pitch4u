@@ -2,11 +2,9 @@
 import React, { useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { DatePickerDemo } from "@/components/ui/date-picker";
 import { Stars } from "@/components/ui/vote-stars";
 import Link from "next/link";
 import { Heart, MessageCircle } from "lucide-react";
-import { SelectSimple } from "./select-custom";
 import { PitchUseQuery } from "@/server/queries/pitch-query";
 import {
   Select,
@@ -16,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePickerBookingPitch } from "@/components/ui/date-picker";
 
 export default function OrderSelections({ pitch }: { pitch: any }) {
   const [price, setPrices] = React.useState(0);
@@ -61,13 +60,16 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
     // Get time frame
     if (data?.result)
       for (const entry of data.result) {
-        if (entry.day === 17) {
+        if (entry.day === date.getDate()) {
           setTimeFrames(entry.time_frames);
           break;
         }
       }
   }, [data?.result, date]);
 
+
+  if (isFetching) return <div>Loading...</div>
+  if (isError) return <div>Error!!!</div>
   return (
     <div className={"relative flex flex-col space-y-2"}>
       <Button variant={"ghost"} className={"absolute top-0 right-0"}>
@@ -86,7 +88,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
       <div className="flex flex-col space-y-2">
         <div className={"flex items-center space-x-2"}>
           <Label className={"text-gray-500 w-1/4"}>Chọn ngày</Label>
-          <DatePickerDemo date={date} setDate={setDate} />
+          <DatePickerBookingPitch date={date} setDate={setDate} />
         </div>
         <div className={"flex space-x-2 items-center"}>
           <Label className={"text-gray-500 w-1/4"}>Chọn thời gian</Label>

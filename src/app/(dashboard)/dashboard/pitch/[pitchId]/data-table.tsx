@@ -1,16 +1,20 @@
 "use client";
 import { DataTable } from "@/components/dashboard/data-table";
-import { stringToVoucherStatus, stringToVoucherType } from "@/lib/utils";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns, voucherStatus, vouchersTypes } from "./column";
+import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
-import {PostUseQuery} from "@/server/queries/post-query";
+import { PitchUseQuery } from "@/server/queries/pitch-query";
+import { useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { FileEdit } from "lucide-react";
+import PitchDetailStatCards from "./stat-cards";
 
 type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";
 type VoucherStatuses = "RUNNING" | "EXPIRED";
 
 function PitchDetailTable() {
+    const params = useParams();
     const [types, setTypes] = React.useState<VoucherTypes[]>([]);
     const [statuses, setStatuses] = React.useState<VoucherStatuses[]>([]);
     const [search, setSearch] = React.useState<string>();
@@ -29,19 +33,8 @@ function PitchDetailTable() {
             pageSize: 10,
         });
 
-    const { data, isError, isFetched } = PostUseQuery.search({q: debouncedSearch})
-    console.log(data)
-
-    const setTypesHandler = useCallback((values: string[]) => {
-        //Convert string to voucher type
-        const value = values.map((value) => stringToVoucherType(value));
-        setTypes(value);
-    }, []);
-
-    const setStatusesHandler = useCallback((values: string[]) => {
-        //Convert string to voucher type
-        setStatuses(values.map((value) => stringToVoucherStatus(value)));
-    }, []);
+    const { data, isError, isFetching } = PitchUseQuery.getPitchDetail({ pitch_id: params.pitchId as string })
+    console.log(data, params)
 
     const setSearchHandler = useCallback((value: string) => {
         setSearch(value);
@@ -49,37 +42,24 @@ function PitchDetailTable() {
 
     if (isError) return <div className="mx-auto text-red-500">Error</div>;
     return (
-        <div>
+        <div className="flex flex-col space-y-10">
+            {isFetching ? <div>Loading...</div> : <PitchDetailStatCards pitch={data?.result}/>}
             <DataTable
                 columns={columns}
-                data={data}
-                isLoading={!isFetched}
-                pageCount={data?.metadata?.count}
+                data={data?.result?.sub_pitches}
+                isLoading={isFetching}
+                pageCount={Math.floor(data?.result?.sub_pitches.length / pageSize)}
                 setPagination={setPagination}
                 pageIndex={pageIndex}
                 pageSize={pageSize}
-                // facets={[
-                //     {
-                //         title: "Trạng thái",
-                //         columnName: "status",
-                //         options: voucherStatus,
-                //         onChange: setStatusesHandler,
-                //     },
-                //     {
-                //         title: "Phân loại",
-                //         columnName: "type",
-                //         options: vouchersTypes,
-                //         onChange: setTypesHandler,
-                //     },
-                // ]}
                 search={{
                     placeholder: "Tìm kiếm",
                     value: search || "",
                     onChange: setSearchHandler,
                 }}
                 otherButton={{
-                    url: "/dashboard/voucher/create",
-                    title: "Tạo mới +",
+                    url: `/dashboard/pitch/${params.pitchId}/create`,
+                    title: "Thêm sân +",
                 }}
                 sort={{
                     columnName: sort.columnName,

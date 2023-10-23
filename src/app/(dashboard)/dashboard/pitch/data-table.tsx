@@ -6,6 +6,7 @@ import React, { useCallback } from "react";
 import { columns, voucherStatus, vouchersTypes } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import {PostUseQuery} from "@/server/queries/post-query";
+import { PitchUseQuery } from "@/server/queries/pitch-query";
 
 type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";
 type VoucherStatuses = "RUNNING" | "EXPIRED";
@@ -29,7 +30,11 @@ function PitchTable() {
             pageSize: 10,
         });
 
-    const { data, isError, isFetched } = PostUseQuery.search({q: debouncedSearch})
+    const { data, isError, isFetching } = PitchUseQuery.search({
+        limit: pageSize,
+        page: pageIndex + 1,
+        q: debouncedSearch,
+    })
     console.log(data)
 
     const setTypesHandler = useCallback((values: string[]) => {
@@ -48,13 +53,14 @@ function PitchTable() {
     }, []);
 
     if (isError) return <div className="mx-auto text-red-500">Error</div>;
+    
     return (
         <div>
             <DataTable
                 columns={columns}
-                data={data}
-                isLoading={!isFetched}
-                pageCount={data?.metadata?.count}
+                data={data?.result.data}
+                isLoading={isFetching}
+                pageCount={Math.floor(data?.result.total / pageSize)}
                 setPagination={setPagination}
                 pageIndex={pageIndex}
                 pageSize={pageSize}
@@ -78,8 +84,8 @@ function PitchTable() {
                     onChange: setSearchHandler,
                 }}
                 otherButton={{
-                    url: "/dashboard/voucher/create",
-                    title: "Tạo mới +",
+                    url: "/dashboard/pitch/create",
+                    title: "Thêm cụm sân mới +",
                 }}
                 sort={{
                     columnName: sort.columnName,

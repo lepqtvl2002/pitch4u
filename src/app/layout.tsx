@@ -10,6 +10,7 @@ import AuthProviderHelper from "@/providers/auth-provider-helper";
 const inter = Inter({subsets: ['latin']})
 
 export const metadata = {
+    metadataBase: {},
     authors: siteConfig.authors,
     title: {
         default: siteConfig.name,
@@ -25,6 +26,7 @@ export const metadata = {
         title: siteConfig.name,
         description: siteConfig.description,
         siteName: siteConfig.name,
+        images: './pitch4u-logo.png'
     },
     icons: {
         icon: "/favicon.ico",
@@ -39,7 +41,7 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (<html lang="en" className={cn("scroll-smooth mdl-js")}>
-        <body className={cn(inter.className, "bg-main")}>
+        <body className={cn(inter.className)}>
         <ClientProvider>
             <AuthProvider>
                 <AuthProviderHelper>

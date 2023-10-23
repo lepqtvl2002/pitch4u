@@ -17,7 +17,6 @@ const PitchDetail = async ({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
   const slug = params.slug;
-  console.log("slug", slug);
   const res = await $globalFetch.get(`/v1/pitches/slugs/${slug}`);
   const pitch = {
     ...res.data.result,
