@@ -1,5 +1,5 @@
 import * as React from "react"
-import { format } from "date-fns"
+import { endOfMonth, format, subDays } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -11,9 +11,9 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function DatePickerDemo({date, setDate}: { date: Date, setDate: React.Dispatch<React.SetStateAction<any>> } ) {
-    // const [date, setDate] = React.useState<Date>()
-
+export function DatePickerBookingPitch({date, setDate}: { date: Date, setDate: React.Dispatch<React.SetStateAction<any>> } ) {
+    const maxDate = endOfMonth(new Date());
+    const yesterday = subDays(new Date(), 1);
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -25,7 +25,7 @@ export function DatePickerDemo({date, setDate}: { date: Date, setDate: React.Dis
                     )}
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    {date ? format(date, "dd/MM/yyyy") : <span>Pick a date</span>}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
@@ -33,6 +33,7 @@ export function DatePickerDemo({date, setDate}: { date: Date, setDate: React.Dis
                     mode="single"
                     selected={date}
                     onSelect={setDate}
+                    disabled={date => date < yesterday || date > maxDate}
                     initialFocus
                 />
             </PopoverContent>
