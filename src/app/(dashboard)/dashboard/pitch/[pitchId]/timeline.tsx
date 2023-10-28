@@ -76,7 +76,7 @@ function PitchTimeline() {
         </CardHeader>
 
         <CardContent className="absolute w-full border rounded-b-lg">
-          <div className="overflow-auto">
+          <div className="inline-flex flex-col overflow-auto">
             <div className="inline-flex items-center pl-10 space-x-2">
               {subPitches?.map((subPitch: ISubPitch) => (
                 <span key={subPitch.subpitch_id} className="w-40 text-center">
@@ -93,58 +93,6 @@ function PitchTimeline() {
                   <span className="absolute left-4">
                     {timeFrame?.frame[0]}:00
                   </span>
-                  {subPitches?.map((subPitch, index: number) => (
-                    <Button
-                      key={index}
-                      onClick={() => console.log(subPitch, timeFrame)}
-                      variant={"outline"}
-                      className={cn(
-                        "w-40 h-10",
-                        pitchBookedIds.includes(subPitch.subpitch_id)
-                          ? "bg-emerald-400"
-                          : "bg-white"
-                      )}
-                    ></Button>
-                  ))}
-                  {subPitches?.map((subPitch, index: number) => (
-                    <Button
-                      key={index}
-                      onClick={() => console.log(subPitch, timeFrame)}
-                      variant={"outline"}
-                      className={cn(
-                        "w-40 h-10",
-                        pitchBookedIds.includes(subPitch.subpitch_id)
-                          ? "bg-emerald-400"
-                          : "bg-white"
-                      )}
-                    ></Button>
-                  ))}
-                  {subPitches?.map((subPitch, index: number) => (
-                    <Button
-                      key={index}
-                      onClick={() => console.log(subPitch, timeFrame)}
-                      variant={"outline"}
-                      className={cn(
-                        "w-40 h-10",
-                        pitchBookedIds.includes(subPitch.subpitch_id)
-                          ? "bg-emerald-400"
-                          : "bg-white"
-                      )}
-                    ></Button>
-                  ))}
-                  {subPitches?.map((subPitch, index: number) => (
-                    <Button
-                      key={index}
-                      onClick={() => console.log(subPitch, timeFrame)}
-                      variant={"outline"}
-                      className={cn(
-                        "w-40 h-10",
-                        pitchBookedIds.includes(subPitch.subpitch_id)
-                          ? "bg-emerald-400"
-                          : "bg-white"
-                      )}
-                    ></Button>
-                  ))}
                   {subPitches?.map((subPitch, index: number) => (
                     <Button
                       key={index}
