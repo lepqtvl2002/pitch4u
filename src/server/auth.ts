@@ -15,8 +15,8 @@ import { $fetch } from "@/lib/axios";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
-type UserRole = {
-  name: "admin" | "user" | "master" | "staff";
+export type UserRole = {
+  name: "admin" | "user" | "master" | "staff" | "super_admin";
 };
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -34,7 +34,6 @@ declare module "next-auth" {
     access: IToken;
     refresh: IToken;
     role: UserRole;
-    userRole: "ADMIN" | "USER" | "STAFF" | "MASTER";
   }
 }
 
@@ -72,7 +71,8 @@ export const authOptions: NextAuthOptions = {
         if (redirectUrl) {
           return redirectUrl;
         }
-      } else if (new URL(url).origin === baseUrl && !url.includes("/login")) return url;
+      } else if (new URL(url).origin === baseUrl && !url.includes("/login"))
+        return url;
       return baseUrl;
     },
     async session({ session, token }) {
@@ -91,12 +91,7 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.userRole =
-          (user?.role?.name.toUpperCase() as
-            | "ADMIN"
-            | "USER"
-            | "STAFF"
-            | "MASTER") || undefined;
+        token.userRole = user?.role || undefined;
         token.accessToken = user?.access;
         token.refreshToken = user?.refresh;
       }

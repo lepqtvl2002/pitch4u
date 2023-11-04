@@ -4,20 +4,21 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { registrationStatusToString } from "@/lib/convert";
 import { formatDateTimeToddMMyyyyHHmm } from "@/lib/format-datetime";
+import { cn } from "@/lib/utils";
 import { RegistrationUseMutation } from "@/server/actions/registration-actions";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 function RegistrationDetail() {
-  const params = useParams();
+  const { id } = useParams();
   const searchParams = useSearchParams();
-  console.log(params, searchParams);
+  const status = searchParams.get("status");
   const { mutateAsync } = RegistrationUseMutation.approve();
   const [isLoading, setIsLoading] = useState(false);
   async function handleApprove() {
     try {
       setIsLoading(true);
-      const res = await mutateAsync({ registration_id: params.id as string });
+      const res = await mutateAsync({ registration_id: id as string });
       setIsLoading(false);
       if (res.status === 200) {
         toast({
@@ -60,9 +61,18 @@ function RegistrationDetail() {
         <span className="text-gray-500 col-span-2">
           {searchParams.get("address")}
         </span>
-        <Label className="col-span-1">Status</Label>
-        <span className="text-gray-500 col-span-2">
-          {registrationStatusToString(searchParams.get("status") as string)}
+        <Label className="col-span-1">Trạng thái</Label>
+        <span
+          className={cn(
+            "col-span-2 text-white rounded-full w-fit px-4",
+            status === "pending"
+              ? "bg-yellow-400"
+              : status === "rejected"
+              ? "bg-red-500"
+              : "bg-emerald-500"
+          )}
+        >
+          {registrationStatusToString(status as string)}
         </span>
         <Label className="col-span-1">Ngày đăng ký</Label>
         <span className="text-gray-500 col-span-2">
