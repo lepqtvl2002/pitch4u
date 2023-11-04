@@ -30,6 +30,7 @@ function RegistrationTable() {
     q: debouncedSearch,
     limit : pageSize,
     page : pageIndex + 1,
+    status : statuses.length === 1 ? statuses[0] : undefined,
     statuses,
   });
   console.log(data);

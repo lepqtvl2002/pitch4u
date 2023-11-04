@@ -38,21 +38,14 @@ export const columns: ColumnDef<IRegistration>[] = [
     },
   },
   {
-    header: "UserID",
-    cell: (ctx) => {
-      const userId = ctx.row.original.user_id;
-      return <div className={"text-bold"}>{userId}</div>;
-    },
-  },
-  {
-    header: "fullname",
+    header: "Tên người đăng ký",
     cell: (ctx) => {
       const fullname = ctx.row.original.fullname;
       return <div className={"text-bold"}>{fullname}</div>;
     },
   },
   {
-    header: "address",
+    header: "Địa chỉ người đăng ký",
     cell: (ctx) => {
       const address = ctx.row.original.address;
       return <div className={"text-bold"}>{address}</div>;
@@ -65,7 +58,18 @@ export const columns: ColumnDef<IRegistration>[] = [
     cell: (ctx) => {
       const status = ctx.row.original.status;
       return (
-        <p className={cn("capitalize")}>{registrationStatusToString(status)}</p>
+        <p
+          className={cn(
+            "capitalize text-white w-fit px-3 font-semibold rounded-full",
+            status === "pending"
+              ? "bg-yellow-400"
+              : status === "rejected"
+              ? "bg-red-500"
+              : "bg-emerald-500"
+          )}
+        >
+          {registrationStatusToString(status)}
+        </p>
       );
     },
   },
@@ -81,10 +85,7 @@ export const columns: ColumnDef<IRegistration>[] = [
       const createdAt = row.original.createdAt;
       const url = `/admin/registration/${id}?fullname=${fullname}&phone=${phone}&email=${email}&address=${address}&status=${status}&createdAt=${createdAt}`;
       return (
-        <ActionsDropdownMenu
-          id={row.original.registration_id}
-          link={url}
-        />
+        <ActionsDropdownMenu id={row.original.registration_id} link={url} />
       );
     },
   },

@@ -26,6 +26,7 @@ function ActionsDropdownMenu({
         toast({
           title: "Thành công",
           description: "Đã chấp nhận hồ sơ đăng ký",
+          variant: "success",
         });
       } else {
         toast({

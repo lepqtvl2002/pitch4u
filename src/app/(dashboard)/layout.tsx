@@ -22,7 +22,7 @@ export default async function DashboardLayout({
         <DashboardSidebar
           user={session.user}
           items={
-            session.user?.userRole === "MASTER"
+            session.user?.role.name === "master"
               ? dashboardConfigOperator.sidebarNav
               : dashboardConfig.sidebarNav
           }

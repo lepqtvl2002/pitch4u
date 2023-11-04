@@ -27,7 +27,6 @@ export const metadata = {
         title: siteConfig.name,
         description: siteConfig.description,
         siteName: siteConfig.name,
-        images: './pitch4u-logo.png'
     },
     icons: {
         icon: "/favicon.ico",
