@@ -16,7 +16,7 @@ import { $fetch } from "@/lib/axios";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 export type UserRole = {
-  name: "admin" | "user" | "master" | "staff" | "super_admin";
+  name: "admin" | "user" | "staff" | "super_admin";
 };
 declare module "next-auth" {
   interface Session extends DefaultSession {

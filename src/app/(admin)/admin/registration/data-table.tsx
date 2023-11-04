@@ -32,6 +32,8 @@ function RegistrationTable() {
     page : pageIndex + 1,
     status : statuses.length === 1 ? statuses[0] : undefined,
     statuses,
+    sort: sort.direction,
+    sort_by: sort.columnName,
   });
   console.log(data);
 

@@ -1,10 +1,10 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
-import {IUser} from "@/types/user";
-import {cva} from "class-variance-authority";
- 
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { IUser } from "@/types/user";
+import { cva } from "class-variance-authority";
+
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function absoluteUrl(path: string) {
@@ -31,43 +31,43 @@ export function getUserState(user: IUser): UserState {
 export type UserState = "unVerify" | "online" | "offline" | "banned";
 
 export const transactionVariant = cva(
-    "text-xs font-medium rounded-full px-2 py-1 text-center cursor-default min-w-[5rem]",
-    {
-      variants: {
-        variant: {
-          DEPOSIT:
-              "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
-          WITHDRAW:
-              "bg-red-100 text-red-600 dark:text-red-400 dark:bg-red-600/50",
-          TRANSFER:
-              "bg-blue-100 text-blue-600 dark:text-blue-400 dark:bg-blue-600/50",
-          RECEIVE:
-              "bg-indigo-100 text-indigo-600 dark:text-indigo-400 dark:bg-indigo-600/50",
-          FEE: "bg-gray-100 text-gray-600 dark:text-gray-400 dark:bg-gray-600/50",
-          default:
-              "bg-yellow-100 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
-        },
+  "text-xs font-medium rounded-full px-2 py-1 text-center cursor-default min-w-[5rem]",
+  {
+    variants: {
+      variant: {
+        DEPOSIT:
+          "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        WITHDRAW:
+          "bg-red-100 text-red-600 dark:text-red-400 dark:bg-red-600/50",
+        TRANSFER:
+          "bg-blue-100 text-blue-600 dark:text-blue-400 dark:bg-blue-600/50",
+        RECEIVE:
+          "bg-indigo-100 text-indigo-600 dark:text-indigo-400 dark:bg-indigo-600/50",
+        FEE: "bg-gray-100 text-gray-600 dark:text-gray-400 dark:bg-gray-600/50",
+        default:
+          "bg-yellow-100 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
       },
-      defaultVariants: {
-        variant: "default",
-      },
-    }
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
 );
 
 export const userStateVariant = cva(
-    "text-xs font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
-    {
-      variants: {
-        variant: {
-          unVerify:
-              "bg-yellow-100 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
-          online:
-              "bg-green-100 text-green-600 dark:text-green-400 dark:bg-green-600/50",
-          offline: "bg-muted text-muted-foreground",
-          banned: "bg-red-100 text-red-600 dark:text-red-400 dark:bg-red-600/50",
-        },
+  "text-xs font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
+  {
+    variants: {
+      variant: {
+        unVerify:
+          "bg-yellow-100 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
+        online:
+          "bg-green-100 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        offline: "bg-muted text-muted-foreground",
+        banned: "bg-red-100 text-red-600 dark:text-red-400 dark:bg-red-600/50",
       },
-    }
+    },
+  }
 );
 
 type BeautifyUsernameProps = {
@@ -83,7 +83,7 @@ enum TransactionType {
   WITHDRAW = "WITHDRAW",
   TRANSFER = "TRANSFER",
   RECEIVE = "RECEIVE",
-  FEE = "FEE"
+  FEE = "FEE",
 }
 export const transactionTypeToString = (type: TransactionType) => {
   switch (type) {
@@ -175,22 +175,22 @@ export const methodToType = (method: string) => {
 };
 
 export const voucherVariant = cva(
-    "text-xs font-medium rounded-full px-2 py-1 text-center cursor-default",
-    {
-      variants: {
-        variant: {
-          REDUCE_AMOUNT:
-              "bg-green-100 text-green-600 dark:text-green-400 dark:bg-green-600/50",
-          REDUCE_PERCENT:
-              "bg-red-100 text-red-600 dark:text-red-400 dark:bg-red-600/50",
-          default:
-              "bg-yellow-100 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
-        },
+  "text-xs font-medium rounded-full px-2 py-1 text-center cursor-default",
+  {
+    variants: {
+      variant: {
+        REDUCE_AMOUNT:
+          "bg-green-100 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        REDUCE_PERCENT:
+          "bg-red-100 text-red-600 dark:text-red-400 dark:bg-red-600/50",
+        default:
+          "bg-yellow-100 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
       },
-      defaultVariants: {
-        variant: "default",
-      },
-    }
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
 );
 
 // export const userStateVariant = cva(
@@ -212,7 +212,7 @@ export const voucherVariant = cva(
 
 enum VoucherType {
   REDUCE_AMOUNT = "REDUCE_AMOUNT",
-  REDUCE_PERCENT = "REDUCE_PERCENT"
+  REDUCE_PERCENT = "REDUCE_PERCENT",
 }
 
 export const voucherTypeToString = (type: VoucherType) => {
@@ -269,49 +269,58 @@ export const stringToVoucherStatus = (status: string) => {
 
 export const roleSlugToString = (role: string) => {
   switch (role) {
-    case "ADMIN":
+    case "super_admin":
       return "Quản trị viên";
-    case "USER":
-      return "Khách hàng";
-    case "PARTNER":
+    case "user":
+      return "Người dùng";
+    case "staff":
       return "Nhân viên";
-    case "DEALER":
-      return "Đại lý";
+    case "admin":
+      return "Chủ sân";
     default:
-      return "Khách hàng";
+      return "Người dùng";
   }
 };
 
 export const stringToRoleSlug = (type: string) => {
   switch (type) {
     case "Quản trị viên":
-      return "ADMIN";
-    case "ADMIN":
-      return "ADMIN";
-    case "Khách hàng":
-      return "USER";
-    case "USER":
-      return "USER";
+      return "super_admin";
+    case "super_admin":
+      return "super_admin";
+    case "Người dùng":
+      return "user";
+    case "user":
+      return "user";
     case "Nhân viên":
-      return "PARTNER";
-    case "PARTNER":
-      return "PARTNER";
-    case "Đại lý":
-      return "DEALER";
-    case "DEALER":
-      return "DEALER";
+      return "staff";
+    case "staff":
+      return "staff";
+    case "Chủ sân":
+      return "admin";
+    case "admin":
+      return "admin";
     default:
-      return "USER";
+      return "user";
   }
 };
 
 enum ENUM_ROLE_SLUG {
-  ADMIN = "ADMIN",
-  USER = "USER",
-  MASTER = "MASTER"
+  SUPER_ADMIN = "super_admin",
+  ADMIN = "admin",
+  STAFF = "staff",
+  USER = "user",
 }
 export const isAppManager = (user: IUser) => {
+  return user.role === ENUM_ROLE_SLUG.SUPER_ADMIN;
+};
+
+export const isPitchManager = (user: IUser) => {
   return user.role === ENUM_ROLE_SLUG.ADMIN;
+};
+
+export const isPitchStaff = (user: IUser) => {
+  return user.role === ENUM_ROLE_SLUG.STAFF;
 };
 
 export const isAppUser = (user: IUser) => {

@@ -20,9 +20,9 @@ export default async function DashboardLayout({
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="relative grid flex-1 md:grid-cols-[auto_1fr]">
         <DashboardSidebar
-          user={session.user}
+          user={session?.user}
           items={
-            session.user?.role.name === "master"
+            session.user?.role?.name === "admin"
               ? dashboardConfigOperator.sidebarNav
               : dashboardConfig.sidebarNav
           }

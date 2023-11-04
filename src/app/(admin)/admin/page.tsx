@@ -48,7 +48,7 @@ export default function DashboardPage() {
             <Tabs defaultValue="overview" className="space-y-4">
                 <div className="flex items-center justify-between space-y-2">
                     <TabsList>
-                        {TabItems.map(tab => <TabsTrigger key={tab.value} value={tab.value}>{tab.name}</TabsTrigger>)}
+                        {TabItems.map(tab => <TabsTrigger key={tab.value} value={tab.value}>{tab?.name}</TabsTrigger>)}
                     </TabsList>
                     <div className="flex items-center space-x-2">
                         <CalendarDateRangePicker/>

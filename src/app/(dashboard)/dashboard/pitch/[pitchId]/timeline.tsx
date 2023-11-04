@@ -13,6 +13,14 @@ import { PitchUseQuery } from "@/server/queries/pitch-query";
 import { ISubPitch } from "@/types/subPitch";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { PitchUseMutation } from "@/server/actions/pitch-actions";
+import { toast } from "@/components/ui/use-toast";
+import { format } from "date-fns";
 
 type TimeFramesProps = {
   frame: number[];
@@ -28,6 +36,7 @@ function PitchTimeline() {
   const { data, error, isLoading } = PitchUseQuery.getBookingStatus({
     pitch_id: pitchId,
   });
+  const { mutateAsync } = PitchUseMutation.bookingPitch();
 
   useEffect(() => {
     const day = date.getDate();
@@ -52,9 +61,39 @@ function PitchTimeline() {
     }
   }, [timeFrames]);
 
+  async function bookingPitch(data: {
+    subpitch_id: string | number;
+    start_time: string;
+    end_time: string;
+    payment_type: string;
+    voucher_id?: number | string;
+  }) {
+    try {
+      const result = await mutateAsync(data);
+      console.log(result);
+      toast({
+        title: "Đã đặt sân thành công",
+        description: "Bạn đã đặt sân thành công.",
+        variant: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "Đã có lỗi xảy ra",
+        description: "Không thể thực hiên hành động, vui lòng thử lại.",
+        variant: "destructive",
+      });
+    }
+  }
+
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error as string}</div>;
-  console.log(timeFrames);
+  if (error)
+    return (
+      <span className="text-red-500">
+        {
+          "Không thể tải được Timeline đặt sân, vui lòng kiểm tra lại phần config phía trên!"
+        }
+      </span>
+    );
   return (
     <div className="h-screen overflow-y-auto">
       <Card className="max-h-screen relative">
@@ -93,19 +132,50 @@ function PitchTimeline() {
                   <span className="absolute left-4">
                     {timeFrame?.frame[0]}:00
                   </span>
-                  {subPitches?.map((subPitch, index: number) => (
-                    <Button
-                      key={index}
-                      onClick={() => console.log(subPitch, timeFrame)}
-                      variant={"outline"}
-                      className={cn(
-                        "w-40 h-10",
-                        pitchBookedIds.includes(subPitch.subpitch_id)
-                          ? "bg-emerald-400"
-                          : "bg-white"
-                      )}
-                    ></Button>
-                  ))}
+                  {subPitches?.map((subPitch, index: number) => {
+                    const isOrdered = pitchBookedIds.includes(
+                      subPitch.subpitch_id
+                    );
+                    return (
+                      <Popover key={index}>
+                        <PopoverTrigger>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-40 h-10",
+                              isOrdered ? "bg-emerald-400" : "bg-white"
+                            )}
+                          ></Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          {isOrdered ? (
+                            <Button className="bg-red-500 hover:bg-red-200 w-full">
+                              Hủy đặt sân
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={async () => {
+                                await bookingPitch({
+                                  subpitch_id: subPitch.subpitch_id,
+                                  payment_type: "pay_later",
+                                  voucher_id: 1,
+                                  start_time: `${format(date, "yyyy-MM-dd")} ${
+                                    timeFrame.frame[0]
+                                  }:00:00`,
+                                  end_time: `${format(date, "yyyy-MM-dd")} ${
+                                    timeFrame.frame[1]
+                                  }:00:00`,
+                                });
+                              }}
+                              className="bg-emerald-500 hover:bg-emerald-200 w-full"
+                            >
+                              Đặt sân
+                            </Button>
+                          )}
+                        </PopoverContent>
+                      </Popover>
+                    );
+                  })}
                 </div>
               );
             })}

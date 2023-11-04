@@ -105,7 +105,7 @@ function DashboardSidebar({ user, items }: Props) {
               }
             >
               <UserNav />
-              <span>{user.name || user.email}</span>
+              <span>{user?.name || user?.email}</span>
             </div>
           </motion.div>
         )}
