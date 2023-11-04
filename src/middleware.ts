@@ -8,13 +8,10 @@ export default withAuth(
   },
   {
     callbacks: {
-            authorized: ({req, token}) => {
-        // `/admin` requires admin role
+      authorized: ({ req, token }) => {
+        // `/admin` requires super admin role
         if (req.nextUrl.pathname.startsWith("/admin")) {
-          return (
-            token?.userRole?.name === "admin" ||
-            token?.userRole?.name === "super_admin"
-          );
+          return token?.userRole?.name === "super_admin";
         }
         if (req.nextUrl.pathname.startsWith("/dashboard")) {
           // return token?.userRole === "MASTER" || token?.userRole === "STAFF"

@@ -16,4 +16,17 @@ export class PitchUseMutation {
       },
     });
   };
+  static bookingPitch = () => {
+    return useMutation({
+      mutationFn: (data: Record<string, any>) =>
+        $fetch(`/v1/booking`, {
+          method: "POST",
+          data,
+        }).then((res) => res.data),
+      onSuccess: () => {},
+      onError: (err) => {
+        toast({ title: "loi", description: "loi gi ko biet" });
+      },
+    });
+  };
 }

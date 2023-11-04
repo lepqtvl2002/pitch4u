@@ -41,7 +41,7 @@ export const columns: ColumnDef<IPitch>[] = [
     {
         header: "Tên sân",
         cell: (ctx) => {
-            const name = ctx.row.original.name;
+            const name = ctx.row.original?.name;
             return <div className={"text-bold"}>{name}</div>
         }
     },

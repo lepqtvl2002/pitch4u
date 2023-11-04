@@ -14,8 +14,8 @@ export const metadata = {
     metadataBase: {},
     authors: siteConfig.authors,
     title: {
-        default: siteConfig.name,
-        template: `%s | ${siteConfig.name}`,
+        default: siteConfig?.name,
+        template: `%s | ${siteConfig?.name}`,
     },
     description: siteConfig.description,
     keywords: ["pitch4u", "pitch", "football", "soccer", "booking"],
@@ -24,9 +24,9 @@ export const metadata = {
         type: "website",
         locale: "vi_VN",
         url: siteConfig.url,
-        title: siteConfig.name,
+        title: siteConfig?.name,
         description: siteConfig.description,
-        siteName: siteConfig.name,
+        siteName: siteConfig?.name,
     },
     icons: {
         icon: "/favicon.ico",
