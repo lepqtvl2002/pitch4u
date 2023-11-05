@@ -47,9 +47,7 @@ export default function Home() {
           id="find-pitch"
           className="opacity-0 transition duration-1000 w-full p-2 md:pl-10 lg:pl-20 flex-col justify-between  py-10 md:py-20 z-10 bg-cyan-200 bg-opacity-50 rounded"
         >
-          <h2 className={"pb-6 md:pb-10 text-3xl"}>
-            Nhanh và dễ dàng
-          </h2>
+          <h2 className={"pb-6 md:pb-10 text-3xl"}>Nhanh và dễ dàng</h2>
           <h4 className="text-bold pb-4 md:pb-8 text-sm md:text-xl">
             Chúng tôi tìm sân đẹp, chất lượng theo yêu cầu và đặt sân nhanh
             chóng chỉ trong vài bước
@@ -61,9 +59,7 @@ export default function Home() {
           id={"community"}
           className="opacity-0 transition duration-1000 flex w-full flex-col items-center justify-between md:space-y-10 py-10 md:py-20"
         >
-          <h2 className={"pb-10 text-center text-3xl"}>
-            Giao lưu gắn kết
-          </h2>
+          <h2 className={"pb-10 text-center text-3xl"}>Giao lưu gắn kết</h2>
           <div className="w-full px-4 md:px-10 lg:px-20 grid grid-cols-1 md:grid-cols-3 md:gap-4 lg:gap-10 xl:gap-32 rounded-none">
             <div className="flex flex-col items-center justify-end space-y-8 pb-6 mb-4 h-80 bg-white p-4 shadow rounded-tr-[100px] rounded-bl-[100px]">
               <Image
@@ -164,7 +160,7 @@ export default function Home() {
           </div>
           <div className="flex w-full md:pr-10 flex-col items-start space-y-2 md:space-y-8">
             <h2 className="pb-2 text-3xl">Hỗ trợ tận tình</h2>
-            <p >
+            <p>
               Đội ngữ hỗ trợ tận tình, sẵn sàng giải đáp mọi thắc mắc của bạn.
             </p>
             <p className="pb-10">Liên hệ để có nhiều thông tin hơn</p>
