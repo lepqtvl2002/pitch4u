@@ -6,7 +6,7 @@ import { columns, registrationStatus } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { RegistrationStatus } from "@/enums/registrationStatuses";
 import { stringToRegistrationStatus } from "@/lib/convert";
-import { RegistrationUseQuery } from "@/server/queries/registration-query";
+import { RegistrationUseQuery } from "@/server/queries/registration-queries";
 
 function RegistrationTable() {
   const [statuses, setStatuses] = React.useState<RegistrationStatus[]>([]);
