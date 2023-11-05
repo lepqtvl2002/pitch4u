@@ -29,4 +29,18 @@ export class PitchUseMutation {
       },
     });
   };
+
+  static addSubPitch = () => {
+    return useMutation({
+      mutationFn: (data: Record<string, any>) =>
+        $fetch(`/v1/pitches/subpitches`, {
+          method: "POST",
+          data,
+        }).then((res) => res.data),
+      onSuccess: () => {},
+      onError: (err) => {
+        toast({ title: "loi", description: "loi gi ko biet" });
+      },
+    });
+  };
 }
