@@ -86,7 +86,7 @@ export function SubPitchForm({ pitch_id, subPitchProfile }: FormProps) {
               <FormLabel>Tên sân</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Tên của bạn"
+                  placeholder="Tên sân"
                   defaultValue={field.value}
                   {...field}
                 />
