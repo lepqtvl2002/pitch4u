@@ -26,40 +26,31 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import PitchTypes from "@/enums/pitchTypes";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
+import { Textarea } from "../ui/textarea";
 
-const profileFormSchema = z.object({
+const contactFormSchema = z.object({
   name: z.string().min(2, {
     message: "Tên phải chứa tối thiểu 3 ký tự.",
   }),
-  price: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
-    message: "Vui lòng nhập số.",
-  }),
-  type: z.nativeEnum(PitchTypes),
+  phone: z.string(),
+  email: z.string().email(),
+  address: z.string(),
+  content: z.string(),
 });
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+type ProfileFormValues = z.infer<typeof contactFormSchema>;
 
-type FormProps = {
-  pitch_id: string | number;
-  subPitchProfile?: any;
-};
-
-export function SubPitchForm({ pitch_id, subPitchProfile }: FormProps) {
-  console.log(subPitchProfile);
+export function ContactForm() {
   const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+    resolver: zodResolver(contactFormSchema),
     // mode: "onChange",
   });
   const { mutateAsync } = PitchUseMutation.addSubPitch();
 
   async function onSubmit(data: ProfileFormValues) {
     try {
-      const result = await mutateAsync({
-        ...data,
-        pitch_id,
-        price: Number(data.price),
-      });
-      if (result) {
+      console.log(data);
+      if (true) {
         toast({
           title: "Tạo thành công",
           description: `Đã thêm thành công sân ${data.name}.`,
@@ -77,81 +68,93 @@ export function SubPitchForm({ pitch_id, subPitchProfile }: FormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tên sân</FormLabel>
+              <FormLabel>Họ và tên</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Tên sân"
+                  placeholder="Tên của bạn"
                   defaultValue={field.value}
                   {...field}
                 />
               </FormControl>
-              <FormDescription>Đây là tên sân con của bạn.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="type"
+          name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Loại sân</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Loại sân sử dụng" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value={PitchTypes.Pitch5}>
-                    Sân dành cho 5 người
-                  </SelectItem>
-                  <SelectItem value={PitchTypes.Pitch7}>
-                    Sân dành cho 7 người
-                  </SelectItem>
-                  <SelectItem value={PitchTypes.Pitch9}>
-                    Sân dành cho 9 người
-                  </SelectItem>
-                  <SelectItem value={PitchTypes.Pitch11}>
-                    Sân dành cho 11 người
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                Nếu bạn muốn đa dạng việc sử dụng, hãy sử dụng dịch vụ nâng cao.
-              </FormDescription>
+              <FormLabel>Số điện thoại</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Số điện thoại của bạn"
+                  defaultValue={field.value}
+                  {...field}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="price"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Giá sân</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
-                  type="number"
-                  placeholder="Nhập giá sân"
+                  placeholder="Email của bạn"
                   defaultValue={field.value}
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                Hãy nhập giá sân trong một giờ sử dụng.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Tạo mới sân</Button>
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Địa chỉ</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Điền địa chỉ của bạn"
+                  defaultValue={field.value}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nội dung liên hệ</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Nội dung"
+                  defaultValue={field.value}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Gửi liên hệ</Button>
       </form>
     </Form>
   );
