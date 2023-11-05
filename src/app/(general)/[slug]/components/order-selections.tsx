@@ -19,6 +19,7 @@ import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { toast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
+import { pitchTypeToString } from "@/lib/convert";
 
 export default function OrderSelections({ pitch }: { pitch: any }) {
   const { status } = useSession();
@@ -157,7 +158,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
                 setType(typePitch);
               }}
             >
-              {typePitch}
+              {pitchTypeToString(typePitch)}
             </Button>
           ))}
         </div>
@@ -247,9 +248,10 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
             Đặt sân ngay
           </Button>
         ) : (
-          <a className={
-            "w-1/2 md:w-auto rounded-none md:rounded-md "
-          } href="tel:+4733378901">
+          <a
+            className={"w-1/2 md:w-auto rounded-none md:rounded-md "}
+            href="tel:+4733378901"
+          >
             <Button
               className={
                 "w-full md:w-auto rounded-none md:rounded-md bg-emerald-500 hover:bg-emerald-300"
