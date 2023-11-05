@@ -114,7 +114,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
       <div className={"flex space-x-2 items-center"}>
         <Link href={"#voting"} className={"flex space-x-2 items-center"}>
           <Label className={""}>5/5</Label>
-          <Stars rating={4.2} className={"text-yellow-400 text-xl"} />
+          <Stars rating={pitch?.rate || 5} />
         </Link>
         <Label>|</Label>
         <Link href={"#comment"}>2 Đánh Giá</Link>

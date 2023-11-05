@@ -5,8 +5,17 @@ import useDebounce from "@/hooks/use-debounce";
 import { IPitch } from "@/types/pitch";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import Link from "next/link";
+import { CircleDollarSign, MapPin, Star } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { toast } from "../ui/use-toast";
+import Image from "next/image";
+import { Stars } from "../ui/vote-stars";
 
-const Conditions = ["Gần bạn", "Chất lượng", "Giá cả"];
+const Conditions = [
+  { title: "Gần bạn", value: "near" },
+  { title: "Chất lượng", value: "quality" },
+  { title: "Giá cả", value: "price" },
+];
 
 /**
  * SearchBar component.
@@ -19,7 +28,7 @@ const SearchBar: React.FC = () => {
   const [pitches, setPitches] = useState<IPitch[]>([]);
   const debouncedSearch = useDebounce(searchQuery);
   const { data, isFetching, isError } = PitchUseQuery.search({
-    q: debouncedSearch,
+    name: debouncedSearch,
     limit: 10,
     page: 1,
   });
@@ -28,24 +37,6 @@ const SearchBar: React.FC = () => {
   ) => {
     setSearchQuery(event.target.value);
   };
-
-  // const handleSearchFormSubmit = () => {
-  //     // Perform search operation
-  //     performSearch(searchQuery);
-  //     //     Code here
-  // };
-  //
-  // const performSearch = (query: string) => {
-  //     // Validate the search query
-  //     if (query.trim() === "") {
-  //         console.error("Invalid search query.");
-  //         return;
-  //     }
-  //
-  //     // Perform the search operation
-  //     console.log(`Performing search for query: ${query}`);
-  //     // ... Perform the actual search operation here ...
-  // };
 
   const handleConditionChange = (condition: string) => {
     if (conditions.includes(condition)) {
@@ -59,62 +50,91 @@ const SearchBar: React.FC = () => {
     if (data?.result?.data) setPitches(data?.result?.data);
   }, [data]);
 
+  if (isError) {
+    toast({
+      title: "Có lỗi xảy ra khi tải sân bóng",
+      description: "Vui lòng thử lại",
+      variant: "destructive",
+    });
+    return <></>;
+  }
+
   return (
     <div className="flex flex-col space-y-4 w-full md:w-2/3 xl:w-1/2">
       <div className="flex items-center space-x-2 md:space-x-4">
         <input
           type="text"
           className="rounded-full w-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Search..."
+          placeholder="Tìm kiếm"
           value={searchQuery}
           onChange={handleSearchQueryChange}
         />
-        <Button className="rounded-full" onClick={() => {}}>
-          Search
-        </Button>
       </div>
       <div className="mt-4 flex justify-around space-x-2 md:space-x-4 ">
         {Conditions.map((condition) => (
           <Button
-            key={condition}
-            className={`rounded-full w-1/3 ${
-              conditions.includes(condition)
-                ? "bg-blue-500 text-white"
+            key={condition.value}
+            className={cn(
+              "rounded-full w-1/3 hover:bg-emerald-300",
+              conditions.includes(condition.value)
+                ? "bg-emerald-500 text-white"
                 : "bg-gray-200 text-gray-500"
-            }`}
-            onClick={() => handleConditionChange(condition)}
+            )}
+            onClick={() => handleConditionChange(condition.value)}
           >
-            {condition}
+            <span className="mr-2">{condition.title}</span>
+            {condition.value === "near" ? (
+              <MapPin />
+            ) : condition.value === "quality" ? (
+              <Star />
+            ) : (
+              <CircleDollarSign />
+            )}
           </Button>
         ))}
       </div>
-      <div className="mt-4 list-inside list-disc max-h-screen overflow-y-auto">
-        {pitches.map((pitch : IPitch) => (
-          <Link
-            key={pitch?.pitch_id}
-            href={`/${pitch?.slug}`}
-            className="flex bg-white shadow rounded-lg p-4 mb-4"
-            style={{ listStyleType: "none" }}
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-xl font-bold text-gray-800">
-                  {pitch?.name}
-                </h3>
-                <p className="text-gray-600">{pitch?.address}</p>
-              </div>
-              <div>
-                <p className="text-gray-800 font-semibold">{pitch?.address}</p>
-                {/*<p className="text-gray-800 font-semibold">{pitch.price}</p>*/}
-                {/*<p className="text-gray-800 font-semibold">{pitch.quality}</p>*/}
-                {/*<p className="text-gray-800 font-semibold">{pitch.distance}</p>*/}
-              </div>
-            </div>
-          </Link>
-        ))}
+      <div className="mt-4 pr-2 list-inside list-disc max-h-screen overflow-y-auto">
+        {isFetching ? (
+          <div>Loading...</div>
+        ) : (
+          pitches.map((pitch: IPitch) => (
+            <PitchItem key={pitch?.pitch_id} pitch={pitch} />
+          ))
+        )}
       </div>
     </div>
   );
 };
 
 export default SearchBar;
+
+function PitchItem({ pitch }: { pitch: IPitch }) {
+  return (
+    <div
+      className="relative flex space-x-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4"
+      style={{ listStyleType: "none" }}
+    >
+      <Link
+        href={`/${pitch?.slug}`}
+        className="flex justify-between items-center"
+      >
+        <Image
+          src={pitch.logo || "/pitch4u-logo.png"}
+          width={100}
+          height={100}
+          alt={pitch.name}
+          className=""
+        />
+        <div className="flex flex-col ">
+          <h3 className="text-xl font-bold text-gray-800">{pitch?.name}</h3>
+          <p className="text-gray-600 text-sm">{pitch.address}</p>
+          <Stars className="flex text-sm" rating={Number(pitch.rate) || 5} />
+          <p className="font-semibold">100.000 - 200.000 vnd/h</p>
+        </div>
+      </Link>
+      <button className="absolute top-0 right-0 p-4">
+        <MapPin color="green" />
+      </button>
+    </div>
+  );
+}
