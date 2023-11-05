@@ -6,13 +6,11 @@ import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,6 +22,7 @@ import { toast } from "../ui/use-toast";
 import { Label } from "../ui/label";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const formSchema = z.object({
   fullname: z.string().min(2).max(50),
@@ -46,6 +45,7 @@ export function PitchRegisterForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
+  const { data: session } = useSession();
   const [loading, setLoading] = React.useState(false);
   const [step, setStep] = React.useState(1);
   const { mutateAsync } = PitchUseMutation.pitchRegister();
@@ -95,6 +95,12 @@ export function PitchRegisterForm({
         long: 108.1483191,
       });
 
+      toast({
+        title: "Đang gửi yêu cầu...",
+        description: "Vui lòng chờ trong giây lát",
+        variant: "default",
+      });
+
       setLoading(false);
 
       console.log(res);
@@ -105,6 +111,10 @@ export function PitchRegisterForm({
           variant: "destructive",
         });
       } else {
+        localStorage.setItem(
+          "REGISTER",
+          JSON.stringify({ user_id: session?.user?.id })
+        );
         router.push("/pitch/register-success");
       }
     } catch (error: any) {
@@ -286,7 +296,11 @@ export function PitchRegisterForm({
 
               <div className="grid gap-2">
                 <Button
-                  disabled={loading || form.getValues().email === "" || form.getValues().fullname === ""}
+                  disabled={
+                    loading ||
+                    form.getValues().email === "" ||
+                    form.getValues().fullname === ""
+                  }
                   type={step === 1 ? "button" : "submit"}
                   onClick={step === 1 ? goNextStep : undefined}
                 >
@@ -298,7 +312,11 @@ export function PitchRegisterForm({
                 {step === 2 && (
                   <Button
                     variant="outline"
-                    disabled={loading || form.getValues().address === "" || form.getValues().phone === ""}
+                    disabled={
+                      loading ||
+                      form.getValues().address === "" ||
+                      form.getValues().phone === ""
+                    }
                     type="button"
                     onClick={goNextStep}
                   >
