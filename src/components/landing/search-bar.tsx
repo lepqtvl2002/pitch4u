@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/use-debounce";
 import { IPitch } from "@/types/pitch";
-import { PitchUseQuery } from "@/server/queries/pitch-query";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import Link from "next/link";
 
 const Conditions = ["Gần bạn", "Chất lượng", "Giá cả"];

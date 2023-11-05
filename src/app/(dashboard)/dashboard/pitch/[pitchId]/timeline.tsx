@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { PitchUseQuery } from "@/server/queries/pitch-query";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { ISubPitch } from "@/types/subPitch";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";

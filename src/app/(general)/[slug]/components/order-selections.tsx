@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Stars } from "@/components/ui/vote-stars";
 import Link from "next/link";
 import { Heart, MessageCircle } from "lucide-react";
-import { PitchUseQuery } from "@/server/queries/pitch-query";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import {
   Select,
   SelectContent,

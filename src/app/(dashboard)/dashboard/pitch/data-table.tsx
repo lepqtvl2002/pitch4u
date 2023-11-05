@@ -6,7 +6,7 @@ import React, { useCallback } from "react";
 import { columns, voucherStatus, vouchersTypes } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import {PostUseQuery} from "@/server/queries/post-query";
-import { PitchUseQuery } from "@/server/queries/pitch-query";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
 
 type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";
 type VoucherStatuses = "RUNNING" | "EXPIRED";

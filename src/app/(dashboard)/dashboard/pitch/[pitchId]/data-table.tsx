@@ -4,7 +4,7 @@ import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
 import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
-import { PitchUseQuery } from "@/server/queries/pitch-query";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { FileEdit } from "lucide-react";

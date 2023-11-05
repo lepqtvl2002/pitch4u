@@ -19,7 +19,6 @@ import {
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "../ui/use-toast";
-import { Label } from "../ui/label";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -122,7 +121,7 @@ export function PitchRegisterForm({
       alert("Đăng ký thất bại, đã có lỗi xảy ra, vui lòng thử lại sau.");
     }
   }
-
+  console.log(step);
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
       <div className="flex flex-col space-y-2 text-center">
@@ -295,20 +294,33 @@ export function PitchRegisterForm({
               )}
 
               <div className="grid gap-2">
-                <Button
-                  disabled={
-                    loading ||
-                    form.getValues().email === "" ||
-                    form.getValues().fullname === ""
-                  }
-                  type={step === 1 ? "button" : "submit"}
-                  onClick={step === 1 ? goNextStep : undefined}
-                >
-                  {loading && (
-                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  {step === 1 ? "Tiếp tục" : "Đăng ký ngay"}
-                </Button>
+                {step === 1 ? (
+                  <Button
+                    disabled={
+                      loading ||
+                      form.getValues().email === "" ||
+                      form.getValues().fullname === ""
+                    }
+                    type="button"
+                    onClick={goNextStep}
+                  >
+                    Tiếp tục
+                  </Button>
+                ) : (
+                  <Button
+                    disabled={
+                      loading ||
+                      !form.getValues().address ||
+                      !form.getValues().phone
+                    }
+                    type="submit"
+                  >
+                    {loading && (
+                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Đăng ký ngay
+                  </Button>
+                )}
                 {step === 2 && (
                   <Button
                     variant="outline"
