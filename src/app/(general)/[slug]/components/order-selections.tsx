@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Stars } from "@/components/ui/vote-stars";
 import Link from "next/link";
-import { Heart, MessageCircle } from "lucide-react";
+import { Heart, MessageCircle, Phone } from "lucide-react";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import {
   Select,
@@ -15,8 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DatePickerBookingPitch } from "@/components/ui/date-picker";
+import { PitchUseMutation } from "@/server/actions/pitch-actions";
+import { toast } from "@/components/ui/use-toast";
+import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 
 export default function OrderSelections({ pitch }: { pitch: any }) {
+  const { status } = useSession();
   const [price, setPrices] = React.useState(0);
   const [type, setType] = React.useState(pitch.types[0]);
   const [date, setDate] = React.useState<Date>(new Date());
@@ -24,11 +29,38 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
   const [subPitchId, setSubPitchId] = React.useState("");
   const [timeFrames, setTimeFrames] = React.useState<any>([]);
   const [timeFrame, setTimeFrame] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { data, isFetching, isError } = PitchUseQuery.getBookingStatus({
     pitch_id: pitch.pitch_id,
   });
-  console.log(data?.result);
+  const { mutateAsync } = PitchUseMutation.bookingPitch();
+
+  async function bookingPitch(data: {
+    subpitch_id: string | number;
+    voucher_id?: string | number;
+    start_time: string;
+    end_time: string;
+    payment_type: string;
+  }) {
+    try {
+      setIsLoading(true);
+      const result = await mutateAsync(data);
+      setIsLoading(false);
+      console.log(result);
+      toast({
+        title: "Đã đặt sân thành công",
+        description: "Chúc mừng bạn, bạn đã đặt sân thành công.",
+        variant: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "Đã đặt sân thất bại",
+        description: "Đã có lỗi xảy ra, vui lòng thử lại.",
+        variant: "destructive",
+      });
+    }
+  }
 
   useEffect(() => {
     // Get price
@@ -48,9 +80,11 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
         const subPitchList = frame.free.filter((subPitch: any) => {
           return subPitch.type === type;
         });
+        if (subPitchList.at(0)) {
+          setPrices(subPitchList.at(0).price);
+          setSubPitchId(subPitchList.at(0).subpitch_id);
+        } else setPrices(0);
         setSubPitches(subPitchList);
-        if (subPitchList.at(0)) setPrices(subPitchList.at(0).price);
-        else setPrices(0);
         break;
       }
     }
@@ -67,9 +101,8 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
       }
   }, [data?.result, date]);
 
-
-  if (isFetching) return <div>Loading...</div>
-  if (isError) return <div>Error!!!</div>
+  if (isFetching) return <div>Loading...</div>;
+  if (isError) return <div>Error!!!</div>;
   return (
     <div className={"relative flex flex-col space-y-2"}>
       <Button variant={"ghost"} className={"absolute top-0 right-0"}>
@@ -114,7 +147,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
             </SelectContent>
           </Select>
         </div>
-        <div className={"flex space-x-2 items-center"}>
+        <div className={"space-x-2 space-y-2 items-center"}>
           <Label className={"text-gray-500 w-1/4"}>Loại Sân</Label>
           {pitch.types.map((typePitch: string) => (
             <Button
@@ -136,7 +169,13 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
             }}
           >
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder={"Chọn sân"} />
+              <SelectValue
+                placeholder={
+                  subPitchId
+                    ? `${subPitches.at(0).name} - ${subPitches.at(0).price}đ/h`
+                    : "Chọn sân"
+                }
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -186,17 +225,45 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
           <MessageCircle />
           <span className={"text-xs"}>Chat ngay</span>
         </Button>
-        <Button
-          className={
-            "w-1/2 md:w-auto rounded-none md:rounded-md bg-[#28cb8e] hover:bg-main-foreground"
-          }
-          disabled={!price}
-          onClick={() => {
-            console.log("Book:", pitch.pitch_id, subPitchId, date, timeFrame);
-          }}
-        >
-          Đặt sân ngay
-        </Button>
+        {status === "authenticated" ? (
+          <Button
+            className={
+              "w-1/2 md:w-auto rounded-none md:rounded-md  bg-emerald-500 hover:bg-emerald-300"
+            }
+            disabled={!price || isLoading}
+            onClick={async () => {
+              const time = timeFrame.split("-");
+              const data = {
+                subpitch_id: subPitchId,
+                payment_type: "pay_later",
+                start_time: `${format(date, "yyyy-MM-dd")} ${time[0]}:00`,
+                end_time: `${format(date, "yyyy-MM-dd")} ${time[1]}:00`,
+                voucher_id: 1,
+              };
+              console.log("Book:", data);
+              await bookingPitch(data);
+            }}
+          >
+            Đặt sân ngay
+          </Button>
+        ) : (
+          <a className={
+            "w-1/2 md:w-auto rounded-none md:rounded-md "
+          } href="tel:+4733378901">
+            <Button
+              className={
+                "w-full md:w-auto rounded-none md:rounded-md bg-emerald-500 hover:bg-emerald-300"
+              }
+            >
+              <Phone className="text-white mr-2" /> Gọi điện để đặt sân
+            </Button>
+          </a>
+        )}
+        {status === "unauthenticated" && (
+          <p className="absolute right-0 -top-4 md:-bottom-6 italic text-xs md:text-gray-400">
+            Đăng nhập để có thể đặt sân mà không cần phải gọi điện.
+          </p>
+        )}
       </div>
     </div>
   );

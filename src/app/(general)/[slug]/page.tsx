@@ -3,6 +3,7 @@ import Comment from "@/components/landing/comment";
 import { notFound } from "next/navigation";
 import { Stars } from "@/components/ui/vote-stars";
 import { $globalFetch } from "@/lib/axios";
+import { pitchTypesArray } from "@/enums/pitchTypes";
 
 const CommentList = [
   { id: 1, author: "Nguyen Van A", text: "This is one comment" },
@@ -20,7 +21,7 @@ const PitchDetail = async ({
   const res = await $globalFetch.get(`/v1/pitches/slugs/${slug}`);
   const pitch = {
     ...res.data.result,
-    types: ["PITCH5", "PITCH7", "PITCH11"],
+    types: pitchTypesArray,
     imageUrls: [
       "/pitch4u-photo01.webp",
       "/pitch4u-photo06.webp",
@@ -29,32 +30,7 @@ const PitchDetail = async ({
       "/pitch4u-photo07.webp",
       "/pitch4u-photo07.webp",
       "/pitch4u-photo07.webp",
-    ],
-    prices: {
-      "6:00 - 7:00": 200,
-      "7:00 - 8:00": 200,
-      "8:00 - 9:00": 200,
-      "9:00 - 10:00": 200,
-      "10:00 - 11:00": 200,
-    },
-    subPitches: [
-      {
-        id: 1,
-        name: "A1",
-      },
-      {
-        id: 2,
-        name: "A2",
-      },
-      {
-        id: 3,
-        name: "A3",
-      },
-      {
-        id: 4,
-        name: "A4",
-      },
-    ],
+    ]
   };
 
   if (res.status !== 200) return notFound();
