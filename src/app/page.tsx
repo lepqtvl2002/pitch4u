@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function Home() {
     return (
-        <main className="bg-main scroll-smooth">
+        <main className="bg-emerald-300 scroll-smooth">
             <div className="md:container px-2 flex min-h-screen flex-col items-center justify-between">
                 <Navbar />
                 <section id="general" className="opacity-0 flex flex-col lg:flex-row w-full justify-between  pb-20">

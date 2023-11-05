@@ -16,7 +16,7 @@ export default function AuthFormContainer({children}: {children: React.ReactNode
         Home
       </a>
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-        <div className="absolute inset-0 bg-main" />
+        <div className="absolute inset-0 bg-emerald-300" />
         <a
           href="/"
           className="relative z-20 flex items-center text-lg font-medium"          

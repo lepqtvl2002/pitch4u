@@ -14,13 +14,15 @@ export default withAuth(
           return token?.userRole?.name === "super_admin";
         }
         if (req.nextUrl.pathname.startsWith("/dashboard")) {
-          // return token?.userRole === "MASTER" || token?.userRole === "STAFF"
+          // return token?.userRole?.name === "admin" || token?.userRol?.name === "staff"
           return !!token;
         }
-        return false;
+        return !!token;
       },
     },
   }
 );
 
-export const config = { matcher: ["/dashboard/:path*", "/admin/:path*"] };
+export const config = {
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/pitch/register"],
+};
