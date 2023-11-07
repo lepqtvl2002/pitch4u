@@ -6,7 +6,7 @@ import ClientProvider from "@/providers/client-provider";
 import {siteConfig} from "@/config/site";
 import {cn} from "@/lib/utils";
 import AuthProviderHelper from "@/providers/auth-provider-helper";
-import PapeProgress from "@/components/progress-bar";
+import PageProgress from "@/components/progress-bar";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -46,7 +46,7 @@ export default function RootLayout({
             <AuthProvider>
                 <AuthProviderHelper>
                     {children}
-                    <PapeProgress />
+                    <PageProgress />
                     <Toaster/>
                 </AuthProviderHelper>
             </AuthProvider>

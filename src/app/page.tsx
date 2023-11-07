@@ -114,9 +114,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <Button className={"min-w-[100px] rounded-full"}>
-            Tham gia ngay
-          </Button>
+          <Link href="/community">
+            <Button className={"min-w-[100px] rounded-full"}>
+              Tham gia ngay
+            </Button>
+          </Link>
         </section>
 
         <section

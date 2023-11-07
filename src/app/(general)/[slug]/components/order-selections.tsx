@@ -173,7 +173,11 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
               <SelectValue
                 placeholder={
                   subPitchId
-                    ? `${subPitches.at(0).name} - ${subPitches.at(0).price}đ/h`
+                    ? subPitches.at(0)
+                      ? `${subPitches.at(0).name} - ${
+                          subPitches.at(0).price
+                        }đ/h`
+                      : "Không có sân"
                     : "Chọn sân"
                 }
               />

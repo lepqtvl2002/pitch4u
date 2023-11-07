@@ -22,11 +22,11 @@ export default function CommunityPage() {
               Hoạt động
             </Link>
           </aside>
-          <div className="flex-1 space-y-8 bg-white rounded p-6">
+          <div className="flex-1 bg-white rounded p-6">
             <h2 className="font-bold text-3xl mb-10">
               Giới thiệu về cộng đồng
             </h2>
-            <section id="target">
+            <section id="target" className=" pt-4 md:pt-10">
               <h3 className="text-xl font-semibold">Mục đích</h3>
               <p>
                 Cộng đồng bóng đá Đà Nẵng được thành lập với mục đích mang đến
@@ -35,7 +35,7 @@ export default function CommunityPage() {
                 thể giao lưu, học hỏi, và phát triển cùng nhau.
               </p>
             </section>
-            <section id="history">
+            <section id="history" className=" pt-4 md:pt-10">
               <h3 className="text-xl font-semibold">Lịch sử</h3>
               <p>
                 Cộng đồng bóng đá Đà Nẵng được thành lập vào năm 2023 bởi một
@@ -43,7 +43,7 @@ export default function CommunityPage() {
                 giải đấu và sự kiện, thu hút hàng nghìn người chơi tham gia.
               </p>
             </section>
-            <section id="member">
+            <section id="member" className=" pt-4 md:pt-10">
               <h3 className="text-xl font-semibold">Thành viên</h3>
               <p>
                 Cộng đồng của chúng tôi bao gồm các chủ sân, người chơi, và các
@@ -51,7 +51,7 @@ export default function CommunityPage() {
                 gia vào cộng đồng.
               </p>
             </section>
-            <section id="activity">
+            <section id="activity" className=" pt-4 md:pt-10">
               <h3 className="text-xl font-semibold">Hoạt động</h3>
               <p>
                 Cộng đồng của chúng tôi thường xuyên tổ chức các giải đấu, sự
@@ -68,7 +68,7 @@ export default function CommunityPage() {
               </p>
             </section>
 
-            <p>
+            <p className="mt-10">
               Hãy tham gia cộng đồng của chúng tôi ngay hôm nay để tận hưởng
               những trải nghiệm bóng đá tuyệt vời!
             </p>
