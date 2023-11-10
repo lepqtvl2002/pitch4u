@@ -326,3 +326,22 @@ export const isPitchStaff = (user: IUser) => {
 export const isAppUser = (user: IUser) => {
   return user.role === ENUM_ROLE_SLUG.USER;
 };
+
+export const comparePercent = (revenueA ?: number, revenueB ?: number) => {
+  if (!revenueA) return "-100";
+  if (!revenueB) return "+100";
+  if (revenueA === revenueB) {
+    return 0;
+  }
+  if (revenueA > revenueB) {
+    return `+${((revenueA / revenueB - 1) * 100).toFixed(2)}`;
+  }
+  if (revenueA < revenueB) {
+    return `${((revenueB / revenueA - 1) * 100).toFixed(2)}`;
+  }
+};
+
+export const formatMoney = (amount: number) => {
+  return amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
