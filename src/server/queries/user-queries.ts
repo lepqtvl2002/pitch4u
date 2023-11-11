@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { $fetch } from "@/lib/axios";
 import IPaginated from "@/types/paginated";
 
-
 export type User = {
   user_id: number;
   fullname: string;
@@ -34,7 +33,6 @@ export type PaginatedUserList = {
   } & IPaginated;
 };
 
-
 export class UserUseQuery {
   // Function to testing
   static search = (query: Record<string, any>) => {
@@ -56,7 +54,7 @@ export class UserUseQuery {
       queryFn: () =>
         $fetch(`/v1/users/profile`, {
           method: "GET",
-        }).then((res) => res.data as UserProfile),
+        }).then((res) => res.data as { result: UserProfile }),
       cacheTime: 100,
       keepPreviousData: true,
     });
