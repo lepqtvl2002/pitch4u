@@ -2,6 +2,8 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Facebook, Twitter } from "lucide-react";
+import { mainFooterConfig } from "@/config/site";
+import Link from "next/link";
 
 export default function Footer({
   className,
@@ -17,8 +19,13 @@ export default function Footer({
       )}
       {...props}
     >
-      <div className="w-full md:w-1/2">
+      <div className="w-full flex flex-col md:w-1/2 mb-10">
         <h2 className="text-3xl mb-4">Contact with us</h2>
+        {mainFooterConfig.map((ele) => (
+          <Link className="underline" key={ele.href} href={ele.href}>
+            {ele.title}
+          </Link>
+        ))}
       </div>
       <div className="w-full md:w-1/2 text-sm md:text-md">
         <div className="flex w-full pb-10 space-x-4">
