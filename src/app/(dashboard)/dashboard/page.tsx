@@ -14,7 +14,7 @@ import { CalendarDateRangePicker } from "@/components/dashboard/date-range-picke
 import { Overview } from "@/components/dashboard/overview";
 import { RecentSales } from "@/components/dashboard/recent-sales";
 import { StatisticUseQuery } from "@/server/queries/statistic-queries";
-import { comparePercent, formatMoney } from "@/lib/utils";
+import { compareAmount, comparePercent, formatMoney } from "@/lib/utils";
 import { RevenueOverview } from "@/components/dashboard/revenue-overview";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -81,7 +81,6 @@ export default function DashboardPage() {
   });
   console.log(data);
 
-  // if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error</div>;
   return (
     <div className="flex-1 space-y-4 px-4 py-2">
@@ -132,7 +131,7 @@ export default function DashboardPage() {
                     data?.result.thisMonthOverview.revenue,
                     data?.result.lastMonthOverview.revenue
                   )}
-                  % from last month
+                  % so với tháng trước đó
                 </p>
               </CardContent>
             </Card>
@@ -158,14 +157,14 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {data?.result.thisMonthOverview.orders}
+                  {data?.result.thisMonthOverview.orders || 0}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {comparePercent(
+                  {compareAmount(
                     data?.result.thisMonthOverview.orders,
                     data?.result.lastMonthOverview.orders
-                  )}
-                  % from last month
+                  )}{" "}
+                  so với tháng trước đó
                 </p>
               </CardContent>
             </Card>
@@ -190,14 +189,14 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {data?.result.thisMonthOverview.pitches}
+                  {data?.result.thisMonthOverview.pitches || 0}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {comparePercent(
+                  {compareAmount(
                     data?.result.thisMonthOverview.pitches,
                     data?.result.lastMonthOverview.pitches
-                  )}
-                  % from last month
+                  )}{" "}
+                  so với tháng trước đó
                 </p>
               </CardContent>
             </Card>

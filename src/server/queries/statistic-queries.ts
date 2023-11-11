@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { $fetch } from "@/lib/axios";
 import { Data as DataStatisticOwner } from "@/app/(dashboard)/dashboard/page";
+import {Data as DataStatisticSystem} from "@/app/(admin)/admin/page"
 
 export class StatisticUseQuery {
   static getPitchStats = (query?: Record<string, any>) => {
@@ -22,7 +23,7 @@ export class StatisticUseQuery {
         $fetch(`/v1/statistic/system`, {
           method: "GET",
           params: query,
-        }).then((res) => res.data),
+        }).then((res) => res.data as DataStatisticSystem),
       cacheTime: 100,
       keepPreviousData: true,
     });

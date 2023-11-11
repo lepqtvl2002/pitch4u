@@ -340,8 +340,23 @@ export const comparePercent = (revenueA ?: number, revenueB ?: number) => {
     return `${((revenueB / revenueA - 1) * 100).toFixed(2)}`;
   }
 };
+export const compareAmount = (revenueA ?: number, revenueB ?: number) => {
+  if (!revenueA) return "-100%";
+  if (!revenueB) return "+100%";
+  if (revenueA === revenueB) {
+    return "Giữ nguyên";
+  }
+  if (revenueA > revenueB) {
+    return `+${revenueA - revenueB}`;
+  }
+  if (revenueA < revenueB) {
+    return `-${revenueB - revenueA}`;
+  }
+};
 
 export const formatMoney = (amount: number) => {
   return amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
+
+
 
