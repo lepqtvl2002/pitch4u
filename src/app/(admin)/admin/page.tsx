@@ -1,5 +1,4 @@
 "use client";
-import { Metadata } from "next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,11 +20,6 @@ import { compareAmount, comparePercent, formatMoney } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RevenueOverview } from "@/components/dashboard/revenue-overview";
-
-export const metadata: Metadata = {
-  title: "Admin",
-  description: "Admin dashboard.",
-};
 
 const TabItems = [
   {

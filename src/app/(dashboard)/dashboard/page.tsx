@@ -1,5 +1,4 @@
 "use client";
-import { Metadata } from "next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,11 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Example dashboard app built using the components.",
-};
 
 type MonthOverview = {
   revenue: number;
