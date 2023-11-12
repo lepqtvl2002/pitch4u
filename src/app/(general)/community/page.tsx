@@ -1,3 +1,4 @@
+
 import Footer from "@/components/landing/footer";
 import Navbar from "@/components/landing/navbar";
 import Link from "next/link";
@@ -7,20 +8,30 @@ export default function CommunityPage() {
     <main className="bg-emerald-200">
       <div className="container">
         <Navbar />
-        <div className="flex">
+        <div className="flex text-justify">
           <aside className="hidden w-[240px] mr-4 md:flex flex-col space-y-2 p-4 rounded bg-white">
-            <Link className="underline" href="#target">
-              Mục đích
-            </Link>
-            <Link className="underline" href="#history">
-              Lịch sử
-            </Link>
-            <Link className="underline" href="#member">
-              Thành viên
-            </Link>
-            <Link className="underline" href="#activity">
-              Hoạt động
-            </Link>
+            <ul className="list-disc space-y-2 pl-6 pt-10">
+              <li>
+                <Link className="underline" href="#target">
+                  Mục đích
+                </Link>
+              </li>
+              <li>
+                <Link className="underline" href="#history">
+                  Lịch sử
+                </Link>
+              </li>
+              <li>
+                <Link className="underline" href="#member">
+                  Thành viên
+                </Link>
+              </li>
+              <li>
+                <Link className="underline" href="#activity">
+                  Hoạt động
+                </Link>
+              </li>
+            </ul>
           </aside>
           <div className="flex-1 bg-white rounded p-6">
             <h2 className="font-bold text-3xl mb-10">
@@ -28,7 +39,7 @@ export default function CommunityPage() {
             </h2>
             <section id="target" className=" pt-4 md:pt-10">
               <h3 className="text-xl font-semibold">Mục đích</h3>
-              <p>
+              <p className="indent-8">
                 Cộng đồng bóng đá Đà Nẵng được thành lập với mục đích mang đến
                 cho người chơi bóng đá ở Đà Nẵng một sân chơi lành mạnh và bổ
                 ích. Chúng tôi mong muốn tạo ra một cộng đồng nơi mọi người có
@@ -37,7 +48,7 @@ export default function CommunityPage() {
             </section>
             <section id="history" className=" pt-4 md:pt-10">
               <h3 className="text-xl font-semibold">Lịch sử</h3>
-              <p>
+              <p className="indent-8">
                 Cộng đồng bóng đá Đà Nẵng được thành lập vào năm 2023 bởi một
                 nhóm bạn trẻ yêu bóng đá. Chúng tôi đã tổ chức thành công nhiều
                 giải đấu và sự kiện, thu hút hàng nghìn người chơi tham gia.
@@ -45,7 +56,7 @@ export default function CommunityPage() {
             </section>
             <section id="member" className=" pt-4 md:pt-10">
               <h3 className="text-xl font-semibold">Thành viên</h3>
-              <p>
+              <p className="indent-8">
                 Cộng đồng của chúng tôi bao gồm các chủ sân, người chơi, và các
                 nhà tài trợ. Chúng tôi luôn chào đón những thành viên mới tham
                 gia vào cộng đồng.
@@ -53,13 +64,13 @@ export default function CommunityPage() {
             </section>
             <section id="activity" className=" pt-4 md:pt-10">
               <h3 className="text-xl font-semibold">Hoạt động</h3>
-              <p>
+              <p className="indent-8">
                 Cộng đồng của chúng tôi thường xuyên tổ chức các giải đấu, sự
                 kiện, và các hoạt động cộng đồng. Chúng tôi cũng cung cấp các
                 dịch vụ hỗ trợ cho người chơi, bao gồm các khóa đào tạo, các
                 chương trình thi đấu, và các dịch vụ liên quan đến bóng đá.
               </p>
-              <p>
+              <p className="indent-8">
                 Tham gia vào cộng đồng, bạn sẽ có cơ hội gặp gỡ giao lưu với
                 những người có cùng sở thích, đam mê; có thể tìm ra những người
                 bạn, những người đồng đội cùng tham gia những trận đấu lớn nhỏ;
