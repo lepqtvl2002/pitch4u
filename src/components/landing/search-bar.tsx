@@ -93,7 +93,7 @@ const SearchBar: React.FC = () => {
           </Button>
         ))}
       </div>
-      <div className="mt-4 pr-2 list-inside list-disc max-h-screen overflow-y-auto">
+      <div className="mt-4 list-inside list-disc max-h-screen overflow-y-auto no-scrollbar">
         {isFetching ? (
           <div>Loading...</div>
         ) : (
@@ -132,7 +132,7 @@ function PitchItem({ pitch }: { pitch: IPitch }) {
           <p className="font-semibold">100.000 - 200.000 vnd/h</p>
         </div>
       </Link>
-      <button className="absolute top-0 right-0 p-4">
+      <button className="hidden md:block absolute top-0 right-0 p-4">
         <MapPin color="green" />
       </button>
     </div>

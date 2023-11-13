@@ -326,3 +326,37 @@ export const isPitchStaff = (user: IUser) => {
 export const isAppUser = (user: IUser) => {
   return user.role === ENUM_ROLE_SLUG.USER;
 };
+
+export const comparePercent = (revenueA ?: number, revenueB ?: number) => {
+  if (!revenueA) return "-100";
+  if (!revenueB) return "+100";
+  if (revenueA === revenueB) {
+    return 0;
+  }
+  if (revenueA > revenueB) {
+    return `+${(((revenueA - revenueB) / revenueB) * 100).toFixed(2)}`;
+  }
+  if (revenueA < revenueB) {
+    return `-${(((revenueB - revenueA) / revenueB) * 100).toFixed(2)}`;
+  }
+};
+export const compareAmount = (revenueA ?: number, revenueB ?: number) => {
+  if (!revenueA) return "-100%";
+  if (!revenueB) return "+100%";
+  if (revenueA === revenueB) {
+    return "Giữ nguyên";
+  }
+  if (revenueA > revenueB) {
+    return `+${revenueA - revenueB}`;
+  }
+  if (revenueA < revenueB) {
+    return `-${revenueB - revenueA}`;
+  }
+};
+
+export const formatMoney = (amount: number) => {
+  return amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+
+

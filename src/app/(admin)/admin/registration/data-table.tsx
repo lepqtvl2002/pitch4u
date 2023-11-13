@@ -7,6 +7,7 @@ import useDebounce from "@/hooks/use-debounce";
 import { RegistrationStatus } from "@/enums/registrationStatuses";
 import { stringToRegistrationStatus } from "@/lib/convert";
 import { RegistrationUseQuery } from "@/server/queries/registration-queries";
+import { toast } from "@/components/ui/use-toast";
 
 function RegistrationTable() {
   const [statuses, setStatuses] = React.useState<RegistrationStatus[]>([]);
@@ -28,14 +29,13 @@ function RegistrationTable() {
 
   const { data, isError, isFetched } = RegistrationUseQuery.getMany({
     q: debouncedSearch,
-    limit : pageSize,
-    page : pageIndex + 1,
-    status : statuses.length === 1 ? statuses[0] : undefined,
+    limit: pageSize,
+    page: pageIndex + 1,
+    status: statuses.length === 1 ? statuses[0] : undefined,
     statuses,
     sort: sort.direction,
     sort_by: sort.columnName,
   });
-  console.log(data);
 
   const setStatusesHandler = useCallback((values: string[]) => {
     setStatuses(values.map((value) => stringToRegistrationStatus(value)));
@@ -45,7 +45,13 @@ function RegistrationTable() {
     setSearch(value);
   }, []);
 
-  if (isError) return <div className="mx-auto text-red-500">Error</div>;
+  if (isError) {
+    toast({
+      title: "Đã có lỗi xảy ra trong lúc tải dữ liệu",
+      description: "Vui lòng thử lại sau",
+      variant: "destructive",
+    });
+  }
   return (
     <div>
       <DataTable

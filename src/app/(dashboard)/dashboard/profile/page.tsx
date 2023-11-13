@@ -21,7 +21,7 @@ export default function SettingsProfilePage() {
         </p>
       </div>
       <Separator />
-      <ProfileForm userProfile={data.result} />
+      <ProfileForm userProfile={data?.result} />
       <Button
         variant="outline"
         onClick={() => setIsOpen((prev) => !prev)}

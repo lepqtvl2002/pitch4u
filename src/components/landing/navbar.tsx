@@ -18,7 +18,7 @@ export default async function Navbar({
 }) {
   const session = await getServerSession(authOptions);
   return (
-    <nav className={cn("w-full md:p-4 md:m-0", className)} {...props}>
+    <nav className={cn("w-full md:px-4 md:m-0", className)} {...props}>
       <div className="mx-auto flex justify-between items-center w-full h-fit md:justify-between">
         <a
           href="/"
