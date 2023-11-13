@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,15 +8,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDateRangePicker } from "@/components/dashboard/date-range-picker";
 import { Overview } from "@/components/dashboard/overview";
 import { RecentSales } from "@/components/dashboard/recent-sales";
 import { StatisticUseQuery } from "@/server/queries/statistic-queries";
 import { compareAmount, comparePercent, formatMoney } from "@/lib/utils";
-import { RevenueOverview } from "@/components/dashboard/revenue-overview";
+import {
+  RevenueOverview,
+  RevenueOverviewByDate,
+} from "@/components/dashboard/revenue-overview";
 import { useState } from "react";
-import { DateRange } from "react-day-picker";
-import { addDays } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
@@ -26,11 +25,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import MonthPicker from "@/components/dashboard/month-picker";
+import { toast } from "@/components/ui/use-toast";
 
+type All = {
+  revenue: number;
+  orders: number;
+};
 type MonthOverview = {
   revenue: number;
   orders: number;
-  pitches: number;
 };
 
 type RevenueByMonth = {
@@ -38,10 +42,30 @@ type RevenueByMonth = {
   revenue: number;
 };
 
+type RevenueByDate = {
+  date: Date | string;
+  revenue: number;
+};
+
+type Pitch = {
+  pitch_id: number;
+  name: string;
+  slug: string;
+  address: string;
+  logo: null | string; // Logo can be either null or a string
+  user_id: number;
+  long: null | number; // Longitude can be either null or a number
+  lat: null | number; // Latitude can be either null or a number
+};
+
 type Result = {
+  all: All;
   thisMonthOverview: MonthOverview;
   lastMonthOverview: MonthOverview;
+  staffs: any[];
+  pitches: Pitch[];
   revenueByMonths: RevenueByMonth[];
+  revenueByDates: RevenueByDate[];
 };
 
 export type Data = {
@@ -68,14 +92,19 @@ const TabItems = [
 ];
 
 export default function DashboardPage() {
-  const { data, isLoading, isError } = StatisticUseQuery.getPitchStats();
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(),
+  const [month, setMonth] = useState(new Date().getMonth());
+  const [chartTimeline, setChartTimeline] = useState<"month" | "date">("month");
+  const { data, isLoading, isError } = StatisticUseQuery.getPitchStats({
+    month,
   });
-  console.log(data);
 
-  if (isError) return <div>Error</div>;
+  if (isError) {
+    toast({
+      title: "Đã xảy ra lỗi khi tải dữ liệu trong tháng này",
+      description: "Vui lòng thử lại",
+      variant: "destructive",
+    });
+  }
   return (
     <div className="flex-1 space-y-4 px-4 py-2">
       <Tabs defaultValue="overview" className="space-y-4">
@@ -88,11 +117,7 @@ export default function DashboardPage() {
             ))}
           </TabsList>
           <div className="flex items-center space-x-2">
-            <CalendarDateRangePicker
-              date={date || { from: addDays(new Date(), -30), to: new Date() }}
-              setDate={setDate}
-            />
-            <Button>Xem</Button>
+            <MonthPicker selectedMonth={month} setSelectedMonth={setMonth} />
           </div>
         </div>
 
@@ -183,21 +208,17 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {data?.result.thisMonthOverview.pitches || 0}
+                  {data?.result.pitches.length || 0}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {compareAmount(
-                    data?.result.thisMonthOverview.pitches,
-                    data?.result.lastMonthOverview.pitches
-                  )}{" "}
-                  so với tháng trước đó
+                  {data?.result.pitches.length || 0} sân đang được quản lý
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Active Now
+                  Số nhân viên hiện tại
                 </CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -213,9 +234,11 @@ export default function DashboardPage() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+573</div>
+                <div className="text-2xl font-bold">
+                  {data?.result.staffs.length || 0}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  +201 since last hour
+                  {data?.result.staffs.length || 0} nhân viên dưới quyền quản lý
                 </p>
               </CardContent>
             </Card>
@@ -225,13 +248,17 @@ export default function DashboardPage() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Biểu đồ thống kê doanh thu
-                  <Select>
+                  <Select
+                    defaultValue="month"
+                    onValueChange={(value: "month" | "date") =>
+                      setChartTimeline(value)
+                    }
+                  >
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Tháng" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="month">Tháng</SelectItem>
-                      <SelectItem value="week">Tuần</SelectItem>
                       <SelectItem value="day">Ngày</SelectItem>
                     </SelectContent>
                   </Select>
@@ -246,8 +273,12 @@ export default function DashboardPage() {
                     <Skeleton className="w-1/5 h-60" />
                     <Skeleton className="w-1/5 h-60" />
                   </div>
+                ) : chartTimeline === "month" ? (
+                  <RevenueOverview data={data?.result.revenueByMonths || []} />
                 ) : (
-                  <RevenueOverview data={data.result.revenueByMonths} />
+                  <RevenueOverviewByDate
+                    data={data?.result.revenueByDates || []}
+                  />
                 )}
               </CardContent>
             </Card>

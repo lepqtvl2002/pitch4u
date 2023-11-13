@@ -334,10 +334,10 @@ export const comparePercent = (revenueA ?: number, revenueB ?: number) => {
     return 0;
   }
   if (revenueA > revenueB) {
-    return `+${((revenueA / revenueB - 1) * 100).toFixed(2)}`;
+    return `+${(((revenueA - revenueB) / revenueB) * 100).toFixed(2)}`;
   }
   if (revenueA < revenueB) {
-    return `${((revenueB / revenueA - 1) * 100).toFixed(2)}`;
+    return `-${(((revenueB - revenueA) / revenueB) * 100).toFixed(2)}`;
   }
 };
 export const compareAmount = (revenueA ?: number, revenueB ?: number) => {
