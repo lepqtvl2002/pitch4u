@@ -17,9 +17,19 @@ import { DateRange } from "react-day-picker";
 import { StatisticUseQuery } from "@/server/queries/statistic-queries";
 import { toast } from "@/components/ui/use-toast";
 import { compareAmount, comparePercent, formatMoney } from "@/lib/utils";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RevenueOverview } from "@/components/dashboard/revenue-overview";
+import {
+  RevenueOverview,
+  RevenueOverviewByDate,
+} from "@/components/dashboard/revenue-overview";
+import MonthPicker from "@/components/dashboard/month-picker";
 
 const TabItems = [
   {
@@ -39,8 +49,7 @@ const TabItems = [
     value: "notifications",
   },
 ];
-
-type MonthOverview = {
+type GeneralInformation = {
   revenue: number;
   orders: number;
   pitches: number;
@@ -52,10 +61,18 @@ type RevenueByMonth = {
   revenue: number;
 };
 
+type RevenueByDate = {
+  date: string | Date;
+  revenue: number;
+};
+
 type Result = {
-  thisMonthOverview: MonthOverview;
-  lastMonthOverview: MonthOverview;
+  all: GeneralInformation;
+  thisMonthOverview: GeneralInformation;
+  lastMonthOverview: GeneralInformation;
   revenueByMonths: RevenueByMonth[];
+  revenueByDates: RevenueByDate[];
+  staff: any[];
 };
 
 export type Data = {
@@ -63,10 +80,10 @@ export type Data = {
 };
 
 export default function DashboardPage() {
-  const { data, isLoading, isError } = StatisticUseQuery.getSystemStats();
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(),
+  const [month, setMonth] = useState(new Date().getMonth());
+  const [chartTimeline, setChartTimeline] = useState<"month" | "date">("month");
+  const { data, isLoading, isError } = StatisticUseQuery.getSystemStats({
+    month,
   });
   if (isError) {
     toast({
@@ -87,16 +104,7 @@ export default function DashboardPage() {
             ))}
           </TabsList>
           <div className="flex items-center space-x-2">
-            <CalendarDateRangePicker
-              date={
-                date || {
-                  from: new Date(),
-                  to: new Date(),
-                }
-              }
-              setDate={setDate}
-            />
-            <Button>Xem</Button>
+            <MonthPicker selectedMonth={month} setSelectedMonth={setMonth} />
           </div>
         </div>
 
@@ -187,21 +195,17 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {data?.result.thisMonthOverview.pitches || 0}
+                  {data?.result.all.pitches || 0}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {compareAmount(
-                    data?.result.thisMonthOverview.pitches,
-                    data?.result.lastMonthOverview.pitches
-                  )}{" "}
-                  so với tháng trước đó
+                  {`Có thêm ${data?.result.thisMonthOverview.pitches} sân mới trong tháng này`}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Lượt đăng ký sân
+                  Lượt đăng ký sân mới
                 </CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -217,10 +221,15 @@ export default function DashboardPage() {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{data?.result.thisMonthOverview.registrations || 0}</div>
+                <div className="text-2xl font-bold">
+                  {data?.result.thisMonthOverview.registrations || 0}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  {compareAmount(data?.result.thisMonthOverview.registrations, data?.result.lastMonthOverview.registrations)}
-                  {" "}so với tháng trước đó
+                  {compareAmount(
+                    data?.result.thisMonthOverview.registrations,
+                    data?.result.lastMonthOverview.registrations
+                  )}{" "}
+                  so với tháng trước đó
                 </p>
               </CardContent>
             </Card>
@@ -230,13 +239,16 @@ export default function DashboardPage() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Biểu đồ thống kê doanh thu
-                  <Select>
+                  <Select
+                    onValueChange={(value: "month" | "date") =>
+                      setChartTimeline(value)
+                    }
+                  >
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Tháng" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="month">Tháng</SelectItem>
-                      <SelectItem value="week">Tuần</SelectItem>
                       <SelectItem value="day">Ngày</SelectItem>
                     </SelectContent>
                   </Select>
@@ -251,14 +263,20 @@ export default function DashboardPage() {
                     <Skeleton className="w-1/5 h-60" />
                     <Skeleton className="w-1/5 h-60" />
                   </div>
-                ) : (
+                ) : chartTimeline === "month" ? (
                   <RevenueOverview data={data?.result.revenueByMonths || []} />
+                ) : (
+                  <RevenueOverviewByDate
+                    data={data?.result.revenueByDates || []}
+                  />
                 )}
               </CardContent>
             </Card>
             <Card className="col-span-3">
               <CardHeader>
-                <CardTitle>Những sân bóng có doanh thu cao nhất trong tháng này</CardTitle>
+                <CardTitle>
+                  Những sân bóng có doanh thu cao nhất trong tháng này
+                </CardTitle>
                 <CardDescription>
                   Bạn đã có {data?.result.thisMonthOverview.orders || 0} lượt
                   đặt trong tháng này.
