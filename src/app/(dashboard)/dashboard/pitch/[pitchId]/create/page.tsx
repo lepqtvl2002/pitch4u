@@ -8,9 +8,9 @@ export default function CreateSubPitchPage() {
   return (
     <div className="flex-1 lg:max-w-2xl space-y-6 p-10 pb-16">
       <div>
-        <h3 className="text-lg font-medium">Profile</h3>
+        <h3 className="text-lg font-medium">Thêm sân con</h3>
         <p className="text-sm text-muted-foreground">
-          This is how others will see you on the site.
+          Điền thông tin cần thiết để thêm sân mới.
         </p>
       </div>
       <Separator />

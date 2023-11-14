@@ -9,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
@@ -17,6 +16,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
+import { LogOutIcon } from "lucide-react";
 
 export function UserNav() {
   const { data: session, status } = useSession();
@@ -87,18 +87,9 @@ export function UserNav() {
               Profile
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>
+        <DropdownMenuItem className="flex justify-between" onClick={() => signOut()}>Log out <LogOutIcon /></DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
