@@ -93,7 +93,7 @@ const TabItems = [
 
 export default function DashboardPage() {
   const [month, setMonth] = useState(new Date().getMonth());
-  const [chartTimeline, setChartTimeline] = useState<"month" | "date">("month");
+  const [chartTimeline, setChartTimeline] = useState<"month" | "date">("date");
   const { data, isLoading, isError } = StatisticUseQuery.getPitchStats({
     month,
   });
@@ -249,17 +249,17 @@ export default function DashboardPage() {
                 <CardTitle className="flex items-center justify-between">
                   Biểu đồ thống kê doanh thu
                   <Select
-                    defaultValue="month"
+                    defaultValue="date"
                     onValueChange={(value: "month" | "date") =>
                       setChartTimeline(value)
                     }
                   >
                     <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Tháng" />
+                      <SelectValue placeholder="Ngày" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="month">Tháng</SelectItem>
-                      <SelectItem value="day">Ngày</SelectItem>
+                      <SelectItem value="date">Ngày</SelectItem>
                     </SelectContent>
                   </Select>
                 </CardTitle>

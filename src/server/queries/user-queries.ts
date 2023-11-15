@@ -72,4 +72,17 @@ export class UserUseQuery {
       keepPreviousData: true,
     });
   };
+
+  static getManyStaffs = (query : {q?: string, pitchId?: string | number}) => {
+    return useQuery({
+      queryKey: ["users", query],
+      queryFn: () =>
+        $fetch(`/v1/users/staffs`, {
+          method: "GET",
+          params: query
+        }).then((res) => res.data as { result: User[] }),
+      cacheTime: 100,
+      keepPreviousData: true,
+    });
+  };
 }
