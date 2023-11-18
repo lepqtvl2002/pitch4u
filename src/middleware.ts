@@ -14,8 +14,10 @@ export default withAuth(
           return token?.userRole?.name === "super_admin";
         }
         if (req.nextUrl.pathname.startsWith("/dashboard")) {
-          // return token?.userRole?.name === "admin" || token?.userRol?.name === "staff"
-          return !!token;
+          return (
+            token?.userRole?.name === "admin" ||
+            token?.userRole?.name === "staff"
+          );
         }
         return !!token;
       },

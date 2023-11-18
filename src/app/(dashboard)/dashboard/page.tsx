@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import MonthPicker from "@/components/dashboard/month-picker";
 import { toast } from "@/components/ui/use-toast";
+import { RecentOrder } from "@/components/dashboard/recent-orders";
 
 type All = {
   revenue: number;
@@ -291,7 +292,7 @@ export default function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <RecentSales />
+                <RecentOrder />
               </CardContent>
             </Card>
           </div>
