@@ -327,7 +327,7 @@ export const isAppUser = (user: IUser) => {
   return user.role === ENUM_ROLE_SLUG.USER;
 };
 
-export const comparePercent = (revenueA ?: number, revenueB ?: number) => {
+export const comparePercent = (revenueA?: number, revenueB?: number) => {
   if (!revenueA) return "-100";
   if (!revenueB) return "+100";
   if (revenueA === revenueB) {
@@ -340,7 +340,7 @@ export const comparePercent = (revenueA ?: number, revenueB ?: number) => {
     return `-${(((revenueB - revenueA) / revenueB) * 100).toFixed(2)}`;
   }
 };
-export const compareAmount = (revenueA ?: number, revenueB ?: number) => {
+export const compareAmount = (revenueA?: number, revenueB?: number) => {
   if (!revenueA) return "-100%";
   if (!revenueB) return "+100%";
   if (revenueA === revenueB) {
@@ -358,5 +358,11 @@ export const formatMoney = (amount: number) => {
   return amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-
-
+export const paymentTypeToString = (paymentType: string) => {
+  switch (paymentType) {
+    case "vnpay":
+      return "Ví VnPay";
+    default:
+      return "Trả sau";
+  }
+};
