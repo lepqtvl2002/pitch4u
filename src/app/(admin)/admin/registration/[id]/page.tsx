@@ -82,19 +82,23 @@ function RegistrationDetail() {
         </span>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <Button
-          onClick={handleApprove}
-          disabled={isLoading}
-          className="col-span-1 bg-emerald-500 hover:bg-emerald-300"
-        >
-          Xác nhận
-        </Button>
-        <Button
-          disabled={isLoading}
-          className="col-span-1 bg-red-500 hover:bg-red-300"
-        >
-          Từ chối
-        </Button>
+        {status === "pending" && 
+        <>
+          <Button
+            onClick={handleApprove}
+            disabled={isLoading}
+            className="col-span-1 bg-emerald-500 hover:bg-emerald-300"
+            >
+            Xác nhận
+          </Button>
+          <Button
+            disabled={isLoading}
+            className="col-span-1 bg-red-500 hover:bg-red-300"
+          >
+            Từ chối
+          </Button>
+        </>
+        }
         <Button disabled={isLoading} className="col-span-2">
           Liên hệ để lấy thêm thông tin
         </Button>

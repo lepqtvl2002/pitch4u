@@ -7,21 +7,18 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "../ui/use-toast";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { User, UserUseQuery } from "@/server/queries/user-queries";
 
 const formSchema = z.object({
   card_id: z.string(),
@@ -29,28 +26,20 @@ const formSchema = z.object({
   email: z.string().min(2).max(50),
   address: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
-  pitchList: z
-    .array(
-      z.object({
-        pitch_name: z.string().min(2).max(50),
-        pitch_address: z.string().min(2).max(50),
-      })
-    )
-    .optional(),
+  pitch_name: z.string().min(3),
+  pitch_address: z.string().min(8),
   lat: z.number(),
   long: z.number(),
 });
 
 export function PitchRegisterForm({
   className,
+  user,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const { data: session } = useSession();
+}: React.HTMLAttributes<HTMLDivElement> & { user?: User }) {
   const [loading, setLoading] = React.useState(false);
   const [step, setStep] = React.useState(1);
   const { mutateAsync } = PitchUseMutation.pitchRegister();
-  const router = useRouter();
-
   function goNextStep() {
     setStep((pre) => pre + 1);
   }
@@ -64,54 +53,22 @@ export function PitchRegisterForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       card_id: "999999",
+      fullname: user?.fullname,
+      email: user?.email,
+      phone: user?.phone,
       lat: 0,
       long: 0,
     },
     mode: "onChange",
   });
-
-  const { fields, append, remove } = useFieldArray({
-    name: "pitchList",
-    control: form.control,
-  });
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    try {
-      setLoading(true);
-      const { pitchList, ...data } = values;
-      await mutateAsync({
-        ...data,
-        pitch_address: pitchList?.at(0)?.pitch_address
-          ? pitchList?.at(0)?.pitch_address
-          : "unknown",
-        pitch_name: pitchList?.at(0)?.pitch_name
-          ? pitchList?.at(0)?.pitch_name
-          : "unknown",
-      });
-
-      toast({
-        title: "Đang gửi yêu cầu...",
-        description: "Vui lòng chờ trong giây lát",
-        variant: "default",
-      });
-
-      localStorage.setItem(
-        "REGISTER",
-        JSON.stringify({ user_id: session?.user?.id })
-      );
-      router.push("/pitch/register-success");
-    } catch (error: any) {
-      toast({
-        title: "Đăng ký thất bại",
-        variant: "destructive",
-        description:
-          "Đăng ký thất bại, đã có lỗi xảy ra, vui lòng thử lại sau.",
-      });
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    console.log(values);
+    await mutateAsync(values);
+    setLoading(false);
   }
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
@@ -172,10 +129,6 @@ export function PitchRegisterForm({
                         </FormItem>
                       )}
                     />
-                  </>
-                )}
-                {step === 2 && (
-                  <>
                     <FormField
                       control={form.control}
                       name="address"
@@ -218,71 +171,50 @@ export function PitchRegisterForm({
                     />
                   </>
                 )}
+                {step === 2 && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="pitch_name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              id="pitch-name"
+                              placeholder="Tên sân"
+                              type="text"
+                              autoCapitalize="none"
+                              autoCorrect="off"
+                              disabled={loading}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="pitch_address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              id="pitch-address"
+                              type="text"
+                              placeholder="Địa chỉ sân"
+                              autoComplete="address"
+                              disabled={loading}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
               </div>
-              {step === 3 && (
-                <>
-                  <div className="grid gap-4 max-h-72 overflow-y-auto px-2 -mx-2">
-                    {fields.map((field, index) => (
-                      <div key={field.id} className="grid gap-2">
-                        <div className="flex justify-between items-center">
-                          <FormLabel className={cn("text-lg")}>
-                            Sân {index + 1}
-                          </FormLabel>
-                          <Button
-                            variant="ghost"
-                            onClick={() => {
-                              remove(index);
-                            }}
-                          >
-                            <Icons.trash className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <FormField
-                          control={form.control}
-                          name={`pitchList.${index}.pitch_name`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  placeholder={`Tên sân ${index + 1}`}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`pitchList.${index}.pitch_address`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  placeholder={`Địa chỉ sân ${index + 1}`}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="mt-2"
-                    onClick={() =>
-                      append({ pitch_name: "", pitch_address: "" })
-                    }
-                  >
-                    Thêm sân
-                  </Button>
-                </>
-              )}
 
               <div className="grid gap-2">
                 {step === 1 ? (
@@ -290,7 +222,9 @@ export function PitchRegisterForm({
                     disabled={
                       loading ||
                       form.getValues().email === "" ||
-                      form.getValues().fullname === ""
+                      form.getValues().fullname === "" ||
+                      form.getValues().address === "" ||
+                      form.getValues().phone === ""
                     }
                     type="button"
                     onClick={goNextStep}
@@ -310,23 +244,6 @@ export function PitchRegisterForm({
                       <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                     )}
                     Đăng ký ngay
-                  </Button>
-                )}
-                {step === 2 && (
-                  <Button
-                    variant="outline"
-                    disabled={
-                      loading ||
-                      form.getValues().address === "" ||
-                      form.getValues().phone === ""
-                    }
-                    type="button"
-                    onClick={goNextStep}
-                  >
-                    {loading && (
-                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Đăng ký thêm danh sách sân
                   </Button>
                 )}
                 {step !== 1 && (
@@ -369,6 +286,16 @@ export function PitchRegisterForm({
         </Link>{" "}
         của chúng tôi.
       </p>
+    </div>
+  );
+}
+
+export default function CreatePitchPage() {
+  const { data, isLoading } = UserUseQuery.getProfile();
+  if (isLoading) return <>Loading...</>;
+  return (
+    <div className="p-10">
+      <PitchRegisterForm user={data?.result} />
     </div>
   );
 }
