@@ -32,7 +32,7 @@ const formSchema = z.object({
   long: z.number(),
 });
 
-export function PitchRegisterForm({
+function PitchRegisterForm({
   className,
   user,
   ...props
@@ -48,7 +48,6 @@ export function PitchRegisterForm({
     setStep((pre) => pre - 1);
   }
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,12 +60,8 @@ export function PitchRegisterForm({
     },
     mode: "onChange",
   });
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     setLoading(true);
-    console.log(values);
     await mutateAsync(values);
     setLoading(false);
   }
