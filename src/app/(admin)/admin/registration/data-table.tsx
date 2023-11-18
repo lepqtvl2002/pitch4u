@@ -58,7 +58,7 @@ function RegistrationTable() {
         columns={columns}
         data={data?.result.data}
         isLoading={!isFetched}
-        pageCount={Math.floor(data?.result?.total / data?.result.limit)}
+        pageCount={Math.floor((data?.result?.total - 1) / pageSize) + 1}
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
