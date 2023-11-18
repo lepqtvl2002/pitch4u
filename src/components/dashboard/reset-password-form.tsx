@@ -15,62 +15,55 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UserUseMutation } from "@/server/actions/user-actions";
-import { toast } from "../ui/use-toast";
+import React from "react";
 
 const formSchema = z.object({
-  password: z.string().min(8).max(50),
+  password: z.string().min(8).max(50).optional(),
   newPassword: z.string().min(8).max(50),
 });
 
-export function ResetPasswordForm() {
+export function ResetPasswordForm({ staffId }: { staffId?: string | number }) {
+  const [isLoading, setIsLoading] = React.useState(false);
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
-  const { mutateAsync } = UserUseMutation.resetPassword();
+  const { mutateAsync } = !staffId
+    ? UserUseMutation.resetPassword()
+    : UserUseMutation.resetStaffPassword({ userId: staffId });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      await mutateAsync({
-        password: values.password,
-        new_password: values.newPassword,
-      });
-      toast({
-        title: "Thành công",
-        description: "Đổi mật khẩu thành công",
-        variant: "success",
-      });
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Thất bại",
-        description: "Đổi mật khẩu thất bại",
-        variant: "destructive",
-      });
-    }
+    setIsLoading(true);
+    await mutateAsync({
+      password: values.password || "password",
+      new_password: values.newPassword,
+    });
+    setIsLoading(false);
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mật khẩu cũ</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormDescription>
-                Mật khẩu bạn đang dùng để đăng nhập
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!staffId && (
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mật khẩu cũ</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Mật khẩu bạn đang dùng để đăng nhập
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="newPassword"
@@ -85,7 +78,9 @@ export function ResetPasswordForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Đặt lại mật khẩu</Button>
+        <Button disabled={isLoading} type="submit">
+          Đặt lại mật khẩu
+        </Button>
       </form>
     </Form>
   );

@@ -97,7 +97,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           });
 
           return Promise.reject(error);
-        } else if (error.response.status === 401 && !originalRequest._retry) {
+        } else if (error.response?.status === 401 && !originalRequest._retry) {
           try {
             const tokens = await refreshAccessToken(data?.refreshToken?.token);
             if (tokens) {
