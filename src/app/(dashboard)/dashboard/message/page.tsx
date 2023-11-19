@@ -5,11 +5,47 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MoreHorizontal, PanelLeftClose, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
+import { connectSocket, getSocket, joinChat, loadChats } from "../socket";
+import { Skeleton } from "@/components/ui/skeleton";
+
+import { useSession } from "next-auth/react";
 
 export default function MessagePage() {
   const [isOpenSearch, setIsOpenSearch] = useState(false);
   const [messages, setMessages] = useState(messageList);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const [conversations, setConversations] = useState([]);
+  console.log("1 :>> ", conversations);
+  const { data: session } = useSession();
+  connectSocket(session?.accessToken?.token || " ");
+  const socket = getSocket();
+  function onReadMessage(msg: any) {
+    loadChats();
+  } // nguoi khac doc tin nhan
+  function onLoadChats(chats: any) {
+    chats.sort((a: any, b: any) => {
+      const timeA = new Date(a.last_message?.createdAt);
+      const timeB = new Date(b.last_message?.createdAt);
+
+      return (timeB as any) - (timeA as any);
+    });
+
+    setConversations(chats);
+
+    chats.forEach((c: any) => joinChat(c.chat_id));
+  } // list cac cuoc tro chuyen
+
+  function onNewMessage(msg: any) {
+    loadChats();
+  } // nhan tin nhan moi
+
+  useEffect(() => {
+    loadChats();
+    socket.on("read_message", onReadMessage);
+    socket.on("load_chats", onLoadChats);
+    socket.on("message", onNewMessage);
+  }, []);
 
   useEffect(() => {
     // Scroll to the most recent message when messages change
@@ -40,37 +76,26 @@ export default function MessagePage() {
             {isOpenSearch ? <PanelLeftClose /> : <Search />}
           </Button>
         </div>
-        <div className={"absolute top-16 bottom-0 left-0 right-0 flex flex-col space-y-3 p-2 overflow-y-auto"}>
+        <div
+          className={
+            "absolute top-16 bottom-0 left-0 right-0 flex flex-col space-y-3 p-2 overflow-y-auto"
+          }
+        >
           <MessageCard
-            avatarUrl={"asdda.png"}
+            avatarUrl={"https://i.imgur.com/qMAdfYS.jpg"}
             name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
           />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
-          <MessageCard
-            avatarUrl={"asdda.png"}
-            name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
-          />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
-          <MessageCard
-            avatarUrl={"asdda.png"}
-            name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
-          />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
-          <MessageCard
-            avatarUrl={"asdda.png"}
-            name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
-          />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
-          <MessageCard
-            avatarUrl={"asdda.png"}
-            name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
-          />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 2"} />
-          <MessageCard avatarUrl={"asdda.png"} name={"Chat name 3"} />
+          {conversations.length ? (
+            conversations.map((chat, idx) => (
+              <MessageCard
+                key={String(idx)}
+                avatarUrl={"https://i.imgur.com/qMAdfYS.jpg"}
+                name={"Chat name 1 sajhd  jsahdjsah dsajhsd ja"}
+              />
+            ))
+          ) : (
+            <Skeleton className="w-10 h-10 rounded-full" />
+          )}
         </div>
       </div>
 
@@ -138,93 +163,12 @@ const messageList = [
   {
     id: 2,
     sender: 2,
-    content: "hello",
+    content: "hello1",
   },
   {
     id: 3,
-    sender: 1,
-    content:
-      "helloshacasdhsajkdhsakjdhsakjdhkasjhdkajsdhkasjhdkjsahdkjashdkjashda dashdkasjdhsakjdhsakdjsah asjdhsakjdhaskjdh askdhsakjdhsakd",
-  },
-  {
-    id: 4,
-    sender: 1,
-    content: "hello",
-  },
-  {
-    id: 5,
     sender: 2,
-    content: "hello",
-  },
-  {
-    id: 6,
-    sender: 1,
-    content: "hello",
-  },
-  {
-    id: 7,
-    sender: 1,
-    content: "hello",
-  },
-  {
-    id: 8,
-    sender: 2,
-    content: "hello",
-  },
-  {
-    id: 9,
-    sender: 1,
-    content: "hello",
-  },
-  {
-    id: 10,
-    sender: 1,
-    content: "hello",
-  },
-  {
-    id: 11,
-    sender: 2,
-    content: "hello",
-  },
-  {
-    id: 12,
-    sender: 2,
-    content: "hello",
-  },
-  {
-    id: 13,
-    sender: 1,
-    content: "hello",
-  },
-  {
-    id: 14,
-    sender: 1,
-    content: "hello",
-  },
-  {
-    id: 15,
-    sender: 2,
-    content: "hello",
-  },
-  {
-    id: 16,
-    sender: 1,
-    content: "hello",
-  },
-  {
-    id: 17,
-    sender: 1,
-    content: "hello",
-  },
-  {
-    id: 18,
-    sender: 2,
-    content: "hello",
-  },
-  {
-    id: 19,
-    sender: 1,
-    content: "hello",
+    content: "hello3",
   },
 ];
 
@@ -252,10 +196,14 @@ function MessageList({ messages }: { messages: any }) {
                 message.sender === 1
                   ? isFirstMessageBySender
                     ? "rounded-br"
-                    : isLastMessageBySender ? "rounded-tr" : "rounded-r"
+                    : isLastMessageBySender
+                    ? "rounded-tr"
+                    : "rounded-r"
                   : isFirstMessageBySender
-                    ? "rounded-bl"
-                    : isLastMessageBySender ? "rounded-tl" : "rounded-l"
+                  ? "rounded-bl"
+                  : isLastMessageBySender
+                  ? "rounded-tl"
+                  : "rounded-l"
               )}
             >
               {isLastMessageBySender && message.sender !== 1 ? (
