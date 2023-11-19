@@ -19,7 +19,7 @@ export interface IPitch {
         open_at: number,
         close_at: number,
         time_frames: number[number[]],
-        open_days: string,
+        open_days: string[],
         active: boolean,
         createdAt: Date,
         updatedAt: Date | null,

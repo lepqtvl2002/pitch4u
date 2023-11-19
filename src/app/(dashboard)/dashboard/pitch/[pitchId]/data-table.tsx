@@ -6,8 +6,6 @@ import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { FileEdit } from "lucide-react";
 import PitchDetailStatCards from "./stat-cards";
 
 type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";

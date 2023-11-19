@@ -2,7 +2,6 @@ import { useMutation } from "@tanstack/react-query";
 import { $fetch, $globalFetch } from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
 
-
 interface PitchInfo {
   card_id: string;
   fullname: string;
@@ -20,7 +19,7 @@ export class PitchUseMutation {
       mutationFn: (data: PitchInfo) =>
         $fetch(`/v1/pitches/register`, {
           method: "POST",
-          data : data as PitchInfo,
+          data: data as PitchInfo,
         }).then((res) => res.data),
       onSuccess: () => {
         toast({
@@ -75,7 +74,58 @@ export class PitchUseMutation {
       onError: (err: any) => {
         toast({
           title: "Đã xảy ra lỗi trong khi thêm sân, vui lòng thử lại",
-          description: `${err?.message || "loi gi ko biet"}`,
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  static updatePitch = (pitchId: number | string) => {
+    return useMutation({
+      mutationFn: (data: Record<string, any>) =>
+        $fetch(`/v1/pitches/${pitchId}`, {
+          method: "PATCH",
+          data,
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Cập nhật thông tin sân thành công",
+          variant: "success",
+        });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Đã xảy ra lỗi trong khi cập nhật sân, vui lòng thử lại",
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  static configPitch = (pitchId: number | string) => {
+    return useMutation({
+      mutationFn: (data: {
+        open_at?: number;
+        close_at?: number;
+        open_days?: string[];
+        time_frames?: number[][];
+      }) =>
+        $fetch(`/v1/pitches/${pitchId}/config`, {
+          method: "PATCH",
+          data,
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Cập nhật thông tin sân thành công",
+          variant: "success",
+        });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Đã xảy ra lỗi trong khi cập nhật sân, vui lòng thử lại",
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
           variant: "destructive",
         });
       },
