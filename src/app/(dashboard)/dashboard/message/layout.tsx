@@ -17,14 +17,16 @@ export default function LayoutMessagePage({
   children: React.ReactNode;
 }) {
   const [isOpenSearch, setIsOpenSearch] = useState(true);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [conversations, setConversations] = useState<ChatObject[]>([]);
+  useMemo(() => {
+    console.log("connect socket")
+    if (status === "authenticated")
+      connectSocket(session?.accessToken?.token as string);
+  }, [session?.accessToken?.token, status]);
+
   const socket = getSocket();
-  useMemo(
-    () => connectSocket(session?.accessToken?.token as string),
-    [session?.accessToken?.token]
-  );
-  
+
   function onReadMessage(msg: any) {
     loadChats();
   } // nguoi khac doc tin nhan
@@ -41,19 +43,13 @@ export default function LayoutMessagePage({
     chats.forEach((c: any) => joinChat(c.chat_id));
   } // list cac cuoc tro chuyen
 
-  function onNewMessage(msg: any) {
-    loadChats();
-  }
-
   useEffect(() => {
-    console.log(socket);
-    if (socket.connected) {
+    if (socket) {
       loadChats();
       socket.on("read_message", onReadMessage);
       socket.on("load_chats", onLoadChats);
-      socket.on("message", onNewMessage);
     }
-  }, [socket.connected, socket]);
+  }, [socket]);
 
   return (
     <div className={"flex h-full"}>

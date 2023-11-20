@@ -2,18 +2,12 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MoreHorizontal } from "lucide-react";
+import { Loader2Icon, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
-import {
-  getSocket,
-  joinChat,
-  loadChats,
-  loadMessages,
-  sendMessage,
-} from "../../socket";
+import { getSocket, loadChats, loadMessages, sendMessage } from "../../socket";
 import { Message } from "@/types/message";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 export default function MessagePage() {
@@ -22,14 +16,14 @@ export default function MessagePage() {
   const [page, setPage] = useState(1);
   const [text, setText] = useState("");
   const [maximumNumberOfMessages, setMaximumNumberOfMessages] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   const searchParams = useSearchParams();
+  const route = useRouter();
   const socket = getSocket();
 
   useEffect(() => {
-    loadMessages({ chatId: id as string, page: 1 });
-  }, [id]);
+    loadMessages({ chatId: id as string, page });
+  }, [id, page]);
 
   useEffect(() => {
     const onLoadMessages = (msgs: any) => {
@@ -42,29 +36,26 @@ export default function MessagePage() {
       setMessages([msg, ...messages]);
     }
     loadChats();
-    scrollToBottom();
 
     if (socket) {
       socket.on("load_messages", onLoadMessages);
       socket.on("read_message", onReadMessage);
       socket.on("message", onNewMessage);
+    } else {
+      route.push("/dashboard/message");
     }
-  }, [messages, socket]);
-
-  const scrollToBottom = () => {
-    console.log(chatContainerRef.current?.scrollHeight, chatContainerRef.current?.scrollTop)
     // Scroll to the most recent message when messages change
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
-  };
+  }, [messages, route, socket]);
 
   const onReadMessage = () => {};
 
   const handleSendMessage = () => {
     sendMessage({ chatId: id as string, text });
     setText("");
-    scrollToBottom();
   };
 
   return (
@@ -92,12 +83,17 @@ export default function MessagePage() {
       </div>
       <div className={"flex-1 flex-col"}>
         <div
+          ref={chatContainerRef}
           className={
             "absolute top-16 bottom-16 left-0 right-0 px-2 overflow-y-auto"
           }
         >
-          <div ref={chatContainerRef}>
-            <MessageList messages={messages} />
+          <div>
+            {messages.length ? (
+              <MessageList messages={messages} />
+            ) : (
+              <Loader2Icon className="animate-spin m-auto" />
+            )}
           </div>
         </div>
         <div className={"absolute bottom-0 left-0 right-0"}>
