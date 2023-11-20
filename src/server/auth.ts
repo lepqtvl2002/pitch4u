@@ -35,6 +35,7 @@ declare module "next-auth" {
     access: IToken;
     refresh: IToken;
     role: UserRole;
+    userId: string | number;
   }
 }
 
@@ -79,22 +80,23 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.accessToken = token?.accessToken as IToken;
       session.refreshToken = token?.refreshToken as IToken;
-      
-       connectSocket(session.accessToken.token);
-     
+
+      connectSocket(session.accessToken.token);
       if (session?.user) {
         return {
           ...session,
           user: {
             ...session.user,
+            userId: token?.userId,
             userRole: token?.userRole,
           },
         };
       }
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user: any}) {
       if (user) {
+        token.userId = user?.user_id;
         token.userRole = user?.role || undefined;
         token.accessToken = user?.access;
         token.refreshToken = user?.refresh;
@@ -146,7 +148,7 @@ export const authOptions: NextAuthOptions = {
 
           const _user = res.data.user;
           const _tokens = res.data.tokens;
-
+          
           if (!_user) {
             return null;
           }

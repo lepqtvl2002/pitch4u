@@ -1,30 +1,20 @@
 export type IUser = {
-    _id: string;
-    fbuuid: string;
-    username: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-    role: string;
-    accountBalance: number;
-    gender: string;
-    isActive: boolean;
-    isOnline: boolean;
-    isBanned: boolean;
-    banReason: string;
-    isVerified: boolean;
-    vouchers: Array<string>;
-    services: Array<any>;
-    avatarUrls: Array<string>;
-    createdAt: string;
-    updatedAt: string;
-    currentLat: number;
-    currentLng: number;
-    location: {
-        type: string;
-        coordinates: Array<number>;
-    };
-    totalRate: number;
-    totalRateCount: number;
+  avatar: string;
+  user_id: number;
+  fullname: string;
+  phone: string;
+  email: string;
+  provider: string;
+  password: string; // Note: You might want to use a more secure type here
+  is_verified: boolean;
+  gender: "male" | "female" | "other"; // Adjust as needed
+  birthday: string; // You might want to use a Date type here
+  role_id: number;
+  is_suspended: boolean;
+  createdAt: string; // You might want to use a Date type here
+  updatedAt: string; // You might want to use a Date type here
+  deletedAt: string | null; // You might want to use a Date type here
+  role: {
+    name: "admin" | "user" | "staff" | "super_admin"; // Adjust as needed
+  };
 };
