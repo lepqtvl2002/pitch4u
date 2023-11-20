@@ -6,11 +6,12 @@ import { $fetch, $globalFetch } from "@/lib/axios";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 import { IRefreshReturn } from "@/types/token";
+import { connectSocket } from "@/app/(dashboard)/dashboard/socket";
 
 function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const { update, data, status } = useSession();
   const router = useRouter();
-  console.log("session: ", data);
+
   const refreshAccessToken = useCallback(
     async (refreshToken?: string | null) => {
       console.log("refreshToken: ", refreshToken);
@@ -58,6 +59,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       (config) => {
         if (data?.accessToken?.token) {
           console.log("The token is attached: ", data?.accessToken?.token);
+          connectSocket(data?.accessToken?.token);
           config.headers.Authorization = `Bearer ${data?.accessToken?.token}`;
         }
         return config;
@@ -101,6 +103,8 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           try {
             const tokens = await refreshAccessToken(data?.refreshToken?.token);
             if (tokens) {
+              connectSocket(tokens?.access?.token as string);
+
               await update({
                 accessToken: tokens?.access,
                 refreshToken: tokens?.refresh,

@@ -8,6 +8,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { IToken } from "@/types/token";
 import { $fetch } from "@/lib/axios";
+import { connectSocket, getSocket } from "@/app/(dashboard)/dashboard/socket";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -34,6 +35,7 @@ declare module "next-auth" {
     access: IToken;
     refresh: IToken;
     role: UserRole;
+    userId: string | number;
   }
 }
 
@@ -78,19 +80,23 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.accessToken = token?.accessToken as IToken;
       session.refreshToken = token?.refreshToken as IToken;
+
+      connectSocket(session.accessToken.token);
       if (session?.user) {
         return {
           ...session,
           user: {
             ...session.user,
+            userId: token?.userId,
             userRole: token?.userRole,
           },
         };
       }
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user: any}) {
       if (user) {
+        token.userId = user?.user_id;
         token.userRole = user?.role || undefined;
         token.accessToken = user?.access;
         token.refreshToken = user?.refresh;
@@ -142,7 +148,7 @@ export const authOptions: NextAuthOptions = {
 
           const _user = res.data.user;
           const _tokens = res.data.tokens;
-
+          
           if (!_user) {
             return null;
           }

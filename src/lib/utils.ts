@@ -18,18 +18,6 @@ export function backendUrl(path: string) {
   return `${process.env.NEXT_PUBLIC_BACKEND_URL}${path}`;
 }
 
-export function getUserState(user: IUser): UserState {
-  if (user.isBanned) return "banned";
-  if (!user.isVerified) {
-    return "unVerify";
-  }
-  if (user.isVerified && user.isOnline) {
-    return "online";
-  }
-  return "offline";
-}
-export type UserState = "unVerify" | "online" | "offline" | "banned";
-
 export const transactionVariant = cva(
   "text-xs font-medium rounded-full px-2 py-1 text-center cursor-default min-w-[5rem]",
   {
@@ -73,8 +61,10 @@ export const userStateVariant = cva(
 type BeautifyUsernameProps = {
   firstName?: string | null;
   lastName?: string | null;
+  fullname?: string | null;
 };
 export const beautifyUsername = (user: BeautifyUsernameProps) => {
+  if (user?.fullname) return user.fullname.trim();
   return `${user.firstName || ""} ${user.lastName || ""}`.trim();
 };
 
@@ -312,19 +302,19 @@ enum ENUM_ROLE_SLUG {
   USER = "user",
 }
 export const isAppManager = (user: IUser) => {
-  return user.role === ENUM_ROLE_SLUG.SUPER_ADMIN;
+  return user.role.name === ENUM_ROLE_SLUG.SUPER_ADMIN;
 };
 
 export const isPitchManager = (user: IUser) => {
-  return user.role === ENUM_ROLE_SLUG.ADMIN;
+  return user.role.name === ENUM_ROLE_SLUG.ADMIN;
 };
 
 export const isPitchStaff = (user: IUser) => {
-  return user.role === ENUM_ROLE_SLUG.STAFF;
+  return user.role.name === ENUM_ROLE_SLUG.STAFF;
 };
 
 export const isAppUser = (user: IUser) => {
-  return user.role === ENUM_ROLE_SLUG.USER;
+  return user.role.name === ENUM_ROLE_SLUG.USER;
 };
 
 export const comparePercent = (revenueA?: number, revenueB?: number) => {
