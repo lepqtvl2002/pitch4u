@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn, decimalToTimeString } from "@/lib/utils";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { ISubPitch } from "@/types/subPitch";
 import { useParams } from "next/navigation";
@@ -19,7 +19,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { toast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 
 type TimeFramesProps = {
@@ -33,7 +32,7 @@ function PitchTimeline() {
   const [date, setDate] = useState(new Date());
   const [timeFrames, setTimeFrames] = useState<TimeFramesProps[]>([]);
   const [subPitches, setSubPitches] = useState<ISubPitch[]>([]);
-  const { data, error, isLoading } = PitchUseQuery.getBookingStatus({
+  const { data, error, isLoading, refetch } = PitchUseQuery.getBookingStatus({
     pitch_id: pitchId,
   });
   const { mutateAsync } = PitchUseMutation.bookingPitch();
@@ -68,21 +67,8 @@ function PitchTimeline() {
     payment_type: string;
     voucher_id?: number | string;
   }) {
-    try {
-      const result = await mutateAsync(data);
-      console.log(result);
-      toast({
-        title: "Đã đặt sân thành công",
-        description: "Bạn đã đặt sân thành công.",
-        variant: "success",
-      });
-    } catch (error) {
-      toast({
-        title: "Đã có lỗi xảy ra",
-        description: "Không thể thực hiên hành động, vui lòng thử lại.",
-        variant: "destructive",
-      });
-    }
+    await mutateAsync(data);
+    refetch();
   }
 
   if (isLoading) return <div>Loading...</div>;
@@ -95,94 +81,98 @@ function PitchTimeline() {
       </span>
     );
   return (
-    <div className="h-screen overflow-y-auto">
-      <Card className="max-h-screen relative">
-        <CardHeader>
-          <CardTitle>
-            Timeline - Ngày
-            <DatePickerCustom date={date} setDate={setDate} />
-          </CardTitle>
-          <CardDescription className="w-full flex justify-start space-x-4 items-center">
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-8 h-8 border rounded-full bg-emerald-400"></div>
-              <span>Đã được đặt</span>
-            </div>
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-8 h-8 border rounded-full"></div>
-              <span>Còn trống</span>
-            </div>
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="absolute w-full border rounded-b-lg">
-          <div className="inline-flex flex-col overflow-auto">
-            <div className="inline-flex items-center pl-10 space-x-2">
-              {subPitches?.map((subPitch: ISubPitch) => (
-                <span key={subPitch.subpitch_id} className="w-40 text-center">
-                  {subPitch?.name}
-                </span>
-              ))}
-            </div>
-            {timeFrames.map((timeFrame: TimeFramesProps, index: number) => {
-              const pitchBookedIds = timeFrame.busy.map(
-                (subPitch: ISubPitch) => subPitch.subpitch_id
-              );
-              return (
-                <div key={index} className="inline-flex pl-10 space-x-2">
-                  <span className="absolute left-4">
-                    {timeFrame?.frame[0]}:00
-                  </span>
-                  {subPitches?.map((subPitch, index: number) => {
-                    const isOrdered = pitchBookedIds.includes(
-                      subPitch.subpitch_id
-                    );
-                    return (
-                      <Popover key={index}>
-                        <PopoverTrigger>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-40 h-10",
-                              isOrdered ? "bg-emerald-400" : "bg-white"
-                            )}
-                          ></Button>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                          {isOrdered ? (
-                            <Button className="bg-red-500 hover:bg-red-200 w-full">
-                              Hủy đặt sân
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={async () => {
-                                await bookingPitch({
-                                  subpitch_id: subPitch.subpitch_id,
-                                  payment_type: "pay_later",
-                                  voucher_id: 1,
-                                  start_time: `${format(date, "yyyy-MM-dd")} ${
-                                    timeFrame.frame[0]
-                                  }:00:00`,
-                                  end_time: `${format(date, "yyyy-MM-dd")} ${
-                                    timeFrame.frame[1]
-                                  }:00:00`,
-                                });
-                              }}
-                              className="bg-emerald-500 hover:bg-emerald-200 w-full"
-                            >
-                              Đặt sân
-                            </Button>
-                          )}
-                        </PopoverContent>
-                      </Popover>
-                    );
-                  })}
-                </div>
-              );
-            })}
+    <Card className="relative">
+      <CardHeader>
+        <CardTitle>
+          Timeline - Ngày
+          <DatePickerCustom date={date} setDate={setDate} />
+        </CardTitle>
+        <CardDescription className="w-full flex justify-start space-x-4 items-center">
+          <div className="flex items-center justify-center space-x-2">
+            <div className="w-8 h-8 border rounded-full bg-emerald-400"></div>
+            <span>Đã được đặt</span>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          <div className="flex items-center justify-center space-x-2">
+            <div className="w-8 h-8 border rounded-full"></div>
+            <span>Còn trống</span>
+          </div>
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className="absolute w-full border rounded-b-lg">
+        <div className="inline-flex flex-col overflow-auto">
+          <div className="inline-flex items-center pl-10 space-x-2">
+            {subPitches?.map((subPitch: ISubPitch) => (
+              <span key={subPitch.subpitch_id} className="w-40 text-center">
+                {subPitch?.name}
+              </span>
+            ))}
+          </div>
+          {timeFrames.map((timeFrame: TimeFramesProps, index: number) => {
+            const pitchBookedIds = timeFrame.busy.map(
+              (subPitch: ISubPitch) => subPitch.subpitch_id
+            );
+            return (
+              <div key={index} className="inline-flex pl-10 space-x-2">
+                <span className="absolute left-4">
+                  {decimalToTimeString(timeFrame?.frame[0])}
+                </span>
+                {subPitches?.map((subPitch, index: number) => {
+                  const isOrdered = pitchBookedIds.includes(
+                    subPitch.subpitch_id
+                  );
+                  return (
+                    <Popover key={index}>
+                      <PopoverTrigger>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-40 h-10",
+                            isOrdered ? "bg-emerald-400" : "bg-white"
+                          )}
+                        ></Button>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        {isOrdered ? (
+                          <Button className="bg-red-500 hover:bg-red-200 w-full">
+                            Hủy đặt sân
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={async () => {
+                              await bookingPitch({
+                                subpitch_id: subPitch.subpitch_id,
+                                payment_type: "pay_later",
+                                voucher_id: 1,
+                                start_time: `${format(
+                                  date,
+                                  "yyyy-MM-dd"
+                                )} ${decimalToTimeString(
+                                  timeFrame.frame[0]
+                                )}:00`,
+                                end_time: `${format(
+                                  date,
+                                  "yyyy-MM-dd"
+                                )} ${decimalToTimeString(
+                                  timeFrame.frame[1]
+                                )}:00`,
+                              });
+                            }}
+                            className="bg-emerald-500 hover:bg-emerald-200 w-full"
+                          >
+                            Đặt sân
+                          </Button>
+                        )}
+                      </PopoverContent>
+                    </Popover>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 

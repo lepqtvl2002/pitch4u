@@ -84,8 +84,8 @@ function PitchTable() {
                     onChange: setSearchHandler,
                 }}
                 otherButton={{
-                    url: "/dashboard/pitch/create",
-                    title: "Thêm cụm sân mới +",
+                    url: "/dashboard/pitch/register",
+                    title: "Đăng ký thêm sân +",
                 }}
                 sort={{
                     columnName: sort.columnName,

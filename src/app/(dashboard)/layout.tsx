@@ -27,7 +27,7 @@ export default async function DashboardLayout({
               : dashboardConfig.sidebarNav
           }
         />
-        <div className="hidden flex-col md:flex border-l">
+        <div className="flex-col md:flex border-l">
           <MainNav className="px-6 h-10 md:h-16 border-b" />
           {children}
         </div>

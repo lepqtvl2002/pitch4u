@@ -23,10 +23,9 @@ export default function DropdownMenuPitch({ pitchId, url }: DropdownMenuPitchPro
                 <Link href={url}>Xem chi tiết</Link>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            <DropdownMenuItem>
+                <Link href={`/dashboard/pitch/${pitchId}/edit`}>Cài đặt sân</Link>
+            </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
 

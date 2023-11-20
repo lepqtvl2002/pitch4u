@@ -356,3 +356,39 @@ export const paymentTypeToString = (paymentType: string) => {
       return "Trả sau";
   }
 };
+
+export function convertTimeStringToDecimal(timeString: string): number {
+  const [hoursString, minutesString] = timeString.split(":");
+  const hours = parseFloat(hoursString);
+  const minutes = parseFloat(minutesString) / 60;
+  let decimalTime = hours;
+  if (minutes) decimalTime += minutes;
+  return decimalTime;
+}
+
+export function decimalToTimeString(decimalTime: number): string {
+  const hours: number = Math.floor(decimalTime);
+  const minutes: number = Math.floor((decimalTime - hours) * 60);
+  const timeString: string = `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}`;
+  return timeString;
+}
+
+export function createRangeArray(start: number, end: number): number[] {
+  if (Number.isNaN(start) || Number.isNaN(end) || start > end) return [];
+  const n = Math.round(end - start); // Calculate the number of items in the array
+  const rangeArray: number[] = new Array(n);
+
+  for (let i = 0; i < n; i++) {
+    rangeArray[i] = start + i;
+  }
+
+  return rangeArray;
+}
+
+
+export function convertDayOfWeek(dayOfWeek: number): string {
+  const daysOfWeek = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+  return daysOfWeek[dayOfWeek - 1 || 0];
+}
