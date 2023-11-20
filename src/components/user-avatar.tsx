@@ -6,16 +6,16 @@ import { beautifyUsername } from "@/lib/utils";
 import {IUser} from "@/types/user";
 
 interface UserAvatarProps extends AvatarProps {
-    user: Pick<IUser, "avatarUrls" | "lastName" | "firstName">;
+    user: Pick<IUser, "avatar" | "fullname" >;
 }
 
 export function UserAvatar({ user, ...props }: UserAvatarProps) {
     const avatar = useMemo<string | null | undefined>(() => {
-        if (user.avatarUrls?.length) {
-            return user.avatarUrls[0];
+        if (user?.avatar) {
+            return user.avatar;
         }
         return null;
-    }, [user.avatarUrls]);
+    }, [user.avatar]);
     return (
         <Avatar {...props}>
             {avatar ? (
