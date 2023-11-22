@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,11 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDateRangePicker } from "@/components/dashboard/date-range-picker";
 import { Overview } from "@/components/dashboard/overview";
 import { RecentSales } from "@/components/dashboard/recent-sales";
 import { useState } from "react";
-import { DateRange } from "react-day-picker";
 import { StatisticUseQuery } from "@/server/queries/statistic-queries";
 import { toast } from "@/components/ui/use-toast";
 import { compareAmount, comparePercent, formatMoney } from "@/lib/utils";
@@ -81,7 +78,7 @@ export type Data = {
 
 export default function DashboardPage() {
   const [month, setMonth] = useState(new Date().getMonth());
-  const [chartTimeline, setChartTimeline] = useState<"month" | "date">("month");
+  const [chartTimeline, setChartTimeline] = useState<"month" | "date">("date");
   const { data, isLoading, isError } = StatisticUseQuery.getSystemStats({
     month,
   });
@@ -245,7 +242,7 @@ export default function DashboardPage() {
                     }
                   >
                     <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Tháng" />
+                      <SelectValue placeholder="Ngày" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="month">Tháng</SelectItem>

@@ -24,6 +24,7 @@ import {
 import { UserUseMutation } from "@/server/actions/user-actions";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/use-toast";
+import { useState } from "react";
 
 const profileFormSchema = z.object({
   fullname: z
@@ -60,10 +61,11 @@ type FormProps = {
 };
 
 export function StaffProfileForm({ userProfile, staffId }: FormProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      gender: userProfile?.gender,
+      gender: userProfile?.gender || "male",
       fullname: userProfile?.fullname,
       phone: userProfile?.phone,
       birthday: userProfile?.birthday,
@@ -76,17 +78,21 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
 
   async function onSubmit(data: ProfileFormValues) {
     if (staffId) {
+      setIsLoading(true);
       await updateStaff({
         data,
         userId: staffId,
       });
+      setIsLoading(false);
       router.push("/dashboard/staff");
     } else {
       if (staffId) {
+        setIsLoading(true);
         await updateStaff({
           data,
           userId: staffId,
         });
+        setIsLoading(false);
         router.push("/dashboard/staff");
       } else {
         const missingInfo: string[] = [];
@@ -99,14 +105,17 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
         if (!data.pitch_ids) missingInfo.push("Nơi làm việc");
 
         if (missingInfo.length === 0) {
+          setIsLoading(true);
           await createStaff({
             birthday: data?.birthday || "",
             email: data?.email || "",
             fullname: data?.fullname || "",
             password: data?.password || "",
             phone: data?.phone || "",
+            gender: data?.gender || "male",
             pitch_ids: [Number(data?.pitch_ids)],
           });
+          setIsLoading(false);
           router.push("/dashboard/staff");
         } else {
           toast({
@@ -260,7 +269,7 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
             )}
           />
         )}
-        <Button type="submit">
+        <Button disabled={isLoading} type="submit">
           {staffId ? "Cập nhật thông tin" : "Thêm mới nhân viên"}
         </Button>
       </form>

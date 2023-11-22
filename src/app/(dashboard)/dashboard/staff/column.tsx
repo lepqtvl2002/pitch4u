@@ -7,14 +7,7 @@ import DropdownMenuActions from "./dropdown-menu-actions";
 
 export const columns: ColumnDef<User>[] = [
   {
-    header: "UserID",
-    cell: (ctx) => {
-      const userId = ctx.row.original.user_id;
-      return <div className={"text-bold"}>{userId}</div>;
-    },
-  },
-  {
-    header: "Tên nhân viên",
+    header: " ",
     cell: (ctx) => {
       const avatarUrl = ctx.row.original.avatar;
       const name = ctx.row.original.fullname;

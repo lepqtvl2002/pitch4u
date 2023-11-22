@@ -21,7 +21,7 @@ import { LogOutIcon } from "lucide-react";
 export function UserNav() {
   const { data: session, status } = useSession();
   const router = useRouter();
-
+  
   if (status === "unauthenticated") {
     toast({
       title: "Phiên đăng nhập hết hạn",
@@ -89,7 +89,12 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex justify-between" onClick={() => signOut()}>Log out <LogOutIcon /></DropdownMenuItem>
+        <DropdownMenuItem
+          className="flex justify-between"
+          onClick={() => signOut()}
+        >
+          Log out <LogOutIcon />
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

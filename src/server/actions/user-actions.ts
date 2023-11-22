@@ -122,9 +122,9 @@ export class UserUseMutation {
       mutationKey: ["create-staff"],
       mutationFn: (data: {
         fullname: string;
-        gender?: string;
+        gender: string;
         phone: string;
-        birthday?: string;
+        birthday: string;
         email: string;
         password: string;
         pitch_ids: number[];
@@ -144,7 +144,8 @@ export class UserUseMutation {
         toast({
           title: "Thất bại",
           variant: "destructive",
-          description: "Đã xãy ra lỗi trong khi thêm mới nhân viên.",
+          description:
+            "Đã xãy ra lỗi trong khi thêm mới nhân viên. Vui lòng điền đúng email và các thông tin được yêu cầu.",
         });
       },
     });
@@ -156,7 +157,7 @@ export class UserUseMutation {
       mutationFn: (userId: number | string) =>
         $fetch(`/v1/users/staffs/${userId}`, {
           method: "DELETE",
-        }).then((res) => res?.status),
+        }).then((res) => res.data),
       onSuccess: (data) => {
         console.log(data);
         toast({

@@ -48,12 +48,15 @@ export class UserUseQuery {
     });
   };
 
-  static getProfile = () => {
+  static getProfile = (params?: { userId: number | string }) => {
     return useQuery({
-      queryKey: ["profile"],
+      queryKey: ["profile", params],
       queryFn: () =>
         $fetch(`/v1/users/profile`, {
           method: "GET",
+          params: {
+            user_id: params?.userId
+          },
         }).then((res) => res.data as { result: UserProfile }),
       cacheTime: 100,
       keepPreviousData: true,
@@ -73,13 +76,13 @@ export class UserUseQuery {
     });
   };
 
-  static getManyStaffs = (query : {q?: string, pitchId?: string | number}) => {
+  static getManyStaffs = (query: { q?: string; pitchId?: string | number }) => {
     return useQuery({
       queryKey: ["users", query],
       queryFn: () =>
         $fetch(`/v1/users/staffs`, {
           method: "GET",
-          params: query
+          params: query,
         }).then((res) => res.data as { result: User[] }),
       cacheTime: 100,
       keepPreviousData: true,

@@ -21,6 +21,7 @@ export default function DropdownMenuActions({
 
   async function handleDeleteStaff() {
     await mutateAsync(id);
+    window.location.reload();
   }
 
   return (

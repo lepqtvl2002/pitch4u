@@ -21,7 +21,6 @@ export default function EditPitchPage({
       variant: "destructive",
     });
   }
-  console.log(data)
   return (
     <div className="flex-1 lg:max-w-2xl space-y-6 p-10 pb-16">
       <div id="edit-pitch">

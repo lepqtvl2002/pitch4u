@@ -28,6 +28,7 @@ import { Icons } from "../icons";
 import { Label } from "../ui/label";
 import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { toast } from "../ui/use-toast";
 
 const profileFormSchema = z.object({
   open_at: z
@@ -86,6 +87,7 @@ export function ConfigPitchForm({ pitch }: FormProps) {
     { day: "7", active: true },
     { day: "CN", active: true },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { mutateAsync } = PitchUseMutation.configPitch(pitch?.pitch_id);
   const route = useRouter();
@@ -123,8 +125,13 @@ export function ConfigPitchForm({ pitch }: FormProps) {
         .map((timeFrame) => [timeFrame.number, timeFrame.number + 1]),
       open_days: openDays.filter((day) => day.active).map((day) => day.day),
     };
-    console.log(data);
+    setIsLoading(true);
+    toast({
+      title: "Đang xử lý yêu cầu",
+      description: "Vui lòng chờ trong giây lát",
+    });
     await mutateAsync(data);
+    setIsLoading(false);
     route.push("/dashboard/pitch");
   }
 
@@ -280,7 +287,9 @@ export function ConfigPitchForm({ pitch }: FormProps) {
           )}
         </div>
 
-        <Button type="submit">Cập nhật cài đặt</Button>
+        <Button disabled={isLoading} type="submit">
+          Cập nhật cài đặt
+        </Button>
       </form>
     </Form>
   );

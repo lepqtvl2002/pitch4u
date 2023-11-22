@@ -15,7 +15,6 @@ export default function ActionsDropdownMenuActions({
   id: string | number;
   link: string;
 }) {
-  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -26,7 +25,9 @@ export default function ActionsDropdownMenuActions({
           <Link href={link}>Xem chi tiết</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="bg-red-500" >Xóa người dùng</DropdownMenuItem>
+        <DropdownMenuItem className="bg-red-500 text-white">
+          Chặn người dùng
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

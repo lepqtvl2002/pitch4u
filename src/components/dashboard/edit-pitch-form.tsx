@@ -17,6 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "../ui/use-toast";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -48,11 +50,17 @@ export function EditPitchForm({ pitch }: FormProps) {
   });
   const { mutateAsync } = PitchUseMutation.updatePitch(pitch?.pitch_id);
   const route = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   async function onSubmit(data: ProfileFormValues) {
-    console.log(data)
-    const {logo, long, lat, ...sendValues} = data;
+    setIsLoading(true);
+    toast({
+      title: "Đang xử lý yêu cầu",
+      description: "Vui lòng chờ trong giây lát",
+    });
+    const { logo, long, lat, ...sendValues } = data;
     await mutateAsync(sendValues);
+    setIsLoading(false);
     route.push("/dashboard/pitch");
   }
 
@@ -99,7 +107,9 @@ export function EditPitchForm({ pitch }: FormProps) {
           )}
         />
 
-        <Button type="submit">Cập nhật thông tin</Button>
+        <Button disabled={isLoading} type="submit">
+          Cập nhật thông tin
+        </Button>
       </form>
     </Form>
   );

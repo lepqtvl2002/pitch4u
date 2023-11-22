@@ -6,7 +6,7 @@ import { registrationStatusToString } from "@/lib/convert";
 import { formatDateTimeToddMMyyyyHHmm } from "@/lib/format-datetime";
 import { cn } from "@/lib/utils";
 import { RegistrationUseMutation } from "@/server/actions/registration-actions";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 function RegistrationDetail() {
@@ -15,6 +15,7 @@ function RegistrationDetail() {
   const status = searchParams.get("status");
   const { mutateAsync } = RegistrationUseMutation.approve();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   async function handleApprove() {
     try {
       setIsLoading(true);
@@ -26,6 +27,7 @@ function RegistrationDetail() {
           description: "Đã chấp nhận hồ sơ đăng ký",
           variant: "success",
         });
+        router.replace("/admin/registration");
       } else {
         toast({
           title: "Thất bại",
@@ -82,23 +84,23 @@ function RegistrationDetail() {
         </span>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        {status === "pending" && 
-        <>
-          <Button
-            onClick={handleApprove}
-            disabled={isLoading}
-            className="col-span-1 bg-emerald-500 hover:bg-emerald-300"
+        {status === "pending" && (
+          <>
+            <Button
+              onClick={handleApprove}
+              disabled={isLoading}
+              className="col-span-1 bg-emerald-500 hover:bg-emerald-300"
             >
-            Xác nhận
-          </Button>
-          <Button
-            disabled={isLoading}
-            className="col-span-1 bg-red-500 hover:bg-red-300"
-          >
-            Từ chối
-          </Button>
-        </>
-        }
+              Xác nhận
+            </Button>
+            <Button
+              disabled={isLoading}
+              className="col-span-1 bg-red-500 hover:bg-red-300"
+            >
+              Từ chối
+            </Button>
+          </>
+        )}
         <Button disabled={isLoading} className="col-span-2">
           Liên hệ để lấy thêm thông tin
         </Button>
