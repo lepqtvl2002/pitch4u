@@ -17,9 +17,11 @@ import {
 import { DatePickerBookingPitch } from "@/components/ui/date-picker";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { toast } from "@/components/ui/use-toast";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { useSession } from "next-auth/react";
 import { pitchTypeToString } from "@/lib/convert";
+import { decimalToTimeString } from "@/lib/utils";
+import { ReportForm } from "./report-form";
 
 export default function OrderSelections({ pitch }: { pitch: any }) {
   const { status } = useSession();
@@ -31,11 +33,15 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
   const [timeFrames, setTimeFrames] = React.useState<any>([]);
   const [timeFrame, setTimeFrame] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isToday, setIsToday] = React.useState(true);
 
   const { data, isFetching, isError } = PitchUseQuery.getBookingStatus({
     pitch_id: pitch.pitch_id,
   });
   const { mutateAsync } = PitchUseMutation.bookingPitch();
+  const { mutateAsync: likePitchMutate } = PitchUseMutation.likePitch(
+    pitch?.pitch_id as string
+  );
 
   async function bookingPitch(data: {
     subpitch_id: string | number;
@@ -77,7 +83,12 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
   useEffect(() => {
     // Get sub pitches
     for (const frame of timeFrames) {
-      if (frame && frame.frame.join("-") === timeFrame) {
+      if (
+        frame &&
+        frame.frame
+          .map((time: any) => decimalToTimeString(Number(time)))
+          .join(" - ") === timeFrame
+      ) {
         const subPitchList = frame.free.filter((subPitch: any) => {
           return subPitch.type === type;
         });
@@ -100,24 +111,38 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
           break;
         }
       }
+
+    setIsToday(isSameDay(date, new Date()));
   }, [data?.result, date]);
+
+  async function handleLikePitch() {
+    setIsLoading(true);
+    await likePitchMutate();
+    setIsLoading(false);
+  }
 
   if (isFetching) return <div>Loading...</div>;
   if (isError) return <div>Error!!!</div>;
   return (
     <div className={"relative flex flex-col space-y-2"}>
-      <Button variant={"ghost"} className={"absolute top-0 right-0"}>
-        Tố cáo
-      </Button>
+      <div className={"absolute top-0 right-0"}>
+        <ReportForm pitchId={pitch.pitch_id} />
+      </div>
       <h2 className="font-bold text-xl md:text-4xl">{pitch.name}</h2>
       <h3 className="text-sm md:text-lg">{pitch.address}</h3>
       <div className={"flex space-x-2 items-center"}>
         <Link href={"#voting"} className={"flex space-x-2 items-center"}>
-          <Label className={""}>5/5</Label>
-          <Stars rating={pitch?.rate || 5} />
+          {pitch?.rate ? (
+            <>
+              <Label className={""}>5/5</Label>
+              <Stars rating={pitch?.rate || 5} />
+            </>
+          ) : null}
         </Link>
         <Label>|</Label>
-        <Link href={"#comment"}>2 Đánh Giá</Link>
+        <Link href={"#comment"}>
+          {pitch?.reviews?.length || "Chưa có"} đánh giá
+        </Link>
       </div>
       <div className="flex flex-col space-y-2">
         <div className={"flex items-center space-x-2"}>
@@ -135,11 +160,20 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
               <SelectValue placeholder={"Chọn thời gian"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectGroup>
-                {timeFrames.map((timeFrame: any, index: number) => {
-                  const value = timeFrame.frame.join("-");
+              <SelectGroup className="max-h-60 overflow-auto">
+                {timeFrames.map((timeFrame: any) => {
+                  const value = timeFrame.frame
+                    .map((time: any) => decimalToTimeString(Number(time)))
+                    .join(" - ");
+                  const canBookThisTime = isToday
+                    ? timeFrame.frame[0] > new Date().getHours()
+                    : true;
                   return (
-                    <SelectItem key={value} value={value}>
+                    <SelectItem
+                      disabled={!canBookThisTime}
+                      key={value}
+                      value={value}
+                    >
                       {value}
                     </SelectItem>
                   );
@@ -183,7 +217,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
               />
             </SelectTrigger>
             <SelectContent>
-              <SelectGroup>
+              <SelectGroup className="max-h-52 overflow-auto">
                 {subPitches.map((subPitch: any) => (
                   <SelectItem
                     key={subPitch.subpitch_id}
@@ -209,14 +243,19 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
       ) : null}
       <div
         className={
-          "fixed bottom-0 right-0 left-0 md:relative flex md:space-x-2 md:pt-20 bg-white z-10"
+          "fixed bottom-0 right-0 left-0 md:relative flex md:flex-col lg:flex-row md:gap-2 md:pt-20 bg-white z-10"
         }
       >
-        <Button className={"hidden md:flex"} variant={"outline"}>
+        <Button
+          onClick={handleLikePitch}
+          className={"hidden md:flex"}
+          variant={"outline"}
+        >
           <Heart className={"mr-2"} />
           <span className={"text-sm"}>Thêm vào danh sách yêu thích</span>
         </Button>
         <Button
+          onClick={handleLikePitch}
           className={"w-1/4 md:hidden rounded-none flex-col p-0 m-0"}
           variant={"outline"}
         >
@@ -230,41 +269,39 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
           <MessageCircle />
           <span className={"text-xs"}>Chat ngay</span>
         </Button>
-        {status === "authenticated" ? (
+        <a
+          className={"w-1/2 md:w-auto rounded-none md:rounded-md "}
+          href="tel:+4733378901"
+        >
           <Button
             className={
-              "w-1/2 md:w-auto rounded-none md:rounded-md  bg-emerald-500 hover:bg-emerald-300"
+              "w-full md:w-full rounded-none md:rounded-md border border-emerald-500 text-emerald-500 bg-white hover:bg-emerald-300"
             }
-            disabled={!price || isLoading}
-            onClick={async () => {
-              const time = timeFrame.split("-");
-              const data = {
-                subpitch_id: subPitchId,
-                payment_type: "pay_later",
-                start_time: `${format(date, "yyyy-MM-dd")} ${time[0]}:00`,
-                end_time: `${format(date, "yyyy-MM-dd")} ${time[1]}:00`,
-                voucher_id: 1,
-              };
-              console.log("Book:", data);
-              await bookingPitch(data);
-            }}
           >
-            Đặt sân ngay
+            <Phone className="mr-2" /> Gọi điện đặt sân
           </Button>
-        ) : (
-          <a
-            className={"w-1/2 md:w-auto rounded-none md:rounded-md "}
-            href="tel:+4733378901"
-          >
-            <Button
-              className={
-                "w-full md:w-auto rounded-none md:rounded-md bg-emerald-500 hover:bg-emerald-300"
-              }
-            >
-              <Phone className="text-white mr-2" /> Gọi điện để đặt sân
-            </Button>
-          </a>
-        )}
+        </a>
+        <Button
+          className={
+            "w-1/2 md:w-auto rounded-none md:rounded-md  bg-emerald-500 hover:bg-emerald-300"
+          }
+          disabled={!price || isLoading}
+          onClick={async () => {
+            const frame = timeFrame.split(" - ");
+            const data = {
+              subpitch_id: subPitchId,
+              payment_type: "pay_later",
+              start_time: `${format(date, "yyyy-MM-dd")} ${frame[0]}`,
+              end_time: `${format(date, "yyyy-MM-dd")} ${frame[1]}`,
+              voucher_id: 1,
+            };
+            console.log("Book:", data);
+            await bookingPitch(data);
+          }}
+        >
+          Đặt sân ngay
+        </Button>
+
         {status === "unauthenticated" && (
           <p className="absolute right-0 -top-4 md:-bottom-6 italic text-xs md:text-gray-400">
             Đăng nhập để có thể đặt sân mà không cần phải gọi điện.

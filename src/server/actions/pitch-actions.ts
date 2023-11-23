@@ -131,4 +131,27 @@ export class PitchUseMutation {
       },
     });
   };
+
+  static likePitch = (pitchId: number | string) => {
+    return useMutation({
+      mutationFn: () =>
+        $fetch(`/v1/pitches/like`, {
+          method: "POST",
+          data: { pitch_id: pitchId },
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Sân đã được thêm vào danh sách yêu thích",
+          variant: "success",
+        });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Đã xảy ra lỗi trong khi thực hiện hành động",
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
 }
