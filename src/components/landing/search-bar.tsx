@@ -116,20 +116,22 @@ function PitchItem({ pitch }: { pitch: IPitch }) {
     >
       <Link
         href={`/${pitch?.slug}`}
-        className="flex justify-between items-center w-full"
+        className="flex justify-between items-center w-full gap-2"
       >
         <Image
           src={pitch.logo || "/pitch4u-logo.png"}
-          width={100}
-          height={100}
+          width={200}
+          height={200}
           alt={pitch.name}
-          className=""
+          className="border rounded"
         />
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col justify-around h-full flex-1">
+          <div className="space-y-2">
           <h3 className="text-xl font-bold text-gray-800">{pitch?.name}</h3>
           <p className="text-gray-600 text-sm">{pitch.address}</p>
-          <Stars className="flex text-sm" rating={Number(pitch.rate) || 5} />
-          <p className="font-semibold">100.000 - 200.000 vnd/h</p>
+          <Stars className="flex text-sm" rating={Number(pitch?.rate)} />
+          </div>
+          <p className="font-semibold text-xl text-end pr-10">{pitch?.min_price === pitch?.max_price ? pitch?.max_price : `${pitch?.min_price} - ${pitch?.max_price}`} <span className="text-sm font-normal">VND/h</span></p>
         </div>
       </Link>
       <Button variant="ghost" className="hidden md:block absolute top-0 right-0">

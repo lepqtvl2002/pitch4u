@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Facebook } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -20,6 +20,8 @@ import {
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "../ui/use-toast";
+import { AuthenticationUseMutation } from "@/server/actions/auth-actions";
+import { useRouter } from "next/navigation";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   type: "login" | "register";
@@ -31,7 +33,12 @@ const formSchema = z.object({
 });
 
 export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
+  const { update } = useSession();
   const [loading, setLoading] = React.useState(false);
+  const { mutateAsync: register } = AuthenticationUseMutation.register();
+  const { mutateAsync: setupPassword } =
+    AuthenticationUseMutation.setupPassword();
+  const router = useRouter();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,7 +82,19 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
       }
     } else {
       // register
-      console.log(values);
+      setLoading(true);
+      const result = await register({ email: values.email });
+      setLoading(false);
+      await update({
+        accessToken: result?.tokens?.access,
+        refreshToken: result?.tokens?.refresh,
+        user: result?.user,
+      });
+      await setupPassword({
+        password: values.password,
+        accessToken: result?.tokens?.access?.token,
+      });
+      router.push("/register/otp");
     }
   }
 

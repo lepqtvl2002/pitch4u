@@ -12,6 +12,8 @@ export interface IPitch {
     createdAt: string;
     updatedAt: string;
     deletedAt: null | string;
+    max_price: number;
+    min_price: number;
     rate: string;
     config?: {
         pitch_config_id: number | string,
