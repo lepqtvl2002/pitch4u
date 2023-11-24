@@ -131,15 +131,18 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
       <h2 className="font-bold text-xl md:text-4xl">{pitch.name}</h2>
       <h3 className="text-sm md:text-lg">{pitch.address}</h3>
       <div className={"flex space-x-2 items-center"}>
-        <Link href={"#voting"} className={"flex space-x-2 items-center"}>
-          {pitch?.rate ? (
-            <>
-              <Label className={""}>5/5</Label>
+        {pitch?.rate > 0 ? (
+          <>
+            <Link href={"#voting"} className={"flex gap-2 items-center"}>
+              <Label className={"text-lg"}>
+                {Number(pitch?.rate).toFixed(1)}/
+                <span className="text-sm">5</span>
+              </Label>
               <Stars rating={pitch?.rate || 5} />
-            </>
-          ) : null}
-        </Link>
-        <Label>|</Label>
+            </Link>
+            <Label>|</Label>
+          </>
+        ) : null}
         <Link href={"#comment"}>
           {pitch?.reviews?.length || "Chưa có"} đánh giá
         </Link>

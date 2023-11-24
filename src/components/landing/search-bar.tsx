@@ -116,7 +116,7 @@ function PitchItem({ pitch }: { pitch: IPitch }) {
     >
       <Link
         href={`/${pitch?.slug}`}
-        className="flex justify-between items-center"
+        className="flex justify-between items-center w-full"
       >
         <Image
           src={pitch.logo || "/pitch4u-logo.png"}
@@ -125,16 +125,16 @@ function PitchItem({ pitch }: { pitch: IPitch }) {
           alt={pitch.name}
           className=""
         />
-        <div className="flex flex-col ">
+        <div className="flex flex-col flex-1">
           <h3 className="text-xl font-bold text-gray-800">{pitch?.name}</h3>
           <p className="text-gray-600 text-sm">{pitch.address}</p>
           <Stars className="flex text-sm" rating={Number(pitch.rate) || 5} />
           <p className="font-semibold">100.000 - 200.000 vnd/h</p>
         </div>
       </Link>
-      <button className="hidden md:block absolute top-0 right-0 p-4">
+      <Button variant="ghost" className="hidden md:block absolute top-0 right-0">
         <MapPin color="green" />
-      </button>
+      </Button>
     </div>
   );
 }
