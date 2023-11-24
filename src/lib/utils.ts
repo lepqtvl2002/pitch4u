@@ -42,22 +42,6 @@ export const transactionVariant = cva(
   }
 );
 
-export const userStateVariant = cva(
-  "text-xs font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
-  {
-    variants: {
-      variant: {
-        unVerify:
-          "bg-yellow-100 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
-        online:
-          "bg-green-100 text-green-600 dark:text-green-400 dark:bg-green-600/50",
-        offline: "bg-muted text-muted-foreground",
-        banned: "bg-red-100 text-red-600 dark:text-red-400 dark:bg-red-600/50",
-      },
-    },
-  }
-);
-
 type BeautifyUsernameProps = {
   firstName?: string | null;
   lastName?: string | null;
@@ -183,22 +167,38 @@ export const voucherVariant = cva(
   }
 );
 
-// export const userStateVariant = cva(
-//   "text-sm font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
-//   {
-//     variants: {
-//       variant: {
-//         unVerify:
-//           "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
-//         online:
-//           "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
-//         offline: "bg-muted text-muted-foreground",
-//         banned:
-//           "bg-red-300/50 text-red-600 dark:text-red-400 dark:bg-red-600/50",
-//       },
-//     },
-//   }
-// );
+export const userRoleVariant = cva(
+  "text-sm font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
+  {
+    variants: {
+      variant: {
+        admin:
+          "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
+        user: "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        staff: "bg-muted text-muted-foreground",
+        super_admin:
+          "bg-red-300/50 text-red-600 dark:text-red-400 dark:bg-red-600/50",
+      },
+    },
+    defaultVariants: {
+      variant: "user",
+    },
+  }
+);
+
+export const userStateVariant = cva(
+  "text-sm font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
+  {
+    variants: {
+      variant: {
+        active:
+          "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
+        suspend:
+          "bg-red-300/50 text-red-600 dark:text-red-400 dark:bg-red-600/50",
+      },
+    },
+  }
+);
 
 enum VoucherType {
   REDUCE_AMOUNT = "REDUCE_AMOUNT",
@@ -387,8 +387,15 @@ export function createRangeArray(start: number, end: number): number[] {
   return rangeArray;
 }
 
-
 export function convertDayOfWeek(dayOfWeek: number): string {
-  const daysOfWeek = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+  const daysOfWeek = [
+    "Chủ nhật",
+    "Thứ 2",
+    "Thứ 3",
+    "Thứ 4",
+    "Thứ 5",
+    "Thứ 6",
+    "Thứ 7",
+  ];
   return daysOfWeek[dayOfWeek - 1 || 0];
 }

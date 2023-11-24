@@ -77,15 +77,15 @@ export const adminConfig: DashboardConfig = {
   ],
   notificationNav: [
     {
-        title: "Tin nhắn",
-        href: "/admin/message",
-        icon: "message",
-      },
-      {
-        title: "Thông báo",
-        href: "/admin/notification",
-        icon: "notification",
-      },
+      title: "Tin nhắn",
+      href: "/admin/message",
+      icon: "message",
+    },
+    {
+      title: "Thông báo",
+      href: "/admin/notification",
+      icon: "notification",
+    },
   ],
 };
 
@@ -255,6 +255,43 @@ export const accountNavConfig: DashboardConfig = {
       title: "Đổi mật khẩu",
       href: "/account/change-password",
       icon: "lock",
+    },
+  ],
+};
+
+export const personalNavConfig: DashboardConfig = {
+  mainNav: [
+    {
+      title: "Thông tin cá nhân",
+      href: "/profile",
+      icon: "user",
+    },
+    {
+      title: "Sân bóng yêu thích",
+      href: "/favorite",
+      icon: "favorite",
+    },
+    {
+      title: "Lịch sử đặt sân",
+      href: "/history",
+      icon: "history",
+    },
+  ],
+  sidebarNav: [
+    {
+      title: "Thông tin cá nhân",
+      href: "/profile",
+      icon: "user",
+    },
+    {
+      title: "Sân bóng yêu thích",
+      href: "/favorite",
+      icon: "favorite",
+    },
+    {
+      title: "Lịch sử đặt sân",
+      href: "/history",
+      icon: "history",
     },
   ],
 };

@@ -4,17 +4,11 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { User } from "@/server/queries/user-queries";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 import ActionsDropdownMenuActions from "./dropdown-menu-actions";
+import { roleSlugToString, userRoleVariant } from "@/lib/utils";
 
 export const columns: ColumnDef<User>[] = [
   {
-    header: "UserID",
-    cell: (ctx) => {
-      const userId = ctx.row.original.user_id;
-      return <div className={"text-bold"}>{userId}</div>;
-    },
-  },
-  {
-    header: "Người dùng",
+    header: " ",
     cell: (ctx) => {
       const fullname = ctx.row.original.fullname;
       const avatarUrl = ctx.row.original.avatar;
@@ -27,10 +21,32 @@ export const columns: ColumnDef<User>[] = [
     },
   },
   {
+    header: "Vai trò",
+    cell: (ctx) => {
+      const role = ctx.row.original.role?.name;
+      return (
+        <div className={userRoleVariant({ variant: role })}>
+          {roleSlugToString(role || "user")}
+        </div>
+      );
+    },
+  },
+  {
     header: "Email",
     cell: (ctx) => {
       const email = ctx.row.original.email;
       return <div className={"text-bold"}>{email}</div>;
+    },
+  },
+  {
+    header: "Trạng thái",
+    cell: (ctx) => {
+      const isSuspended = ctx.row.original.is_suspended;
+      return (
+        <div className={"text-bold"}>
+          {isSuspended ? "Bị chặn" : "Hoạt động"}
+        </div>
+      );
     },
   },
   {

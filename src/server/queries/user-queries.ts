@@ -8,6 +8,14 @@ export type User = {
   avatar: string | null;
   phone: string;
   email: string;
+  is_suspended?: false;
+  role?: {
+    role_id: number;
+    name: "admin" | "user" | "staff" | "super_admin";
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+  };
 };
 
 export type UserProfile = {
@@ -55,7 +63,7 @@ export class UserUseQuery {
         $fetch(`/v1/users/profile`, {
           method: "GET",
           params: {
-            user_id: params?.userId
+            user_id: params?.userId,
           },
         }).then((res) => res.data as { result: UserProfile }),
       cacheTime: 100,

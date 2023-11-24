@@ -92,10 +92,6 @@ function UserTable() {
           value: search || "",
           onChange: setSearchHandler,
         }}
-        otherButton={{
-          url: "/admin/user/create",
-          title: "Thêm người dùng +",
-        }}
         sort={{
           columnName: sort.columnName,
           direction: sort.direction,

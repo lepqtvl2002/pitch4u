@@ -12,8 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
-import { publicNavbarConfig } from "@/config/site";
+import { personalNavConfig, publicNavbarConfig } from "@/config/site";
 import Link from "next/link";
+import { Icons } from "../icons";
 
 export function DropdownMenuProfile({
   user,
@@ -35,10 +36,15 @@ export function DropdownMenuProfile({
         <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <User className="mr-2 h-4 w-4" />
-            <Link href="/profile">Thông tin cá nhân</Link>
-          </DropdownMenuItem>
+          {personalNavConfig.mainNav.map((item) => {
+            const Icon = Icons[item?.icon || "arrowRight"];
+            return (
+              <DropdownMenuItem key={item.href}>
+                <Icon className="mr-2 h-4 w-4" />
+                <Link href={item.href}>{item.title}</Link>
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
 
