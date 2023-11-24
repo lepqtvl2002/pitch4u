@@ -1,10 +1,5 @@
 "use client";
-import {
-  ChevronDown,
-  LogOut,
-  Menu,
-  User,
-} from "lucide-react";
+import { ChevronDown, LogOut, Menu, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -79,9 +74,16 @@ export function DropdownMenuNav({
         {user ? (
           <DropdownMenuProfile user={user} className={"flex px-2 w-full"} />
         ) : (
-          <Link href={"/login"}>
-            <Button className={"flex px-2 w-full"}>Đăng nhập</Button>
-          </Link>
+          <>
+            <Link href={"/login"} className="mb-2">
+              <Button className={"flex px-2 w-full"}>Đăng nhập</Button>
+            </Link>
+            <Link href={"/register"}>
+              <Button variant="outline" className={"flex px-2 w-full"}>
+                Đăng ký
+              </Button>
+            </Link>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

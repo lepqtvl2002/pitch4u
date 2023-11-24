@@ -21,7 +21,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "../ui/use-toast";
 import { AuthenticationUseMutation } from "@/server/actions/auth-actions";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   type: "login" | "register";
@@ -39,8 +39,8 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
   const { mutateAsync: setupPassword } =
     AuthenticationUseMutation.setupPassword();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,32 +48,45 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
       password: "",
     },
   });
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     if (type === "login") {
       try {
         setLoading(true);
-
-        const res = await signIn("credentials", {
-          redirect: true,
+        await signIn("credentials", {
+          redirect: false,
           email: values.email,
           password: values.password,
-        });
-
-        setLoading(false);
-
-        console.log(res);
-        if (res?.error) {
-          toast({
-            title: "Đăng nhập thất bại",
-            description: "Email hoặc mật khẩu không đúng",
-            variant: "destructive",
+        })
+          .then((res) => {
+            console.log(res);
+            if (res?.error) {
+              toast({
+                title: "Đăng nhập thất bại",
+                description: "Email hoặc mật khẩu không đúng",
+                variant: "destructive",
+              });
+            } else {
+              const callbackUrl = searchParams.get("callbackUrl") || "/";
+              toast({
+                title: "Đăng nhập thành công",
+                description: "Chào mừng bạn trở lại",
+                variant: "success",
+              });
+              router.push(callbackUrl);
+            }
+          })
+          .catch((error) => {
+            console.log("Error while login >>>", error);
+            toast({
+              title: "Đăng nhập thất bại",
+              description: "Đã có lỗi xảy ra, vui lòng thử lại sau",
+              variant: "destructive",
+            });
+          })
+          .finally(() => {
+            setLoading(false);
           });
-        }
       } catch (error: any) {
-        setLoading(false);
         toast({
           title: "Đăng nhập thất bại",
           description: "Đã có lỗi xảy ra, vui lòng thử lại sau",

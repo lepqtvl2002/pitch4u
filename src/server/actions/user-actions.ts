@@ -163,7 +163,7 @@ export class UserUseMutation {
         toast({
           title: "Xóa thành công",
           variant: "success",
-          description: "Đã xóa thành công nhanh viên này.",
+          description: "Đã xóa thành công nhân viên này.",
         });
       },
       onError: (error) => {
@@ -172,6 +172,62 @@ export class UserUseMutation {
           title: "Hành động thất bại",
           variant: "destructive",
           description: "Đã xảy ra lỗi trong lúc thực hiện hành động xóa.",
+        });
+      },
+    });
+  };
+
+  static suspendUser = () => {
+    return useMutation({
+      mutationKey: ["suspend-staff"],
+      mutationFn: (userId: number | string) =>
+        $fetch(`/v1/users/suspend`, {
+          method: "POST",
+          data: {
+            user_id: userId,
+          },
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Chặn thành công",
+          variant: "success",
+          description: "Đã tạm khóa thành công người dùng này này.",
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+        toast({
+          title: "Hành động thất bại",
+          variant: "destructive",
+          description: "Đã xảy ra lỗi trong lúc thực hiện hành động này.",
+        });
+      },
+    });
+  };
+
+  static unsuspendUser = () => {
+    return useMutation({
+      mutationKey: ["unsuspend-staff"],
+      mutationFn: (userId: number | string) =>
+        $fetch(`/v1/users/suspend`, {
+          method: "POST",
+          data: {
+            user_id: userId,
+          },
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Mở khóa thành công",
+          variant: "success",
+          description: "Đã mở khóa thành công người dùng này này.",
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+        toast({
+          title: "Hành động thất bại",
+          variant: "destructive",
+          description: "Đã xảy ra lỗi trong lúc thực hiện hành động này.",
         });
       },
     });

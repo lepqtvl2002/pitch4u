@@ -146,8 +146,8 @@ export const authOptions: NextAuthOptions = {
             },
           });
 
-          const _user = res.data.user;
-          const _tokens = res.data.tokens;
+          const _user = res?.data?.user;
+          const _tokens = res?.data?.tokens;
           
           if (!_user) {
             return null;

@@ -24,10 +24,23 @@ export default function Home() {
             <span className="text-center text-2xl">Tìm ở đây!!!</span>
             <div className="flex space-x-10">
               <a href="#general" className={"w-1/2 scroll-link"}>
-                <Button className={"w-full md:h-16 md:text-xl rounded-full bg-emerald-500"}>Tải app ngay</Button>
+                <Button
+                  className={
+                    "w-full md:h-16 md:text-xl rounded-full bg-emerald-500"
+                  }
+                >
+                  Tải app ngay
+                </Button>
               </a>
               <a href="#find-pitch" className={"w-1/2 scroll-link"}>
-                <Button variant="outline" className={"w-full md:h-16 md:text-xl rounded-full bg-emerald-100 text-emerald-500"}>Tìm sân</Button>
+                <Button
+                  variant="outline"
+                  className={
+                    "w-full md:h-16 md:text-xl rounded-full bg-emerald-100 text-emerald-500"
+                  }
+                >
+                  Tìm sân
+                </Button>
               </a>
             </div>
           </div>
@@ -53,7 +66,13 @@ export default function Home() {
             chóng chỉ trong vài bước
           </h4>
           <SearchBar />
-          <Image src="/pitch4u-photo02.png" alt="bong-bay-vao-luoi" width={600} height={600} className="absolute right-0 top-28 lg:top-0 -z-10"/>
+          <Image
+            src="/pitch4u-photo02.png"
+            alt="bong-bay-vao-luoi"
+            width={600}
+            height={600}
+            className="absolute right-0 top-28 lg:top-0 -z-10"
+          />
         </section>
 
         <section

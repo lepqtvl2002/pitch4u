@@ -30,7 +30,7 @@ function UserTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isFetched } = UserUseQuery.getManyUsers({
+  const { data, isError, isFetched, refetch } = UserUseQuery.getManyUsers({
     q: debouncedSearch,
     page: pageIndex + 1,
     limit: pageSize,
@@ -58,7 +58,6 @@ function UserTable() {
       description: "Vui lòng thử lại sau",
       variant: "destructive",
     });
-    return <div className="mx-auto text-red-500">Error</div>;
   }
   return (
     <div>
@@ -66,7 +65,11 @@ function UserTable() {
         columns={columns}
         data={data?.result.data}
         isLoading={!isFetched}
-        pageCount={data?.result.total ? Math.floor((data?.result.total - 1) / pageSize + 1) : 1}
+        pageCount={
+          data?.result.total
+            ? Math.floor((data?.result.total - 1) / pageSize + 1)
+            : 1
+        }
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
