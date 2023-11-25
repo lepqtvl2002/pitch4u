@@ -36,7 +36,7 @@ export const voucherStatus: DataFacetedOptionsType[] = [
     },
 ];
 
-export const columns: ColumnDef<IPost>[] = [
+export const columns: ColumnDef<IVoucher>[] = [
     {
         header: "ID",
         cell : (ctx) => {
@@ -45,24 +45,38 @@ export const columns: ColumnDef<IPost>[] = [
         }
     },
     {
-        header: "UserID",
+        header: "CODE",
         cell : (ctx) => {
-            const userId = ctx.row.original.userId;
-            return <div className={"text-bold"}>{userId}</div>
+            const code = ctx.row.original.code;
+            return <div className={"text-bold"}>{code}</div>
         }
     },
     {
-        header: "Title",
+        header: "Loại",
         cell : (ctx) => {
-            const title = ctx.row.original.title;
-            return <div className={"text-bold"}>{title}</div>
+            const type = ctx.row.original.type;
+            return <div className={"text-bold"}>{type}</div>
         }
     },
     {
-        header: "Body",
+        header: "Giảm",
         cell : (ctx) => {
-            const body = ctx.row.original.body;
-            return <div className={"text-bold"}>{body}</div>
+            const discount = ctx.row.original.discount;
+            return <div className={"text-bold"}>{discount}</div>
+        }
+    },
+    {
+        header: "Trạng thái",
+        cell : (ctx) => {
+            const active = ctx.row.original.active;
+            return <div className={"text-bold"}>{active}</div>
+        }
+    },
+    {
+        header: "Ngày hết hạn",
+        cell : (ctx) => {
+            const expire_date = ctx.row.original?.expire_date;
+            return <div className={"text-bold"}>{expire_date ? expire_date.toString() : new Date().toLocaleDateString()}</div>
         }
     }
     // {
