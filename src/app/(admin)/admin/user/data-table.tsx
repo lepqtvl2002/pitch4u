@@ -1,21 +1,17 @@
 "use client";
 import { DataTable } from "@/components/dashboard/data-table";
-import { stringToVoucherStatus, stringToVoucherType } from "@/lib/utils";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns } from "./column";
+import { columns, userStatusOptions } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { UserUseQuery } from "@/server/queries/user-queries";
 import { toast } from "@/components/ui/use-toast";
-import DropdownMenuActions from "@/app/(dashboard)/dashboard/staff/dropdown-menu-actions";
 import ActionsDropdownMenuActions from "./dropdown-menu-actions";
 
-type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";
-type VoucherStatuses = "RUNNING" | "EXPIRED";
+type UserStatus = "suspended" | "active";
 
 function UserTable() {
-  const [types, setTypes] = React.useState<VoucherTypes[]>([]);
-  const [statuses, setStatuses] = React.useState<VoucherStatuses[]>([]);
+  const [statuses, setStatuses] = React.useState<UserStatus[]>(["active"]);
   const [search, setSearch] = React.useState<string>(" ");
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
@@ -36,18 +32,13 @@ function UserTable() {
     q: debouncedSearch,
     page: pageIndex + 1,
     limit: pageSize,
+    is_suspended:
+      statuses.includes("suspended") && statuses.length === 1 ? true : false,
   });
   console.log(data);
 
-  const setTypesHandler = useCallback((values: string[]) => {
-    //Convert string to voucher type
-    const value = values.map((value) => stringToVoucherType(value));
-    setTypes(value);
-  }, []);
-
   const setStatusesHandler = useCallback((values: string[]) => {
-    //Convert string to voucher type
-    setStatuses(values.map((value) => stringToVoucherStatus(value)));
+    setStatuses([...(values as UserStatus[])]);
   }, []);
 
   const setSearchHandler = useCallback((value: string) => {
@@ -90,20 +81,14 @@ function UserTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        // facets={[
-        //     {
-        //         title: "Trạng thái",
-        //         columnName: "status",
-        //         options: voucherStatus,
-        //         onChange: setStatusesHandler,
-        //     },
-        //     {
-        //         title: "Phân loại",
-        //         columnName: "type",
-        //         options: vouchersTypes,
-        //         onChange: setTypesHandler,
-        //     },
-        // ]}
+        facets={[
+          {
+            title: "Trạng thái",
+            columnName: "status",
+            options: userStatusOptions,
+            onChange: setStatusesHandler,
+          },
+        ]}
         search={{
           placeholder: "Tìm kiếm",
           value: search || "",

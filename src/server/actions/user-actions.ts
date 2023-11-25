@@ -209,7 +209,7 @@ export class UserUseMutation {
     return useMutation({
       mutationKey: ["unsuspend-staff"],
       mutationFn: (userId: number | string) =>
-        $fetch(`/v1/users/suspend`, {
+        $fetch(`/v1/users/unsuspend`, {
           method: "POST",
           data: {
             user_id: userId,

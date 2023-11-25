@@ -8,6 +8,20 @@ import {
   userRoleVariant,
   userStateVariant,
 } from "@/lib/utils";
+import { DataFacetedOptionsType } from "@/components/dashboard/table-facet";
+
+export const userStatusOptions: DataFacetedOptionsType[] = [
+  {
+    label: "Hoạt động",
+    value: "active",
+    icon: "check",
+  },
+  {
+    label: "Bị khóa",
+    value: "suspended",
+    icon: "close",
+  },
+];
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -43,6 +57,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     header: "Trạng thái",
+    accessorKey: "status",
     cell: (ctx) => {
       const isSuspended = ctx.row.original.is_suspended;
       return (

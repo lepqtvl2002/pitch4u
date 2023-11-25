@@ -5,6 +5,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/use-toast";
+import { mutatingToast } from "@/lib/quick-toast";
 import { UserUseMutation } from "@/server/actions/user-actions";
 import { MoreHorizontalIcon } from "lucide-react";
 import Link from "next/link";
@@ -38,8 +40,9 @@ export default function ActionsDropdownMenuActions({
         {isSuspended ? (
           <DropdownMenuItem
             disabled={isUnSuspending}
-            onClick={() => {
-              unsuspendUser(id);
+            onClick={async () => {
+              mutatingToast();
+              await unsuspendUser(id);
               refetchTable();
             }}
             className="bg-emerald-500 text-white"
@@ -49,8 +52,9 @@ export default function ActionsDropdownMenuActions({
         ) : (
           <DropdownMenuItem
             disabled={isSuspending}
-            onClick={() => {
-              suspendUser(id);
+            onClick={async () => {
+              mutatingToast();
+              await suspendUser(id);
               refetchTable();
             }}
             className="bg-red-500 text-white"
