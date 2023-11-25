@@ -8,7 +8,7 @@ export type User = {
   avatar: string | null;
   phone: string;
   email: string;
-  is_suspended?: false;
+  is_suspended?: boolean;
   role?: {
     role_id: number;
     name: "admin" | "user" | "staff" | "super_admin";
@@ -33,6 +33,7 @@ export type UserProfile = {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  is_suspended?: boolean;
 };
 
 export type PaginatedUserList = {

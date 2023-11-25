@@ -7,6 +7,8 @@ import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { UserUseQuery } from "@/server/queries/user-queries";
 import { toast } from "@/components/ui/use-toast";
+import DropdownMenuActions from "@/app/(dashboard)/dashboard/staff/dropdown-menu-actions";
+import ActionsDropdownMenuActions from "./dropdown-menu-actions";
 
 type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";
 type VoucherStatuses = "RUNNING" | "EXPIRED";
@@ -62,7 +64,22 @@ function UserTable() {
   return (
     <div>
       <DataTable
-        columns={columns}
+        columns={[
+          ...columns,
+          {
+            id: "actions",
+            cell: ({ row }) => {
+              return (
+                <ActionsDropdownMenuActions
+                  isSuspended={!!row.original.is_suspended}
+                  refetchTable={refetch}
+                  id={row.original.user_id}
+                  link={`/admin/user/${row.original.user_id}`}
+                />
+              );
+            },
+          },
+        ]}
         data={data?.result.data}
         isLoading={!isFetched}
         pageCount={

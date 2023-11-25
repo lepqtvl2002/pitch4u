@@ -1,135 +1,70 @@
 "use client";
 
-import { type DataFacetedOptionsType } from "@/components/dashboard/table-facet";
 import { type ColumnDef } from "@tanstack/react-table";
-import RegistrationStatuses from "@/enums/registrationStatuses";
-import {
-  registrationStatusToString,
-  stringToRegistrationStatus,
-} from "@/lib/convert";
-import IRegistration from "@/types/registration";
 import { cn } from "@/lib/utils";
 import ActionsDropdownMenu from "./actions-dropdown-menu";
+import { IReport } from "@/types/report";
 
-export const registrationStatus: DataFacetedOptionsType[] = [
+export const columns: ColumnDef<IReport>[] = [
   {
-    label: registrationStatusToString(RegistrationStatuses.Pending),
-    value: RegistrationStatuses.Pending,
-    icon: "clock",
-  },
-  {
-    label: registrationStatusToString(RegistrationStatuses.Rejected),
-    value: RegistrationStatuses.Rejected,
-    icon: "close",
-  },
-  {
-    label: registrationStatusToString(RegistrationStatuses.Approved),
-    value: RegistrationStatuses.Approved,
-    icon: "check",
-  },
-];
-
-export const columns: ColumnDef<IRegistration>[] = [
-  {
-    header: "ID",
+    header: "Loại",
+    id: "type",
+    accessorKey: "type",
     cell: (ctx) => {
-      const id = ctx.row.original.registration_id;
-      return <div className={"text-bold"}>{id}</div>;
-    },
-  },
-  {
-    header: "Tên người đăng ký",
-    cell: (ctx) => {
-      const fullname = ctx.row.original.fullname;
-      return <div className={"text-bold"}>{fullname}</div>;
-    },
-  },
-  {
-    header: "Địa chỉ người đăng ký",
-    cell: (ctx) => {
-      const address = ctx.row.original.address;
-      return <div className={"text-bold"}>{address}</div>;
-    },
-  },
-  {
-    header: "Trạng thái",
-    id: "status",
-    accessorKey: "status",
-    cell: (ctx) => {
-      const status = ctx.row.original.status;
+      const type = ctx.row.original.type;
       return (
         <p
           className={cn(
             "capitalize text-white w-fit px-3 font-semibold rounded-full",
-            status === "pending"
+            type === "user"
               ? "bg-yellow-400"
-              : status === "rejected"
+              : type === "pitch"
               ? "bg-red-500"
               : "bg-emerald-500"
           )}
         >
-          {registrationStatusToString(status)}
+          {type}
         </p>
       );
     },
   },
   {
-    id: "actions",
-    cell: ({ row }) => {
-      const id = row.original.registration_id;
-      const fullname = row.original.fullname;
-      const phone = row.original.phone;
-      const email = row.original.email;
-      const address = row.original.address;
-      const status = row.original.status;
-      const createdAt = row.original.createdAt;
-      const url = `/admin/registration/${id}?fullname=${fullname}&phone=${phone}&email=${email}&address=${address}&status=${status}&createdAt=${createdAt}`;
-      return (
-        <ActionsDropdownMenu id={row.original.registration_id} link={url} />
-      );
+    header: "Nguyên nhân",
+    cell: (ctx) => {
+      const reason = ctx.row.original.reason;
+      return <div className={"text-bold"}>{reason}</div>;
     },
   },
-  // {
-  //     header: "Code",
-  //     accessorKey: "code",
-  //     cell: (ctx) => {
-  //         const voucher = ctx.row.original;
-  //         return <div className="text-sm text-foreground/60">{voucher.code}</div>;
-  //     },
-  // },
-  // {
-  //     header: "Thời gian có hiệu lực",
-  //     accessorKey: "startDateToEndDate",
-  //     accessorFn: (row) =>
-  //         `${new Date(row.startDate).toLocaleDateString()} - ${new Date(
-  //             row.endDate
-  //         ).toLocaleDateString()}`,
-  // },
-  // {
-  //     header: "Loại",
-  //     accessorKey: "type",
-  //     id: "type",
-  //     cell: ({ row }) => {
-  //         const typeLabel = stringToVoucherType(row.original.type);
-  //         // const type = vouchersTypes.find((t) => t.label === row.getValue("type"));
-  //         // if (!type) return null;
-  //
-  //         return (
-  //             <p className={cn("capitalize", voucherVariant({ variant: typeLabel }))}>
-  //         {voucherTypeToString(row.original.type)}
-  //         </p>
-  //     );
-  //     },
-  // },
-  // {
-  //     header: "Giảm",
-  //     accessorKey: "reduce",
-  //     accessorFn: (row) =>
-  //         row.type === "REDUCE_AMOUNT"
-  //             ? row.reduceByAmount
-  //             : row.reduceByPercent
-  //                 ? `${row.reduceByPercent}%`
-  //                 : 0,
-  // },
-  // {
+  {
+    header: "Mô tả",
+    cell: (ctx) => {
+      const description = ctx.row.original.description;
+      return <div className={"text-bold"}>{description || "Không có"}</div>;
+    },
+  },
+  {
+    header: "Số tệp đính kèm",
+    cell: (ctx) => {
+      const attaches = ctx.row.original.attaches;
+      return <div className={"text-bold"}>{attaches?.length || "Không có"}</div>;
+    },
+  },
+
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const id = row.original.report_id;
+      const reporter_id = row.original.reporter_id;
+      const reported_id = row.original?.pitch_id || row.original?.user_id
+      const reason = row.original.reason;
+      const description = row.original.description;
+      const type = row.original.type;
+      const attaches = row.original.attaches;
+      const createdAt = row.original.createdAt;
+      const url = `/admin/report/${id}?reporter_id=${reporter_id}&reported_id=${reported_id}&reason=${reason}&description=${description}&type=${type}&attaches=${attaches?.join(
+        ","
+      )}&createdAt=${createdAt}`;
+      return <ActionsDropdownMenu id={id} link={url} />;
+    },
+  },
 ];

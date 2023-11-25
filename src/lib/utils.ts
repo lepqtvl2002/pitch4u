@@ -192,8 +192,8 @@ export const userStateVariant = cva(
     variants: {
       variant: {
         active:
-          "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
-        suspend:
+          "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        suspended:
           "bg-red-300/50 text-red-600 dark:text-red-400 dark:bg-red-600/50",
       },
     },

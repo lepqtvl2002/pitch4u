@@ -53,7 +53,6 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
       try {
         setLoading(true);
         await signIn("credentials", {
-          redirect: false,
           email: values.email,
           password: values.password,
         })
@@ -215,12 +214,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
             type="button"
             disabled={loading}
           >
-            {loading ? (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Icons.google className="mr-2 h-4 w-4" />
-            )}{" "}
-            Google
+            <Icons.google className="mr-2 h-4 w-4" /> Google
           </Button>
           <Button
             onClick={() => signIn("facebook")}
@@ -228,12 +222,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
             type="button"
             disabled={loading}
           >
-            {loading ? (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Facebook className="mr-2 h-4 w-4" />
-            )}{" "}
-            Facebook
+            <Facebook className="mr-2 h-4 w-4" /> Facebook
           </Button>
         </div>
       </div>

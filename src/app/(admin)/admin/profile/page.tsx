@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 export default function SettingsProfilePage() {
   const [isOpen, setIsOpen] = useState(false);
   const { data, isFetching, isError } = UserUseQuery.getProfile();
-
+console.log(data)
   if (isFetching) return <>Fetching...</>;
   if (isError) return <>Error!</>;
   return (

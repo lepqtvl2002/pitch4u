@@ -2,15 +2,12 @@
 import { DataTable } from "@/components/dashboard/data-table";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns, registrationStatus } from "./column";
+import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
-import { RegistrationStatus } from "@/enums/registrationStatuses";
-import { stringToRegistrationStatus } from "@/lib/convert";
-import { RegistrationUseQuery } from "@/server/queries/registration-queries";
 import { toast } from "@/components/ui/use-toast";
+import { ReportUseQuery } from "@/server/queries/report-queries";
 
 export default function ReportTable() {
-  const [statuses, setStatuses] = React.useState<RegistrationStatus[]>([]);
   const [search, setSearch] = React.useState<string>();
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
@@ -27,19 +24,13 @@ export default function ReportTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isFetched } = RegistrationUseQuery.getMany({
+  const { data, isError, isFetched } = ReportUseQuery.getReports({
     q: debouncedSearch,
     limit: pageSize,
     page: pageIndex + 1,
-    status: statuses.length === 1 ? statuses[0] : undefined,
-    statuses,
     sort: sort.direction,
     sort_by: sort.columnName,
   });
-
-  const setStatusesHandler = useCallback((values: string[]) => {
-    setStatuses(values.map((value) => stringToRegistrationStatus(value)));
-  }, []);
 
   const setSearchHandler = useCallback((value: string) => {
     setSearch(value);
@@ -62,14 +53,6 @@ export default function ReportTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        facets={[
-          {
-            title: "Trạng thái",
-            columnName: "status",
-            options: registrationStatus,
-            onChange: setStatusesHandler,
-          },
-        ]}
         search={{
           placeholder: "Tìm kiếm",
           value: search || "",

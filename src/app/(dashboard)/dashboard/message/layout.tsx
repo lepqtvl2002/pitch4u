@@ -87,7 +87,7 @@ export default function LayoutMessagePage({
                 <MessageCard
                   avatarUrl={chat.members[1]?.avatar}
                   name={chat.members[1]?.fullname || "Unknown"}
-                  lastMessage={chat?.last_message.text}
+                  lastMessage={chat?.last_message?.text}
                 />
               </Link>
             ))

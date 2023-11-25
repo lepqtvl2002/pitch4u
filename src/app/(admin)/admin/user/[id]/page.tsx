@@ -8,6 +8,7 @@ import { UserUseQuery } from "@/server/queries/user-queries";
 import { format } from "date-fns";
 import { useParams } from "next/navigation";
 import ActionsDropdownMenuActions from "../dropdown-menu-actions";
+import Link from "next/link";
 
 export default function UserDetailPage() {
   const { id } = useParams();
@@ -36,16 +37,22 @@ export default function UserDetailPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5 p-10">
+    <div className="md:w-2/3 flex flex-col gap-5 p-10">
       <div className="relative">
         <div className="absolute right-0 top-0">
-          <ActionsDropdownMenuActions id={id as string} link="" />
+          <ActionsDropdownMenuActions
+            id={id as string}
+            isSuspended={!!user?.is_suspended}
+            link=""
+          />
         </div>
+        <Link href={user?.avatar || ""}>
         <AvatarCustom
           className="w-32 h-32"
           avatarUrl={user.avatar as string}
           name={user.fullname}
-        />
+          />
+          </Link>
 
         <h3 className="text-2xl font-semibold">{user.fullname}</h3>
         <p className="text-sm text-muted-foreground">
@@ -87,9 +94,6 @@ export default function UserDetailPage() {
               Chưa được xác thực
             </span>
           )}
-        </p>
-        <p>
-          <Label>Vai trò:</Label> {user.role_id}
         </p>
       </div>
     </div>

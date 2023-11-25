@@ -263,34 +263,34 @@ export const personalNavConfig: DashboardConfig = {
   mainNav: [
     {
       title: "Thông tin cá nhân",
-      href: "/profile",
+      href: "/personal/profile",
       icon: "user",
     },
     {
       title: "Sân bóng yêu thích",
-      href: "/favorite",
+      href: "/personal/favorite",
       icon: "favorite",
     },
     {
       title: "Lịch sử đặt sân",
-      href: "/history",
+      href: "/personal/history",
       icon: "history",
     },
   ],
   sidebarNav: [
     {
       title: "Thông tin cá nhân",
-      href: "/profile",
+      href: "/personal/profile",
       icon: "user",
     },
     {
       title: "Sân bóng yêu thích",
-      href: "/favorite",
+      href: "/personal/favorite",
       icon: "favorite",
     },
     {
       title: "Lịch sử đặt sân",
-      href: "/history",
+      href: "/personal/history",
       icon: "history",
     },
   ],

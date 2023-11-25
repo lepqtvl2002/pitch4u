@@ -12,9 +12,13 @@ import Link from "next/link";
 export default function ActionsDropdownMenuActions({
   link,
   id,
+  isSuspended,
+  refetchTable,
 }: {
   id: string | number;
   link: string;
+  isSuspended: boolean;
+  refetchTable?: any;
 }) {
   const { mutateAsync: suspendUser, isLoading: isSuspending } =
     UserUseMutation.suspendUser();
@@ -31,20 +35,29 @@ export default function ActionsDropdownMenuActions({
           <Link href={link}>Xem chi tiết</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          disabled={isSuspending}
-          onClick={() => suspendUser(id)}
-          className="bg-red-500 text-white"
-        >
-          Chặn người dùng
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          disabled={isUnSuspending}
-          onClick={() => unsuspendUser(id)}
-          className="bg-emerald-500 text-white"
-        >
-          Bỏ chặn người dùng
-        </DropdownMenuItem>
+        {isSuspended ? (
+          <DropdownMenuItem
+            disabled={isUnSuspending}
+            onClick={() => {
+              unsuspendUser(id);
+              refetchTable();
+            }}
+            className="bg-emerald-500 text-white"
+          >
+            Bỏ chặn người dùng
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem
+            disabled={isSuspending}
+            onClick={() => {
+              suspendUser(id);
+              refetchTable();
+            }}
+            className="bg-red-500 text-white"
+          >
+            Chặn người dùng
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

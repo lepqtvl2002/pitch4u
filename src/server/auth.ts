@@ -34,7 +34,7 @@ declare module "next-auth" {
     phoneNumber: string;
     access: IToken;
     refresh: IToken;
-    role: UserRole;
+    userRole: UserRole;
     userId: string | number;
   }
 }

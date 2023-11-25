@@ -1,5 +1,4 @@
 "use client";
-import { DatePickerCustom } from "@/components/dashboard/date-booking";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,7 +18,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
+import { DatePickerBookingPitch } from "@/components/ui/date-picker";
+import { toast } from "@/components/ui/use-toast";
 
 type TimeFramesProps = {
   frame: number[];
@@ -32,10 +33,13 @@ function PitchTimeline() {
   const [date, setDate] = useState(new Date());
   const [timeFrames, setTimeFrames] = useState<TimeFramesProps[]>([]);
   const [subPitches, setSubPitches] = useState<ISubPitch[]>([]);
+  const [isToday, setIsToday] = useState(true);
   const { data, error, isLoading, refetch } = PitchUseQuery.getBookingStatus({
     pitch_id: pitchId,
   });
   const { mutateAsync } = PitchUseMutation.bookingPitch();
+  const { mutateAsync: cancelBookingMutate } =
+    PitchUseMutation.cancelBookingPitch();
 
   useEffect(() => {
     const day = date.getDate();
@@ -45,6 +49,7 @@ function PitchTimeline() {
         return;
       }
     });
+    setIsToday(isSameDay(date, new Date()));
   }, [date, data?.result]);
 
   useEffect(() => {
@@ -71,6 +76,11 @@ function PitchTimeline() {
     refetch();
   }
 
+  async function cancelBooking(data: { booking_id: number | string }) {
+    await cancelBookingMutate(data);
+    refetch();
+  }
+
   if (isLoading) return <div>Loading...</div>;
   if (error)
     return (
@@ -85,7 +95,7 @@ function PitchTimeline() {
       <CardHeader>
         <CardTitle>
           Timeline - Ngày
-          <DatePickerCustom date={date} setDate={setDate} />
+          <DatePickerBookingPitch date={date} setDate={setDate} />
         </CardTitle>
         <CardDescription className="w-full flex justify-start space-x-4 items-center">
           <div className="flex items-center justify-center space-x-2">
@@ -109,17 +119,28 @@ function PitchTimeline() {
             ))}
           </div>
           {timeFrames.map((timeFrame: TimeFramesProps, index: number) => {
-            const pitchBookedIds = timeFrame.busy.map(
-              (subPitch: ISubPitch) => subPitch.subpitch_id
-            );
+            const bookedPitches = timeFrame.busy.map((subPitch: ISubPitch) => ({
+              subpitch_id: subPitch.subpitch_id,
+              booking: subPitch?.booking,
+            }));
+            const canBooking = isToday
+              ? timeFrame.frame[0] > new Date().getHours()
+              : true;
             return (
-              <div key={index} className="inline-flex pl-10 space-x-2">
-                <span className="absolute left-4">
+              <div
+                key={index}
+                className={cn(
+                  "inline-flex pt-2 pr-2 pl-10 space-x-2",
+                  !canBooking && "bg-gray-200"
+                )}
+              >
+                <span className={"absolute left-6"}>
                   {decimalToTimeString(timeFrame?.frame[0])}
                 </span>
                 {subPitches?.map((subPitch, index: number) => {
-                  const isOrdered = pitchBookedIds.includes(
-                    subPitch.subpitch_id
+                  const ordered = bookedPitches.find(
+                    (bookedPitch) =>
+                      bookedPitch.subpitch_id === subPitch.subpitch_id
                   );
                   return (
                     <Popover key={index}>
@@ -128,17 +149,80 @@ function PitchTimeline() {
                           variant={"outline"}
                           className={cn(
                             "w-40 h-10",
-                            isOrdered ? "bg-emerald-400" : "bg-white"
+                            ordered ? "bg-emerald-400" : "bg-white"
                           )}
                         ></Button>
                       </PopoverTrigger>
                       <PopoverContent>
-                        {isOrdered ? (
-                          <Button className="bg-red-500 hover:bg-red-200 w-full">
-                            Hủy đặt sân
-                          </Button>
+                        {ordered ? (
+                          <>
+                            <Button
+                              className="w-full mb-2"
+                              onClick={() => {
+                                toast({
+                                  title: "Thông tin đặt sân:",
+                                  description: (
+                                    <div className="w-full">
+                                      <pre className="flex flex-col mt-2 rounded-md bg-slate-950 p-4">
+                                        <code className="text-white">
+                                          ID: {ordered.booking?.booking_id}
+                                        </code>
+                                        <code className="text-white">
+                                          Ngày đặt sân:{" "}
+                                          {format(
+                                            new Date(
+                                              ordered.booking?.start_time || ""
+                                            ),
+                                            "dd/MM/yyyy"
+                                          )}
+                                        </code>
+                                        <code className="text-white break-words">
+                                          Thời gian đặt sân:{" "}
+                                          {ordered.booking?.start_time?.split(" ")[1]}{" "}
+                                          đến{" "}
+                                          {ordered.booking?.end_time?.split(" ")[1]}
+                                        </code>
+                                        <code className="text-white">
+                                          ID sân: {ordered.booking?.subpitch_id}
+                                        </code>
+                                      </pre>
+                                      <Button
+                                        disabled={!canBooking}
+                                        className="bg-red-500 hover:bg-red-200 w-full mt-2"
+                                        onClick={() => {
+                                          cancelBooking({
+                                            booking_id:
+                                              ordered.booking?.booking_id ||
+                                              "0",
+                                          });
+                                        }}
+                                      >
+                                        Hủy đặt sân
+                                      </Button>
+                                    </div>
+                                  ),
+                                  variant: "default",
+                                });
+                              }}
+                            >
+                              Xem thông tin đặt sân
+                            </Button>
+                            <Button
+                              disabled={!canBooking}
+                              className="bg-red-500 hover:bg-red-200 w-full"
+                              onClick={() => {
+                                cancelBooking({
+                                  booking_id:
+                                    ordered.booking?.booking_id || "0",
+                                });
+                              }}
+                            >
+                              Hủy đặt sân
+                            </Button>
+                          </>
                         ) : (
                           <Button
+                            disabled={!canBooking}
                             onClick={async () => {
                               await bookingPitch({
                                 subpitch_id: subPitch.subpitch_id,

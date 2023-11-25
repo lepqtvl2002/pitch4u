@@ -53,8 +53,28 @@ export class PitchUseMutation {
       },
       onError: (err: any) => {
         toast({
-          title: "Đã xảy ra lỗi trong khi đặt sân, vui lòng thử lại",
-          description: `${err?.message || "loi gi ko biet"}`,
+          title: "Đã xảy ra lỗi trong khi đặt sân",
+          description: `${err?.message || "Vui lòng thử lại"}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  static cancelBookingPitch = () => {
+    return useMutation({
+      mutationFn: (data: {booking_id: string | number}) =>
+        $fetch(`/v1/booking/cancel`, {
+          method: "POST",
+          data,
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({ title: "Đã hủy đặt sân thành công", variant: "success" });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Đã xảy ra lỗi trong khi hủy đặt sân",
+          description: `${err?.message || "Đã xảy ra lỗi"}`,
           variant: "destructive",
         });
       },

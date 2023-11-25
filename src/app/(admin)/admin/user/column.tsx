@@ -3,8 +3,11 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { User } from "@/server/queries/user-queries";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
-import ActionsDropdownMenuActions from "./dropdown-menu-actions";
-import { roleSlugToString, userRoleVariant } from "@/lib/utils";
+import {
+  roleSlugToString,
+  userRoleVariant,
+  userStateVariant,
+} from "@/lib/utils";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -43,7 +46,11 @@ export const columns: ColumnDef<User>[] = [
     cell: (ctx) => {
       const isSuspended = ctx.row.original.is_suspended;
       return (
-        <div className={"text-bold"}>
+        <div
+          className={userStateVariant({
+            variant: isSuspended ? "suspended" : "active",
+          })}
+        >
           {isSuspended ? "Bị chặn" : "Hoạt động"}
         </div>
       );
@@ -54,17 +61,6 @@ export const columns: ColumnDef<User>[] = [
     cell: (ctx) => {
       const phone = ctx.row.original.phone;
       return <div className={"text-bold"}>{phone}</div>;
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      return (
-        <ActionsDropdownMenuActions
-          id={row.original.user_id}
-          link={`/admin/user/${row.original.user_id}`}
-        />
-      );
     },
   },
 ];

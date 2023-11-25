@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Metadata } from "next";
-import { SidebarNav } from "./profile/components/sidebar-nav";
+import { SidebarNav } from "./components/sidebar-nav";
 import Navbar from "@/components/landing/navbar";
 import { personalNavConfig } from "@/config/site";
 

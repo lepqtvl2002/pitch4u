@@ -1,5 +1,5 @@
 "use client";
-import { ChevronDown, LogOut, Menu, User } from "lucide-react";
+import { ChevronDown, LogOut, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {

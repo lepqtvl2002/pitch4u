@@ -26,6 +26,8 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import PitchTypes from "@/enums/pitchTypes";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
+import { useRouter } from "next/navigation";
+import { Icons } from "../icons";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -50,7 +52,8 @@ export function SubPitchForm({ pitch_id, subPitchProfile }: FormProps) {
     resolver: zodResolver(profileFormSchema),
     // mode: "onChange",
   });
-  const { mutateAsync } = PitchUseMutation.addSubPitch();
+  const { mutateAsync, isLoading } = PitchUseMutation.addSubPitch();
+  const router = useRouter();
 
   async function onSubmit(data: ProfileFormValues) {
     try {
@@ -65,6 +68,7 @@ export function SubPitchForm({ pitch_id, subPitchProfile }: FormProps) {
           description: `Đã thêm thành công sân ${data.name}.`,
           variant: "success",
         });
+        router.push(`/dashboard/pitch/${pitch_id}`);
       }
     } catch (error) {
       toast({
@@ -151,7 +155,10 @@ export function SubPitchForm({ pitch_id, subPitchProfile }: FormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit">Tạo mới sân</Button>
+        <Button disabled={isLoading} type="submit">
+          {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}{" "}
+          Tạo mới sân
+        </Button>
       </form>
     </Form>
   );
