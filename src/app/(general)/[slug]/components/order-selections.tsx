@@ -20,11 +20,11 @@ import { toast } from "@/components/ui/use-toast";
 import { format, isSameDay } from "date-fns";
 import { useSession } from "next-auth/react";
 import { pitchTypeToString } from "@/lib/convert";
-import { decimalToTimeString } from "@/lib/utils";
+import { cn, decimalToTimeString } from "@/lib/utils";
 import { ReportForm } from "./report-form";
 
 export default function OrderSelections({ pitch }: { pitch: any }) {
-  const { status } = useSession();
+  const { data: session } = useSession();
   const [price, setPrices] = React.useState(0);
   const [type, setType] = React.useState(pitch.types[0]);
   const [date, setDate] = React.useState<Date>(new Date());
@@ -125,7 +125,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
   if (isError) return <div>Error!!!</div>;
   return (
     <div className={"relative flex flex-col space-y-2"}>
-      <div className={"absolute top-0 right-0"}>
+      <div className={cn("absolute top-0 right-0", !session && "hidden")}>
         <ReportForm pitchId={pitch.pitch_id} />
       </div>
       <h2 className="font-bold text-xl md:text-4xl">{pitch.name}</h2>
@@ -285,9 +285,10 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
           </Button>
         </a>
         <Button
-          className={
-            "w-1/2 md:w-auto rounded-none md:rounded-md  bg-emerald-500 hover:bg-emerald-300"
-          }
+          className={cn(
+            "w-1/2 md:w-auto rounded-none md:rounded-md  bg-emerald-500 hover:bg-emerald-300",
+            !session && "hidden"
+          )}
           disabled={!price || isLoading}
           onClick={async () => {
             const frame = timeFrame.split(" - ");
@@ -305,7 +306,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
           Đặt sân ngay
         </Button>
 
-        {status === "unauthenticated" && (
+        {!session && (
           <p className="absolute right-0 -top-4 md:-bottom-6 italic text-xs md:text-gray-400">
             Đăng nhập để có thể đặt sân mà không cần phải gọi điện.
           </p>

@@ -34,16 +34,4 @@ export const columns: ColumnDef<User>[] = [
       return <div className={"text-bold"}>{phone}</div>;
     },
   },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const id = row.original.user_id;
-      const fullname = row.original.fullname;
-      const email = row.original.email;
-      const phone = row.original.phone;
-      const avatar = row.original.avatar;
-      const link = `/dashboard/staff/${id}?fullname=${fullname}&email=${email}&phone=${phone}&avatar=${avatar}`;
-      return <DropdownMenuActions id={id} link={link} />;
-    },
-  },
 ];

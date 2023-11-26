@@ -6,6 +6,7 @@ import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { UserUseQuery } from "@/server/queries/user-queries";
 import { toast } from "@/components/ui/use-toast";
+import DropdownMenuActions from "./dropdown-menu-actions";
 
 function StaffTable() {
   const [search, setSearch] = React.useState<string>("");
@@ -24,7 +25,7 @@ function StaffTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isLoading } = UserUseQuery.getManyStaffs({
+  const { data, isError, isLoading, refetch } = UserUseQuery.getManyStaffs({
     q: debouncedSearch,
   });
 
@@ -42,7 +43,22 @@ function StaffTable() {
   return (
     <div>
       <DataTable
-        columns={columns}
+        columns={[
+          ...columns,
+          {
+            id: "actions",
+            cell: ({ row }) => {
+              const id = row.original.user_id;
+              const params = new URLSearchParams(
+                row.original as unknown as string[][]
+              );
+              const link = `/dashboard/staff/${id}?${params}`;
+              return (
+                <DropdownMenuActions id={id} link={link} refetch={refetch} />
+              );
+            },
+          },
+        ]}
         data={data?.result}
         isLoading={isLoading}
         pageCount={1}

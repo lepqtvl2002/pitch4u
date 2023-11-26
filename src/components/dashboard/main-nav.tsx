@@ -30,7 +30,7 @@ export function MainNav({
       )}
       {...props}
     >
-      <Search />
+      {/* <Search /> */}
       <div className="ml-auto flex items-center space-x-4">
         <Link
           href={`/${area}/message`}

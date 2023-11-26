@@ -11,12 +11,12 @@ export class VoucherUseMutation {
         type: string;
         usage_count?: number;
         discount: number;
-        expire_date: Date;
+        expire_date?: Date;
       }) =>
         $fetch("/v1/vouchers", {
           method: "POST",
           data,
-        }),
+        }).then(res => res.data),
       onSuccess: () => {
         toast({
           title: "Tạo voucher thành công",
@@ -32,6 +32,7 @@ export class VoucherUseMutation {
           variant: "destructive",
         });
       },
+      
     });
   };
 
@@ -48,7 +49,7 @@ export class VoucherUseMutation {
         $fetch(`/v1/vouchers/${voucher_id}`, {
           method: "PATCH",
           data,
-        }),
+        }).then(res => res.data),
       onSuccess: () => {
         toast({
           title: "Update voucher thành công",
@@ -72,7 +73,7 @@ export class VoucherUseMutation {
       mutationFn: () =>
         $fetch(`/v1/vouchers/${voucher_id}`, {
           method: "DELETE",
-        }),
+        }).then(res => res.data),
       onSuccess: () => {
         toast({
           title: "Xóa voucher thành công",

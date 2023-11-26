@@ -21,6 +21,7 @@ import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { format, isSameDay } from "date-fns";
 import { DatePickerBookingPitch } from "@/components/ui/date-picker";
 import { toast } from "@/components/ui/use-toast";
+import { mutatingToast } from "@/lib/quick-toast";
 
 type TimeFramesProps = {
   frame: number[];
@@ -37,8 +38,8 @@ function PitchTimeline() {
   const { data, error, isLoading, refetch } = PitchUseQuery.getBookingStatus({
     pitch_id: pitchId,
   });
-  const { mutateAsync } = PitchUseMutation.bookingPitch();
-  const { mutateAsync: cancelBookingMutate } =
+  const { mutateAsync, isLoading: isBooking } = PitchUseMutation.bookingPitch();
+  const { mutateAsync: cancelBookingMutate, isLoading: isCanceling } =
     PitchUseMutation.cancelBookingPitch();
 
   useEffect(() => {
@@ -72,11 +73,13 @@ function PitchTimeline() {
     payment_type: string;
     voucher_id?: number | string;
   }) {
+    mutatingToast();
     await mutateAsync(data);
     refetch();
   }
 
   async function cancelBooking(data: { booking_id: number | string }) {
+    mutatingToast();
     await cancelBookingMutate(data);
     refetch();
   }
@@ -149,7 +152,8 @@ function PitchTimeline() {
                           variant={"outline"}
                           className={cn(
                             "w-40 h-10",
-                            ordered ? "bg-emerald-400" : "bg-white"
+                            ordered ? "bg-emerald-400" : "bg-white",
+                            !canBooking && "opacity-30"
                           )}
                         ></Button>
                       </PopoverTrigger>
@@ -157,6 +161,7 @@ function PitchTimeline() {
                         {ordered ? (
                           <>
                             <Button
+                              disabled={isCanceling}
                               className="w-full mb-2"
                               onClick={() => {
                                 toast({
@@ -178,16 +183,24 @@ function PitchTimeline() {
                                         </code>
                                         <code className="text-white break-words">
                                           Thời gian đặt sân:{" "}
-                                          {ordered.booking?.start_time?.split(" ")[1]}{" "}
+                                          {
+                                            ordered.booking?.start_time?.split(
+                                              " "
+                                            )[1]
+                                          }{" "}
                                           đến{" "}
-                                          {ordered.booking?.end_time?.split(" ")[1]}
+                                          {
+                                            ordered.booking?.end_time?.split(
+                                              " "
+                                            )[1]
+                                          }
                                         </code>
                                         <code className="text-white">
                                           ID sân: {ordered.booking?.subpitch_id}
                                         </code>
                                       </pre>
                                       <Button
-                                        disabled={!canBooking}
+                                        disabled={!canBooking || isCanceling}
                                         className="bg-red-500 hover:bg-red-200 w-full mt-2"
                                         onClick={() => {
                                           cancelBooking({
@@ -208,7 +221,7 @@ function PitchTimeline() {
                               Xem thông tin đặt sân
                             </Button>
                             <Button
-                              disabled={!canBooking}
+                              disabled={!canBooking || isCanceling}
                               className="bg-red-500 hover:bg-red-200 w-full"
                               onClick={() => {
                                 cancelBooking({
@@ -222,7 +235,7 @@ function PitchTimeline() {
                           </>
                         ) : (
                           <Button
-                            disabled={!canBooking}
+                            disabled={!canBooking || isBooking}
                             onClick={async () => {
                               await bookingPitch({
                                 subpitch_id: subPitch.subpitch_id,

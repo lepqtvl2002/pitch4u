@@ -200,6 +200,39 @@ export const userStateVariant = cva(
   }
 );
 
+export const activeVariant = cva(
+  "text-sm font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
+  {
+    variants: {
+      variant: {
+        true: "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        false:
+          "bg-red-300/50 text-red-600 dark:text-red-400 dark:bg-red-600/50",
+      },
+    },
+  }
+);
+
+export const pitchTypeVariant = cva(
+  "text-sm font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
+  {
+    variants: {
+      variant: {
+        PITCH5:
+          "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        PITCH7:
+          "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
+        PITCH9: "bg-muted text-muted-foreground",
+        PITCH11:
+          "bg-red-300/50 text-red-600 dark:text-red-400 dark:bg-red-600/50",
+      },
+    },
+    defaultVariants: {
+      variant: "PITCH5",
+    },
+  }
+);
+
 enum VoucherType {
   REDUCE_AMOUNT = "REDUCE_AMOUNT",
   REDUCE_PERCENT = "REDUCE_PERCENT",

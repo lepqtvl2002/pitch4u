@@ -6,6 +6,7 @@ import React, { useCallback } from "react";
 import { columns, voucherStatus, vouchersTypes } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { VoucherUseQuery } from "@/server/queries/voucher-queries";
+import DropdownMenuActions from "./dropdown-menu-actions";
 
 type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";
 type VoucherStatuses = "RUNNING" | "EXPIRED";
@@ -29,7 +30,8 @@ function VoucherTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isFetched } = VoucherUseQuery.getVoucherList();
+  const { data, isError, isFetched, refetch } =
+    VoucherUseQuery.getVoucherList();
   console.log(data);
 
   const setTypesHandler = useCallback((values: string[]) => {
@@ -51,7 +53,25 @@ function VoucherTable() {
   return (
     <div>
       <DataTable
-        columns={columns}
+        columns={[
+          ...columns,
+          {
+            id: "actions",
+            cell: ({ row }) => {
+              const voucher_id = row.original.voucher_id;
+              const params = new URLSearchParams(
+                row.original as unknown as Record<string, string>
+              );
+              return (
+                <DropdownMenuActions
+                  refetchTable={refetch}
+                  id={voucher_id}
+                  link={`/dashboard/voucher/${voucher_id}?${params}`}
+                />
+              );
+            },
+          },
+        ]}
         data={data?.result.data}
         isLoading={!isFetched}
         pageCount={Math.floor((data?.result.total! - 1) / pageSize) + 1}

@@ -5,25 +5,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserUseMutation } from "@/server/actions/user-actions";
+import { VoucherUseMutation } from "@/server/actions/voucher-actions";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 type DropdownMenuPitchProps = {
   id: string | number;
   link: string;
-  refetch?: any;
+  refetchTable: any;
 };
 export default function DropdownMenuActions({
   id,
   link,
-  refetch
+  refetchTable,
 }: DropdownMenuPitchProps) {
-  const { mutateAsync } = UserUseMutation.deleteStaff();
+  const { mutateAsync } = VoucherUseMutation.delete(id);
 
-  async function handleDeleteStaff() {
-    await mutateAsync(id);
-    refetch();
+  async function handleDeleteVoucher() {
+    await mutateAsync();
+    refetchTable();
   }
 
   return (
@@ -37,10 +37,10 @@ export default function DropdownMenuActions({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={handleDeleteStaff}
+          onClick={handleDeleteVoucher}
           className="bg-red-500 text-white"
         >
-          Xóa Nhân Viên
+          Xóa Voucher
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

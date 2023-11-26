@@ -14,6 +14,7 @@ interface PitchInfo {
   long: number;
 }
 export class PitchUseMutation {
+  // Register pitch
   static pitchRegister = () => {
     return useMutation({
       mutationFn: (data: PitchInfo) =>
@@ -41,6 +42,8 @@ export class PitchUseMutation {
       },
     });
   };
+
+  // Booking pitch
   static bookingPitch = () => {
     return useMutation({
       mutationFn: (data: Record<string, any>) =>
@@ -61,9 +64,10 @@ export class PitchUseMutation {
     });
   };
 
+  // Cancel booking pitch
   static cancelBookingPitch = () => {
     return useMutation({
-      mutationFn: (data: {booking_id: string | number}) =>
+      mutationFn: (data: { booking_id: string | number }) =>
         $fetch(`/v1/booking/cancel`, {
           method: "POST",
           data,
@@ -81,6 +85,7 @@ export class PitchUseMutation {
     });
   };
 
+  // Add sub pitch
   static addSubPitch = () => {
     return useMutation({
       mutationFn: (data: Record<string, any>) =>
@@ -101,6 +106,27 @@ export class PitchUseMutation {
     });
   };
 
+  // Delete sub pitch
+  static removeSubPitch = (subPitchId: string | number) => {
+    return useMutation({
+      mutationFn: () =>
+        $fetch(`/v1/pitches/subpitches/${subPitchId}`, {
+          method: "DELETE",
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({ title: "Xóa sân thành công", variant: "success" });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Đã xảy ra lỗi trong khi xóa sân này",
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  // Update pitch
   static updatePitch = (pitchId: number | string) => {
     return useMutation({
       mutationFn: (data: Record<string, any>) =>
@@ -124,6 +150,7 @@ export class PitchUseMutation {
     });
   };
 
+  // Config pitch
   static configPitch = (pitchId: number | string) => {
     return useMutation({
       mutationFn: (data: {
@@ -152,6 +179,7 @@ export class PitchUseMutation {
     });
   };
 
+  // Like pitch
   static likePitch = (pitchId: number | string) => {
     return useMutation({
       mutationFn: () =>

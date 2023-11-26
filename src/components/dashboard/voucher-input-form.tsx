@@ -54,35 +54,32 @@ type FormProps = {
 };
 
 export function VoucherInputForm({ voucher }: FormProps) {
-  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<VoucherFormValues>({
     resolver: zodResolver(voucherFormSchema),
     defaultValues: {
       code: voucher?.code,
       type: voucher?.type,
       pitch_id: voucher?.pitch_id?.toString(),
-      expire_date: voucher?.expire_date || new Date(),
+      expire_date: new Date(),
       usage_count: voucher?.usage_count?.toString(),
-      discount: voucher?.discount.toString(),
+      discount: voucher?.discount?.toString(),
     },
     // mode: "onChange",
   });
-  const { mutateAsync: createVoucher } = VoucherUseMutation.create();
-  const { mutateAsync: updateVoucher } = VoucherUseMutation.update(
-    voucher?.voucher_id!
-  );
+  const { mutateAsync: createVoucher, isLoading } = VoucherUseMutation.create();
+  const { mutateAsync: updateVoucher, isLoading: isUpdating } =
+    VoucherUseMutation.update(voucher?.voucher_id!);
   const router = useRouter();
 
   async function onSubmit(data: VoucherFormValues) {
     if (voucher) {
-      setIsLoading(true);
       mutatingToast();
+      const { pitch_id, ...sendValues } = data;
       await updateVoucher({
-        ...data,
+        ...sendValues,
         usage_count: Number(data.usage_count),
         discount: Number(data.discount),
       });
-      setIsLoading(false);
       router.push("/dashboard/voucher");
     } else {
       const missingInfo: string[] = [];
@@ -93,17 +90,16 @@ export function VoucherInputForm({ voucher }: FormProps) {
       if (!data.usage_count) missingInfo.push("Giảm");
 
       if (missingInfo.length === 0) {
-        setIsLoading(true);
         mutatingToast();
+        const { expire_date, ...sendValues } = data;
         await createVoucher({
-          ...data,
+          ...sendValues,
           code: data?.code || "CODE",
-          expire_date: new Date(),
+          // expire_date,
           type: data.type || "fixed",
           usage_count: Number(data?.usage_count),
           discount: Number(data?.discount),
         });
-        setIsLoading(false);
         router.push("/dashboard/voucher");
       } else {
         toast({
@@ -201,7 +197,7 @@ export function VoucherInputForm({ voucher }: FormProps) {
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "dd/MM/yyyy")
+                        format(new Date(field.value), "dd/MM/yyyy")
                       ) : (
                         <span>Chọn 1 ngày</span>
                       )}
@@ -215,7 +211,7 @@ export function VoucherInputForm({ voucher }: FormProps) {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
+                      date < new Date() || date > new Date("2090-01-01")
                     }
                     initialFocus
                   />
@@ -243,7 +239,7 @@ export function VoucherInputForm({ voucher }: FormProps) {
             </FormItem>
           )}
         />
-        <Button disabled={isLoading} type="submit">
+        <Button disabled={isLoading || isUpdating} type="submit">
           {voucher ? "Cập nhật thông tin" : "Thêm mới voucher"}
         </Button>
       </form>
