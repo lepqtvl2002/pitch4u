@@ -14,13 +14,14 @@ import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import Link from "next/link";
 import { convertDayOfWeek, decimalToTimeString } from "@/lib/utils";
+import { AvatarCustom } from "@/components/ui/avatar-custom";
 
 function PitchDetailStatCards({ pitch }: { pitch: IPitch }) {
   return (
-    <div className="grid grid-cols-3 xl:grid-cols-4">
-      <Card className="relative h-fit col-span-2">
+    <div className="grid grid-cols-4">
+      <Card className="relative h-fit col-span-4 lg:col-span-3">
         <Link
-          href={`/dashboard/pitch/${pitch.pitch_id}/edit`}
+          href={`/dashboard/pitch/${pitch?.pitch_id}/edit`}
           className="absolute px-4 py-2 hover:bg-gray-300 top-2 right-2"
         >
           <FileEdit />
@@ -69,6 +70,13 @@ function PitchDetailStatCards({ pitch }: { pitch: IPitch }) {
           </span>
         </CardFooter>
       </Card>
+      <div className="hidden lg:flex justify-center">
+        <AvatarCustom
+          avatarUrl={pitch?.logo as string}
+          name={pitch?.name || "Unknown"}
+          className="w-60 h-60 border "
+        />
+      </div>
     </div>
   );
 }

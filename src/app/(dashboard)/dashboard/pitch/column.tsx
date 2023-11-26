@@ -1,16 +1,22 @@
 "use client";
 
-import { type DataFacetedOptionsType } from "@/components/dashboard/table-facet";
 import { type ColumnDef } from "@tanstack/react-table";
 import { IPitch } from "@/types/pitch";
 import DropdownMenuPitch from "./dropdown-menu-action";
+import { AvatarCustom } from "@/components/ui/avatar-custom";
 
 export const columns: ColumnDef<IPitch>[] = [
   {
-    header: "Tên sân",
+    header: " ",
     cell: (ctx) => {
+      const logo = ctx.row.original?.logo;
       const name = ctx.row.original?.name;
-      return <div className={"text-bold"}>{name}</div>;
+      return (
+        <div className={"flex gap-2 items-center text-bold"}>
+          <AvatarCustom avatarUrl={logo as string} name="" />
+          {name}
+        </div>
+      );
     },
   },
   {
