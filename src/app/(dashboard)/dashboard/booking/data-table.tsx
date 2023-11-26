@@ -3,16 +3,16 @@ import { DataTable } from "@/components/dashboard/data-table";
 import { stringToVoucherStatus, stringToVoucherType } from "@/lib/utils";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns, voucherStatus, vouchersTypes } from "./column";
+import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
-import { VoucherUseQuery } from "@/server/queries/voucher-queries";
 import DropdownMenuActions from "./dropdown-menu-actions";
+import { StatisticUseQuery } from "@/server/queries/statistic-queries";
 import { toast } from "@/components/ui/use-toast";
 
 type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";
 type VoucherStatuses = "RUNNING" | "EXPIRED";
 
-function VoucherTable() {
+export default function BookingTable() {
   const [types, setTypes] = React.useState<VoucherTypes[]>([]);
   const [statuses, setStatuses] = React.useState<VoucherStatuses[]>([]);
   const [search, setSearch] = React.useState<string>();
@@ -31,8 +31,11 @@ function VoucherTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isFetched, refetch } =
-    VoucherUseQuery.getVoucherList();
+  const { data, isError, isFetched, refetch } = StatisticUseQuery.getBooking({
+    page: pageIndex + 1,
+    // sort: sort.direction,
+    // sort_by: sort.direction,
+  });
   console.log(data);
 
   const setTypesHandler = useCallback((values: string[]) => {
@@ -65,15 +68,15 @@ function VoucherTable() {
           {
             id: "actions",
             cell: ({ row }) => {
-              const voucher_id = row.original.voucher_id;
+              const id = row.original.booking_id;
               const params = new URLSearchParams(
                 row.original as unknown as Record<string, string>
               );
               return (
                 <DropdownMenuActions
                   refetchTable={refetch}
-                  id={voucher_id}
-                  link={`/dashboard/voucher/${voucher_id}?${params}`}
+                  id={id}
+                  link={`/dashboard/booking/${id}?${params}`}
                 />
               );
             },
@@ -104,10 +107,6 @@ function VoucherTable() {
           value: search || "",
           onChange: setSearchHandler,
         }}
-        otherButton={{
-          url: "/dashboard/voucher/create",
-          title: "Tạo mới +",
-        }}
         sort={{
           columnName: sort.columnName,
           direction: sort.direction,
@@ -119,5 +118,3 @@ function VoucherTable() {
     </div>
   );
 }
-
-export default VoucherTable;

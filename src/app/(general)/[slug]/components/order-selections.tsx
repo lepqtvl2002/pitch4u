@@ -278,9 +278,14 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
         >
           <Button
             className={
-              "w-full md:w-full rounded-none md:rounded-md border border-emerald-500 text-emerald-500 bg-white hover:bg-emerald-300"
+              "relative w-full md:w-full rounded-none md:rounded-md border border-emerald-500 text-emerald-500 bg-white hover:bg-emerald-300"
             }
           >
+            {!session && (
+              <p className="absolute -top-4 text-end w-screen right-0 md:top-10 md:w-full italic text-xs md:text-gray-400">
+                Đăng nhập để có thể đặt sân mà không cần phải gọi điện.
+              </p>
+            )}
             <Phone className="mr-2" /> Gọi điện đặt sân
           </Button>
         </a>
@@ -305,12 +310,6 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
         >
           Đặt sân ngay
         </Button>
-
-        {!session && (
-          <p className="absolute right-0 -top-4 md:-bottom-6 italic text-xs md:text-gray-400">
-            Đăng nhập để có thể đặt sân mà không cần phải gọi điện.
-          </p>
-        )}
       </div>
     </div>
   );

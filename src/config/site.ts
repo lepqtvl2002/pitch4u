@@ -92,23 +92,13 @@ export const adminConfig: DashboardConfig = {
 export const dashboardConfig: DashboardConfig = {
   mainNav: [
     {
-      title: "Điều khiển",
-      href: "/dashboard",
-      icon: "layoutPanelLeft",
-    },
-    {
       title: "Quản lý sân",
       href: "/dashboard/pitch",
       icon: "managerPitch",
     },
     {
-      title: "Nhân viên",
-      href: "/dashboard/staff",
-      icon: "userSquare",
-    },
-    {
-      title: "Doanh thu",
-      href: "/dashboard/revenua",
+      title: "Quản lý đặt sân",
+      href: "/dashboard/booking",
       icon: "scrollText",
     },
     {
@@ -124,23 +114,13 @@ export const dashboardConfig: DashboardConfig = {
   ],
   sidebarNav: [
     {
-      title: "Điều khiển",
-      href: "/dashboard",
-      icon: "layoutPanelLeft",
-    },
-    {
       title: "Quản lý sân",
       href: "/dashboard/pitch",
       icon: "managerPitch",
     },
     {
-      title: "Nhân viên",
-      href: "/dashboard/staff",
-      icon: "userSquare",
-    },
-    {
-      title: "Doanh thu",
-      href: "/dashboard/revenue",
+      title: "Quản lý đặt sân",
+      href: "/dashboard/booking",
       icon: "scrollText",
     },
     {
@@ -170,7 +150,29 @@ export const dashboardConfig: DashboardConfig = {
 
 export const dashboardConfigOperator: DashboardConfig = {
   ...dashboardConfig,
+  mainNav: [
+    {
+      title: "Điều khiển",
+      href: "/dashboard",
+      icon: "layoutPanelLeft",
+    },
+    {
+      title: "Nhân viên",
+      href: "/dashboard/staff",
+      icon: "userSquare",
+    },
+  ],
   sidebarNav: [
+    {
+      title: "Điều khiển",
+      href: "/dashboard",
+      icon: "layoutPanelLeft",
+    },
+    {
+      title: "Nhân viên",
+      href: "/dashboard/staff",
+      icon: "userSquare",
+    },
     ...dashboardConfig.sidebarNav,
     {
       title: "Dịch vụ",

@@ -2,8 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { $fetch } from "@/lib/axios";
 import { Data as DataStatisticOwner } from "@/app/(dashboard)/dashboard/page";
 import { Data as DataStatisticSystem } from "@/app/(admin)/admin/page";
+import IPaginated from "@/types/paginated";
 
-type Booking = {
+export type Booking = {
   booking_id: number;
   user_id: number;
   payment_type: string;
@@ -97,7 +98,9 @@ export class StatisticUseQuery {
         $fetch(`/v1/booking`, {
           method: "GET",
           params: query,
-        }).then((res) => res.data as { result: { data: Booking[] } }),
+        }).then(
+          (res) => res.data as { result: { data: Booking[] } & IPaginated }
+        ),
       cacheTime: 100,
       keepPreviousData: true,
     });

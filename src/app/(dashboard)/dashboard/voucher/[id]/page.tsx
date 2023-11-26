@@ -6,9 +6,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function DetailVoucherPage() {
   const searchParams = useSearchParams();
-  searchParams.forEach(a => console.log(a))
   const voucher = Object.fromEntries(searchParams.entries());
-  console.log(voucher)
   return (
     <div className="flex-1 lg:max-w-2xl space-y-6 p-10 pb-16">
       <div>
