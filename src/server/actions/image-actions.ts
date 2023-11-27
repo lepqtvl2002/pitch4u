@@ -16,7 +16,6 @@ export class ImageUseMutation {
           data: formData,
           headers,
         });
-        console.log(res);
         return res.data;
       },
       onSuccess: () => {

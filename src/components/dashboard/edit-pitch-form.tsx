@@ -48,6 +48,7 @@ const createFormSchema = z.object({
       (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
       "Chỉ nhận file .jpg, .jpeg, .png and .webp "
     ),
+  uploadPhotos: z.any().nullable(),
 });
 
 const updateFormSchema = z.object({
@@ -60,15 +61,18 @@ const updateFormSchema = z.object({
   thumbnail: z
     .any()
     .nullable()
-    .refine((files) => files?.length == 1, "Chỉ được chọn một file")
+    .optional()
+    .refine((files) => files?.length <= 1, "Chỉ được chọn một file")
     .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+      (files) => files?.length === 0 || files?.[0]?.size <= MAX_FILE_SIZE,
       `Kích thước file không được vượt quá ${MAX_FILE_SIZE / 1000}KB`
     )
     .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+      (files) =>
+        files?.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
       "Chỉ nhận file .jpg, .jpeg, .png and .webp "
     ),
+  uploadPhotos: z.any().nullable(),
 });
 
 type FormProps = {
@@ -98,16 +102,30 @@ export function EditPitchForm({ pitch }: FormProps) {
       title: "Đang xử lý yêu cầu",
       description: "Vui lòng chờ trong giây lát",
     });
-    const result = await uploadImage({ image: data.thumbnail[0] });
-    let { long, lat, thumbnail, ...sendValues } = data;
-    await mutateAsync({ ...sendValues, logo: result?.result || null });
+    const logoUrl = data?.thumbnail[0]
+      ? await uploadImage({ image: data.thumbnail[0] })
+      : null;
+    const imageUrls = await Promise.all(
+      Array.from(data.uploadPhotos)?.map((file) => uploadImage({ image: file }))
+    );
+    console.log(imageUrls);
+    const { long, lat, thumbnail, uploadPhotos, ...values } = data;
+    let sendValues: Record<string, any> = {};
+    if (logoUrl) sendValues = { ...values, logo: logoUrl?.result };
+    if (imageUrls?.length > 0)
+      sendValues = {
+        ...sendValues,
+        images: imageUrls.map((imageUrl) => imageUrl?.result),
+      };
+    await mutateAsync({ ...sendValues });
     route.push(`/dashboard/pitch/${pitch?.pitch_id}`);
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid grid-cols-2 gap-2">
+        {/* Logo */}
+        <div className="grid gap-2">
           <div>
             <Label htmlFor="thumbnail">Logo sân bóng</Label>
             <p className="text-sm text-muted-foreground">
@@ -148,6 +166,7 @@ export function EditPitchForm({ pitch }: FormProps) {
             />
           </div>
         </div>
+        
         <FormField
           control={form.control}
           name="name"
@@ -187,6 +206,75 @@ export function EditPitchForm({ pitch }: FormProps) {
             </FormItem>
           )}
         />
+
+        {/* Images */}
+        <div className="grid gap-2">
+          <div>
+            <Label htmlFor="uploadPhotos">Hình ảnh về sân bóng</Label>
+            <p className="text-sm text-muted-foreground">
+              Thêm hình ảnh để mọi người biết thêm về sân bóng
+            </p>
+            {form.formState.errors.uploadPhotos && (
+              <p className="text-sm text-red-500">
+                {form.formState.errors.uploadPhotos?.message?.toString()}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col items-center space-y-2">
+            {form.watch("uploadPhotos")?.length > 1 && (
+              <pre className={"inline-flex overflow-auto gap-2 border-muted"}>
+                {Array.from(form.getValues("uploadPhotos"))?.map(
+                  (uploadPhoto: any, index: number) => (
+                    <Image
+                      onClick={() => {
+                        const currentFileList = form.getValues("uploadPhotos");
+                        // Remove the file at the specified index
+                        const updatedFileList = Array.from(
+                          currentFileList
+                        ).filter((file, i) => i !== index);
+
+                        // Create a new FileList with the updated files
+                        const newFileList = new DataTransfer();
+                        updatedFileList.forEach((file: any) => {
+                          newFileList.items.add(file);
+                        });
+
+                        form.setValue("uploadPhotos", newFileList.files);
+                      }}
+                      key={index}
+                      src={URL.createObjectURL(uploadPhoto)}
+                      alt={form.getValues("name")}
+                      width={1000}
+                      height={100}
+                      className="w-full border"
+                    />
+                  )
+                )}
+              </pre>
+            )}
+            {pitch?.images && (
+              <pre className="inline-flex overflow-auto gap-2 border-muted">
+                {pitch?.images?.map((imageUrl: any, index: number) => (
+                  <Image
+                    key={index}
+                    src={imageUrl}
+                    alt={imageUrl}
+                    width={2000}
+                    height={1000}
+                    className="w-full border"
+                  />
+                ))}
+              </pre>
+            )}
+            <Input
+              id="uploadPhotos"
+              placeholder="Thêm hình ảnh"
+              type="file"
+              multiple
+              {...form.register("uploadPhotos")}
+            />
+          </div>
+        </div>
 
         <Button disabled={isLoading} type="submit">
           Cập nhật thông tin

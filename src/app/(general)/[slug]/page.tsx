@@ -6,22 +6,13 @@ import { $globalFetch } from "@/lib/axios";
 import { pitchTypesArray } from "@/enums/pitchTypes";
 import Link from "next/link";
 
-
 const PitchDetail = async ({ params }: { params: { slug: string } }) => {
   const slug = params.slug;
   const res = await $globalFetch.get(`/v1/pitches/slugs/${slug}`);
   const pitch = {
     ...res.data.result,
     types: pitchTypesArray,
-    imageUrls: [
-      "/pitch4u-photo01.webp",
-      "/pitch4u-photo06.webp",
-      "/pitch4u-photo07.webp",
-      "/pitch4u-photo06.webp",
-      "/pitch4u-photo07.webp",
-      "/pitch4u-photo07.webp",
-      "/pitch4u-photo07.webp",
-    ],
+    imageUrls: res.data.result.images,
   };
 
   if (res.status !== 200) return notFound();
@@ -58,7 +49,7 @@ const PitchDetail = async ({ params }: { params: { slug: string } }) => {
           {/*<VoteStars initialRating={userRating} onRatingChange={handleRatingChange} />*/}
         </section>
         <section id={"comment"} className={"flex flex-col space-y-2"}>
-          {pitch?.reviews.map((review : ReviewType) => (
+          {pitch?.reviews.map((review: ReviewType) => (
             <Review
               key={review.review_id}
               review={review}
