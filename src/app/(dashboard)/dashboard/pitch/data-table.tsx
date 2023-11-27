@@ -2,7 +2,7 @@
 import { DataTable } from "@/components/dashboard/data-table";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns} from "./column";
+import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { toast } from "@/components/ui/use-toast";
@@ -24,7 +24,7 @@ function PitchTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isFetching } = PitchUseQuery.search({
+  const { data, isError, isFetching } = PitchUseQuery.getMyPitches({
     limit: pageSize,
     page: pageIndex + 1,
     name: debouncedSearch,
@@ -51,7 +51,7 @@ function PitchTable() {
         columns={columns}
         data={data?.result.data}
         isLoading={isFetching}
-        pageCount={Math.floor(data?.result.total / pageSize)}
+        pageCount={Math.floor((data?.result.total - 1) / pageSize + 1)}
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}

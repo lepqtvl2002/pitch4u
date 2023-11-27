@@ -71,8 +71,8 @@ export function ConfigPitchForm({ pitch }: FormProps) {
     // mode: "onChange",
   });
 
-  const [isShowOpenDays, setIsShowOpenDays] = useState(false);
-  const [isShowTimeFrames, setIsShowTimeFrames] = useState(false);
+  const [isShowOpenDays, setIsShowOpenDays] = useState(true);
+  const [isShowTimeFrames, setIsShowTimeFrames] = useState(true);
   const [timeFrames, setTimeFrames] = useState<
     { number: number; active: boolean }[]
   >([]);
@@ -132,7 +132,7 @@ export function ConfigPitchForm({ pitch }: FormProps) {
     });
     await mutateAsync(data);
     setIsLoading(false);
-    route.push("/dashboard/pitch");
+    route.push(`/dashboard/pitch/${pitch.pitch_id}`);
   }
 
   return (

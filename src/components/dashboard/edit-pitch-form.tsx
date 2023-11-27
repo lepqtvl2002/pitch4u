@@ -22,6 +22,7 @@ import Image from "next/image";
 import { Label } from "../ui/label";
 import { ImageUseMutation } from "@/server/actions/image-actions";
 import { AvatarCustom } from "../ui/avatar-custom";
+import { useState } from "react";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -91,13 +92,13 @@ export function EditPitchForm({ pitch }: FormProps) {
     },
     // mode: "onChange",
   });
-  const { mutateAsync, isLoading } = PitchUseMutation.updatePitch(
-    pitch?.pitch_id
-  );
+  const { mutateAsync } = PitchUseMutation.updatePitch(pitch?.pitch_id);
   const { mutateAsync: uploadImage } = ImageUseMutation.upload();
+  const [isLoading, setIsLoading] = useState(false);
   const route = useRouter();
 
   async function onSubmit(data: z.infer<typeof schema>) {
+    setIsLoading(true);
     toast({
       title: "Đang xử lý yêu cầu",
       description: "Vui lòng chờ trong giây lát",
@@ -108,7 +109,6 @@ export function EditPitchForm({ pitch }: FormProps) {
     const imageUrls = await Promise.all(
       Array.from(data.uploadPhotos)?.map((file) => uploadImage({ image: file }))
     );
-    console.log(imageUrls);
     const { long, lat, thumbnail, uploadPhotos, ...values } = data;
     let sendValues: Record<string, any> = {};
     if (logoUrl) sendValues = { ...values, logo: logoUrl?.result };
@@ -118,6 +118,7 @@ export function EditPitchForm({ pitch }: FormProps) {
         images: imageUrls.map((imageUrl) => imageUrl?.result),
       };
     await mutateAsync({ ...sendValues });
+    setIsLoading(false);
     route.push(`/dashboard/pitch/${pitch?.pitch_id}`);
   }
 
@@ -166,7 +167,7 @@ export function EditPitchForm({ pitch }: FormProps) {
             />
           </div>
         </div>
-        
+
         <FormField
           control={form.control}
           name="name"
