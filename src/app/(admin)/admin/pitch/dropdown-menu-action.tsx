@@ -27,11 +27,8 @@ export default function DropdownMenuPitch({
           <Link href={url}>Xem chi tiết</Link>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link href={`/dashboard/pitch/${pitchId}/edit`}>Cài đặt sân</Link>
-        </DropdownMenuItem>
         <DropdownMenuItem className="bg-red-500 text-white">
-          Tạm dừng hoạt động
+          Khóa sân này
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

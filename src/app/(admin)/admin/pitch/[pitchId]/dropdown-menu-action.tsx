@@ -1,22 +1,22 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-type DropdownMenuPitchProps = {
-  pitchId: string | number;
+type DropdownMenuSubPitchProps = {
+  subPitchId: string | number;
   url: string;
+  refetch ?: any;
 };
-export default function DropdownMenuPitch({
-  pitchId,
+export default function DropdownMenuSubPitch({
+  subPitchId,
   url,
-}: DropdownMenuPitchProps) {
+  refetch
+}: DropdownMenuSubPitchProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -26,13 +26,6 @@ export default function DropdownMenuPitch({
         <DropdownMenuLabel>
           <Link href={url}>Xem chi tiết</Link>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link href={`/dashboard/pitch/${pitchId}/edit`}>Cài đặt sân</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="bg-red-500 text-white">
-          Tạm dừng hoạt động
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

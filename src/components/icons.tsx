@@ -57,7 +57,8 @@ import {
   LucideIcon,
   ClipboardSignature,
   FolderHeartIcon,
-  History
+  History,
+  BarChartBigIcon,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -171,6 +172,7 @@ export const Icons = {
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
     </svg>
   ),
+  chart: BarChartBigIcon,
   favorite: FolderHeartIcon,
   history: History,
   logo: Command,

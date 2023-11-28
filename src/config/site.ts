@@ -25,7 +25,7 @@ export const adminConfig: DashboardConfig = {
     {
       title: "Điều khiển",
       href: "/admin",
-      icon: "layoutPanelLeft",
+      icon: "chart",
     },
     {
       title: "Phê duyệt yêu cầu",
@@ -52,12 +52,17 @@ export const adminConfig: DashboardConfig = {
     {
       title: "Điều khiển",
       href: "/admin",
-      icon: "layoutPanelLeft",
+      icon: "chart",
     },
     {
       title: "Phê duyệt yêu cầu",
       href: "/admin/registration",
       icon: "managerPitch",
+    },
+    {
+      title: "Sân bóng",
+      href: "/admin/pitch",
+      icon: "layoutPanelLeft",
     },
     {
       title: "Người dùng",
@@ -94,7 +99,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       title: "Quản lý sân",
       href: "/dashboard/pitch",
-      icon: "managerPitch",
+      icon: "layoutPanelLeft",
     },
     {
       title: "Quản lý đặt sân",
@@ -116,7 +121,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       title: "Quản lý sân",
       href: "/dashboard/pitch",
-      icon: "managerPitch",
+      icon: "layoutPanelLeft",
     },
     {
       title: "Quản lý đặt sân",
@@ -154,7 +159,7 @@ export const dashboardConfigOperator: DashboardConfig = {
     {
       title: "Điều khiển",
       href: "/dashboard",
-      icon: "layoutPanelLeft",
+      icon: "chart",
     },
     {
       title: "Nhân viên",
@@ -166,7 +171,7 @@ export const dashboardConfigOperator: DashboardConfig = {
     {
       title: "Điều khiển",
       href: "/dashboard",
-      icon: "layoutPanelLeft",
+      icon: "chart",
     },
     {
       title: "Nhân viên",
