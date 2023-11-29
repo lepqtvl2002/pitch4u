@@ -28,13 +28,19 @@ function UserTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isFetched, refetch } = UserUseQuery.getManyUsers({
-    q: debouncedSearch,
-    page: pageIndex + 1,
-    limit: pageSize,
-    is_suspended:
-      statuses.includes("suspended") && statuses.length === 1 ? true : false,
-  });
+  const { data, isError, isFetched, refetch } =
+    statuses.length === 1
+      ? UserUseQuery.getManyUsers({
+          q: debouncedSearch,
+          page: pageIndex + 1,
+          limit: pageSize,
+          is_suspended: statuses.includes("suspended") ? true : false,
+        })
+      : UserUseQuery.getManyUsers({
+          q: debouncedSearch,
+          page: pageIndex + 1,
+          limit: pageSize,
+        });
   console.log(data);
 
   const setStatusesHandler = useCallback((values: string[]) => {

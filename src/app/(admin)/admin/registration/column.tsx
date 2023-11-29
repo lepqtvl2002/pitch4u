@@ -9,7 +9,6 @@ import {
 } from "@/lib/convert";
 import IRegistration from "@/types/registration";
 import { cn } from "@/lib/utils";
-import ActionsDropdownMenu from "./actions-dropdown-menu";
 
 export const registrationStatus: DataFacetedOptionsType[] = [
   {
@@ -63,7 +62,7 @@ export const columns: ColumnDef<IRegistration>[] = [
             "capitalize text-white w-fit px-3 font-semibold rounded-full",
             status === "pending"
               ? "bg-yellow-400"
-              : status === "rejected"
+              : status === "denied"
               ? "bg-red-500"
               : "bg-emerald-500"
           )}
@@ -73,63 +72,4 @@ export const columns: ColumnDef<IRegistration>[] = [
       );
     },
   },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const id = row.original.registration_id;
-      const fullname = row.original.fullname;
-      const phone = row.original.phone;
-      const email = row.original.email;
-      const address = row.original.address;
-      const status = row.original.status;
-      const createdAt = row.original.createdAt;
-      const url = `/admin/registration/${id}?fullname=${fullname}&phone=${phone}&email=${email}&address=${address}&status=${status}&createdAt=${createdAt}`;
-      return (
-        <ActionsDropdownMenu id={row.original.registration_id} link={url} />
-      );
-    },
-  },
-  // {
-  //     header: "Code",
-  //     accessorKey: "code",
-  //     cell: (ctx) => {
-  //         const voucher = ctx.row.original;
-  //         return <div className="text-sm text-foreground/60">{voucher.code}</div>;
-  //     },
-  // },
-  // {
-  //     header: "Thời gian có hiệu lực",
-  //     accessorKey: "startDateToEndDate",
-  //     accessorFn: (row) =>
-  //         `${new Date(row.startDate).toLocaleDateString()} - ${new Date(
-  //             row.endDate
-  //         ).toLocaleDateString()}`,
-  // },
-  // {
-  //     header: "Loại",
-  //     accessorKey: "type",
-  //     id: "type",
-  //     cell: ({ row }) => {
-  //         const typeLabel = stringToVoucherType(row.original.type);
-  //         // const type = vouchersTypes.find((t) => t.label === row.getValue("type"));
-  //         // if (!type) return null;
-  //
-  //         return (
-  //             <p className={cn("capitalize", voucherVariant({ variant: typeLabel }))}>
-  //         {voucherTypeToString(row.original.type)}
-  //         </p>
-  //     );
-  //     },
-  // },
-  // {
-  //     header: "Giảm",
-  //     accessorKey: "reduce",
-  //     accessorFn: (row) =>
-  //         row.type === "REDUCE_AMOUNT"
-  //             ? row.reduceByAmount
-  //             : row.reduceByPercent
-  //                 ? `${row.reduceByPercent}%`
-  //                 : 0,
-  // },
-  // {
 ];

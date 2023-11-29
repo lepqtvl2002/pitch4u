@@ -8,6 +8,7 @@ import { RegistrationStatus } from "@/enums/registrationStatuses";
 import { stringToRegistrationStatus } from "@/lib/convert";
 import { RegistrationUseQuery } from "@/server/queries/registration-queries";
 import { toast } from "@/components/ui/use-toast";
+import ActionsDropdownMenu from "./actions-dropdown-menu";
 
 function RegistrationTable() {
   const [statuses, setStatuses] = React.useState<RegistrationStatus[]>([]);
@@ -27,7 +28,7 @@ function RegistrationTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isFetched } = RegistrationUseQuery.getMany({
+  const { data, isError, isFetched, refetch } = RegistrationUseQuery.getMany({
     q: debouncedSearch,
     limit: pageSize,
     page: pageIndex + 1,
@@ -55,7 +56,18 @@ function RegistrationTable() {
   return (
     <div>
       <DataTable
-        columns={columns}
+        columns={[...columns, 
+          {
+            id: "actions",
+            cell: ({ row }) => {
+              const id = row.original.registration_id;
+              const params = new URLSearchParams(row.original as unknown as string[][])
+              const url = `/admin/registration/${id}?${params}`;
+              return (
+                <ActionsDropdownMenu refetch={refetch} id={row.original.registration_id} link={url} />
+              );
+            },
+          },]}
         data={data?.result.data}
         isLoading={!isFetched}
         pageCount={Math.floor((data?.result?.total - 1) / pageSize) + 1}

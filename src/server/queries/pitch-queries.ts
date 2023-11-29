@@ -14,6 +14,18 @@ export class PitchUseQuery {
       keepPreviousData: true,
     });
   };
+  static getAllPitches = (query: Record<string, any>) => {
+    return useQuery({
+      queryKey: ["pitches", query],
+      queryFn: () =>
+        $fetch(`/v1/pitches`, {
+          method: "GET",
+          params: query,
+        }).then((res) => res.data),
+      cacheTime: 100,
+      keepPreviousData: true,
+    });
+  };
   static getMyPitches = (params: Record<string, any>) => {
     return useQuery({
       queryKey: ["my-pitches", params],

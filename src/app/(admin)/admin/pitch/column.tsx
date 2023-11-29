@@ -2,9 +2,22 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { IPitch } from "@/types/pitch";
-import DropdownMenuPitch from "./dropdown-menu-action";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
+import { DataFacetedOptionsType } from "@/components/dashboard/table-facet";
+import { userStateVariant } from "@/lib/utils";
 
+export const pitchStatusOptions: DataFacetedOptionsType[] = [
+  {
+    label: "Hoạt động",
+    value: "active",
+    icon: "check",
+  },
+  {
+    label: "Bị khóa",
+    value: "suspended",
+    icon: "close",
+  },
+];
 export const columns: ColumnDef<IPitch>[] = [
   {
     header: " ",
@@ -20,21 +33,26 @@ export const columns: ColumnDef<IPitch>[] = [
     },
   },
   {
+    header: "Trạng thái",
+    accessorKey: "status",
+    cell: (ctx) => {
+      const isSuspended = ctx.row.original?.suspended;
+      return (
+        <div
+          className={userStateVariant({
+            variant: isSuspended ? "suspended" : "active",
+          })}
+        >
+          {isSuspended ? "Bị khóa" : "Hoạt động"}
+        </div>
+      );
+    },
+  },
+  {
     header: "Địa chỉ",
     cell: (ctx) => {
       const address = ctx.row.original.address;
       return <div className={"text-bold"}>{address}</div>;
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      return (
-        <DropdownMenuPitch
-          pitchId={row.original.pitch_id}
-          url={`/admin/pitch/${row.original.pitch_id}`}
-        />
-      );
     },
   },
 ];

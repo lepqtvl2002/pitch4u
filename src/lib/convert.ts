@@ -9,7 +9,7 @@ export const stringToRegistrationStatus = (status: string) => {
       return RegistrationStatuses.Pending;
     case "Bị từ chối":
       return RegistrationStatuses.Rejected;
-    case "rejected":
+    case "denied":
       return RegistrationStatuses.Rejected;
     default:
       return RegistrationStatuses.Approved;
@@ -22,7 +22,7 @@ export const registrationStatusToString = (status: string) => {
       return "Đang chờ";
     case "Đang chờ":
       return "Đang chờ";
-    case "rejected":
+    case "denied":
       return "Bị từ chối";
     case "Bị từ chối":
       return "Bị từ chối";
