@@ -2,7 +2,6 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { IPitch } from "@/types/pitch";
-import DropdownMenuPitch from "./dropdown-menu-action";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 import { userStateVariant } from "@/lib/utils";
 
@@ -41,17 +40,6 @@ export const columns: ColumnDef<IPitch>[] = [
     cell: (ctx) => {
       const address = ctx.row.original.address;
       return <div className={"text-bold"}>{address}</div>;
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      return (
-        <DropdownMenuPitch
-          pitchId={row.original.pitch_id}
-          url={`/dashboard/pitch/${row.original.pitch_id}`}
-        />
-      );
     },
   },
 ];
