@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import GoogleMapReact, { ClickEventValue } from "google-map-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -79,7 +80,18 @@ const updateFormSchema = z.object({
 type FormProps = {
   pitch?: any;
 };
-
+type MarkerProps = {
+  lat: number;
+  lng: number;
+};
+const Marker = () => (
+  <Image
+    width={30}
+    height={30}
+    src={"/assets/marker-icon.png"}
+    alt="marker"
+  ></Image>
+);
 export function EditPitchForm({ pitch }: FormProps) {
   const schema = pitch ? updateFormSchema : createFormSchema;
   const form = useForm<z.infer<typeof schema>>({
@@ -96,7 +108,10 @@ export function EditPitchForm({ pitch }: FormProps) {
   const { mutateAsync: uploadImage } = ImageUseMutation.upload();
   const [isLoading, setIsLoading] = useState(false);
   const route = useRouter();
-
+  const [markerPos, setMarkerPos] = useState({
+    lat: pitch.lat || 16.0544068,
+    lng: pitch.long || 108.1655063,
+  });
   async function onSubmit(data: z.infer<typeof schema>) {
     setIsLoading(true);
     toast({
@@ -117,11 +132,23 @@ export function EditPitchForm({ pitch }: FormProps) {
         ...sendValues,
         images: imageUrls.map((imageUrl) => imageUrl?.result),
       };
+    sendValues["lat"] = markerPos.lat;
+    sendValues["long"] = markerPos.lng;
     await mutateAsync({ ...sendValues });
     setIsLoading(false);
     route.push(`/dashboard/pitch/${pitch?.pitch_id}`);
   }
-
+  const mapDefaultProps = {
+    center: {
+      lat: 16.0544068,
+      lng: 108.1655063,
+    },
+    zoom: 11,
+  };
+  const handleMark = (event: ClickEventValue) => {
+    setMarkerPos({ lat: event.lat, lng: event.lng });
+  };
+  //https://www.google.com/maps/place/%C4%90%C3%A0+N%E1%BA%B5ng,+H%E1%BA%A3i+Ch%C3%A2u,+%C4%90%C3%A0+N%E1%BA%B5ng,+Vi%E1%BB%87t+Nam/@16.0472473,108.1655063,13z/data=!3m1!4b1!4m6!3m5!1s0x314219c792252a13:0xfc14e3a044436487!8m2!3d16.0544068!4d108.2021667!16s%2Fg%2F11bc5hq_qy?entry=ttu
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -203,6 +230,44 @@ export function EditPitchForm({ pitch }: FormProps) {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Địa chỉ trên Google map</FormLabel>
+              <FormControl>
+                <div style={{ height: "100vh", width: "1000px" }}>
+                  <GoogleMapReact
+                    bootstrapURLKeys={{
+                      key: "AIzaSyDFaXNvUSNlqQoqlNBgCgppWcSeYxb5kDM",
+                    }}
+                    defaultCenter={mapDefaultProps.center}
+                    defaultZoom={mapDefaultProps.zoom}
+                    onClick={handleMark}
+                  >
+                    <Marker lat={markerPos.lat} lng={markerPos.lng} />
+                  </GoogleMapReact>
+                </div>
+              </FormControl>
+              <FormLabel>Lat</FormLabel>
+              <FormControl>
+                <div>
+                  <p>{markerPos.lat}</p>
+                </div>
+              </FormControl>
+              <FormLabel>Long</FormLabel>
+              <FormControl>
+                <div>
+                  <p>{markerPos.lng}</p>
+                </div>
+              </FormControl>
+
               <FormMessage />
             </FormItem>
           )}
