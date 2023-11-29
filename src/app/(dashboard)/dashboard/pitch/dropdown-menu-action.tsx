@@ -6,17 +6,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { mutatingToast } from "@/lib/quick-toast";
+import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 type DropdownMenuPitchProps = {
   pitchId: string | number;
   url: string;
+  refetch?: any;
 };
 export default function DropdownMenuPitch({
   pitchId,
   url,
+  refetch,
 }: DropdownMenuPitchProps) {
+  const { mutateAsync: suspendPitch, isLoading } =
+    PitchUseMutation.suspendPitch();
+  async function handelSuspendPitch() {
+    mutatingToast();
+    await suspendPitch(pitchId);
+    refetch();
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -30,7 +41,11 @@ export default function DropdownMenuPitch({
         <DropdownMenuItem>
           <Link href={`/dashboard/pitch/${pitchId}/edit`}>Cài đặt sân</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem className="bg-red-500 text-white">
+        <DropdownMenuItem
+          disabled={isLoading}
+          onClick={handelSuspendPitch}
+          className="bg-red-500 text-white"
+        >
           Tạm dừng hoạt động
         </DropdownMenuItem>
       </DropdownMenuContent>

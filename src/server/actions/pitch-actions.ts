@@ -106,6 +106,26 @@ export class PitchUseMutation {
     });
   };
 
+  // Suspend pitch
+  static suspendPitch = () => {
+    return useMutation({
+      mutationFn: (pitch_id : number | string) =>
+        $fetch(`/v1/pitches/${pitch_id}/suspend`, {
+          method: "PATCH",
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({ title: "Đã khóa sân thành công", variant: "success" });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Đã xảy ra lỗi trong khi khóa sân này",
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
   // Delete sub pitch
   static removeSubPitch = (subPitchId: string | number) => {
     return useMutation({

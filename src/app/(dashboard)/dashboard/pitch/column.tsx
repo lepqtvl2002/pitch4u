@@ -2,8 +2,8 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { IPitch } from "@/types/pitch";
-import DropdownMenuPitch from "./dropdown-menu-action";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
+import { userStateVariant } from "@/lib/utils";
 
 export const columns: ColumnDef<IPitch>[] = [
   {
@@ -20,21 +20,26 @@ export const columns: ColumnDef<IPitch>[] = [
     },
   },
   {
+    header: "Trạng thái",
+    accessorKey: "status",
+    cell: (ctx) => {
+      const isSuspended = ctx.row.original?.suspended;
+      return (
+        <div
+          className={userStateVariant({
+            variant: isSuspended ? "suspended" : "active",
+          })}
+        >
+          {isSuspended ? "Bị khóa" : "Hoạt động"}
+        </div>
+      );
+    },
+  },
+  {
     header: "Địa chỉ",
     cell: (ctx) => {
       const address = ctx.row.original.address;
       return <div className={"text-bold"}>{address}</div>;
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      return (
-        <DropdownMenuPitch
-          pitchId={row.original.pitch_id}
-          url={`/dashboard/pitch/${row.original.pitch_id}`}
-        />
-      );
     },
   },
 ];
