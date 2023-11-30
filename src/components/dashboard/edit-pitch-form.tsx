@@ -37,8 +37,6 @@ const createFormSchema = z.object({
     message: "Tên phải chứa tối thiểu 3 ký tự.",
   }),
   address: z.string(),
-  long: z.number(),
-  lat: z.number(),
   thumbnail: z
     .any()
     .refine((files) => files?.length == 1, "Chỉ được chọn một file")
@@ -58,8 +56,6 @@ const updateFormSchema = z.object({
     message: "Tên phải chứa tối thiểu 3 ký tự.",
   }),
   address: z.string(),
-  long: z.number(),
-  lat: z.number(),
   thumbnail: z
     .any()
     .nullable()
@@ -84,13 +80,8 @@ type MarkerProps = {
   lat: number;
   lng: number;
 };
-const Marker = () => (
-  <Image
-    width={30}
-    height={30}
-    src={"/assets/marker-icon.png"}
-    alt="marker"
-  ></Image>
+const Marker = (props: MarkerProps) => (
+  <Image width={30} height={30} src={"/assets/marker-icon.png"} alt="marker" />
 );
 export function EditPitchForm({ pitch }: FormProps) {
   const schema = pitch ? updateFormSchema : createFormSchema;
@@ -99,8 +90,6 @@ export function EditPitchForm({ pitch }: FormProps) {
     defaultValues: {
       name: pitch?.name,
       address: pitch?.address,
-      lat: pitch?.lat || 0,
-      long: pitch?.long || 0,
     },
     // mode: "onChange",
   });
@@ -124,7 +113,7 @@ export function EditPitchForm({ pitch }: FormProps) {
     const imageUrls = await Promise.all(
       Array.from(data.uploadPhotos)?.map((file) => uploadImage({ image: file }))
     );
-    const { long, lat, thumbnail, uploadPhotos, ...values } = data;
+    const { thumbnail, uploadPhotos, ...values } = data;
     let sendValues: Record<string, any> = {};
     if (logoUrl) sendValues = { ...values, logo: logoUrl?.result };
     if (imageUrls?.length > 0)
@@ -234,47 +223,31 @@ export function EditPitchForm({ pitch }: FormProps) {
             </FormItem>
           )}
         />
-
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Địa chỉ trên Google map</FormLabel>
-              <FormControl>
-                <div style={{ height: "100vh", width: "1000px" }}>
-                  <GoogleMapReact
-                    bootstrapURLKeys={{
-                      key: "AIzaSyDFaXNvUSNlqQoqlNBgCgppWcSeYxb5kDM",
-                    }}
-                    defaultCenter={mapDefaultProps.center}
-                    defaultZoom={mapDefaultProps.zoom}
-                    onClick={handleMark}
-                  >
-                    <Marker lat={markerPos.lat} lng={markerPos.lng} />
-                  </GoogleMapReact>
-                </div>
-              </FormControl>
-              <FormLabel>Lat</FormLabel>
-              <FormControl>
-                <div>
-                  <p>{markerPos.lat}</p>
-                </div>
-              </FormControl>
-              <FormLabel>Long</FormLabel>
-              <FormControl>
-                <div>
-                  <p>{markerPos.lng}</p>
-                </div>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        <div className="w-[1000px] h-screen pb-10 m-10">
+          <FormLabel>Địa chỉ trên Google map</FormLabel>
+          <FormDescription>
+            Hãy chọn chính xác địa chỉ sân bóng của bạn trên bản đồ để người
+            dùng có thể dễ dàng tìm kiếm.
+          </FormDescription>
+          <GoogleMapReact
+            bootstrapURLKeys={{
+              key: "AIzaSyDFaXNvUSNlqQoqlNBgCgppWcSeYxb5kDM",
+            }}
+            defaultCenter={mapDefaultProps.center}
+            defaultZoom={mapDefaultProps.zoom}
+            onClick={handleMark}
+          >
+            <Marker lat={markerPos.lat} lng={markerPos.lng} />
+          </GoogleMapReact>
+          <div className="space-x-2">
+            <FormLabel>Lat:</FormLabel>
+            <span>{markerPos.lat}</span>
+            <FormLabel>Long:</FormLabel>
+            <span>{markerPos.lng}</span>
+          </div>
+        </div>
         {/* Images */}
-        <div className="grid gap-2">
+        <div className="grid gap-2 pt-10">
           <div>
             <Label htmlFor="uploadPhotos">Hình ảnh về sân bóng</Label>
             <p className="text-sm text-muted-foreground">
