@@ -73,4 +73,16 @@ export class PitchUseQuery {
       keepPreviousData: true,
     });
   };
+  static getPitchesFavorite = (query: Record<string, any>) => {
+    return useQuery({
+      queryKey: ["pitchFavorite", query],
+      queryFn: () =>
+        $fetch(`/v1/pitches/favorite`, {
+          method: "GET",
+          params: query,
+        }).then((res) => res.data),
+      cacheTime: 100,
+      keepPreviousData: true,
+    });
+  };
 }

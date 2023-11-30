@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "../ui/use-toast";
 import Image from "next/image";
 import { Stars } from "../ui/vote-stars";
+import { Skeleton } from "../ui/skeleton";
 
 const Conditions = [
   { title: "Gần bạn", value: "near" },
@@ -95,7 +96,10 @@ const SearchBar: React.FC = () => {
       </div>
       <div className="mt-4 list-inside list-disc max-h-screen overflow-y-auto no-scrollbar">
         {isFetching ? (
-          <div>Loading...</div>
+          <div className="flex gap-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4">
+            <Skeleton className="w-[200px] h-[200px]"/>
+            <Skeleton className="flex-1 h-[200px]"/>
+          </div>
         ) : (
           pitches.map((pitch: IPitch) => (
             <PitchItem key={pitch?.pitch_id} pitch={pitch} />
@@ -129,7 +133,7 @@ function PitchItem({ pitch }: { pitch: IPitch }) {
     >
       <Link
         href={`/${pitch?.slug}`}
-        className="flex justify-between items-center w-full gap-2"
+        className="flex justify-between items-center w-full min-h-[200px] gap-2"
       >
         <Image
           src={pitch.logo || "/pitch4u-logo.png"}
@@ -146,8 +150,8 @@ function PitchItem({ pitch }: { pitch: IPitch }) {
           </div>
           <p className="font-semibold text-xl text-end pr-10">
             {pitch?.min_price === pitch?.max_price
-              ? pitch?.max_price
-              : `${pitch?.min_price} - ${pitch?.max_price}`}{" "}
+              ? pitch?.max_price?.toLocaleString()
+              : `${pitch?.min_price?.toLocaleString()} - ${pitch?.max_price?.toLocaleString()}`}{" "}
             <span className="text-sm font-normal">VND/h</span>
           </p>
         </div>

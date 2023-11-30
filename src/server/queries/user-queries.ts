@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { $fetch } from "@/lib/axios";
 import IPaginated from "@/types/paginated";
+import { ISubPitch } from "@/types/subPitch";
+import { IPitch } from "@/types/pitch";
 
 export type User = {
   user_id: number;
@@ -40,6 +42,36 @@ export type PaginatedUserList = {
   result: {
     data: User[];
   } & IPaginated;
+};
+
+export type BookingHistory = {
+  booking_id: number;
+  user_id: number;
+  payment_type: "pay_later" | "vnpay";
+  status: "success" | string;
+  discount: number;
+  total: number;
+  voucher_id: number;
+  tournament_id: number | null;
+  pitch_id: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  booking_pitches: [
+    {
+      booking_pitch_id: number;
+      booking_id: number;
+      subpitch_id: number;
+      start_time: string;
+      end_time: string;
+      price: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string | null;
+      sub_pitch: ISubPitch;
+    }
+  ];
+  pitch: IPitch;
 };
 
 export class UserUseQuery {
@@ -93,6 +125,22 @@ export class UserUseQuery {
           method: "GET",
           params: query,
         }).then((res) => res.data as { result: User[] }),
+      cacheTime: 100,
+      keepPreviousData: true,
+    });
+  };
+
+  static getBookingHistory = (query: Record<string, any>) => {
+    return useQuery({
+      queryKey: ["myBookingHistory", query],
+      queryFn: () =>
+        $fetch(`/v1/booking/my-bookings`, {
+          method: "GET",
+          params: query,
+        }).then(
+          (res) =>
+            res.data as { result: { data: BookingHistory[] } & IPaginated }
+        ),
       cacheTime: 100,
       keepPreviousData: true,
     });
