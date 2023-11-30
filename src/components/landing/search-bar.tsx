@@ -109,6 +109,19 @@ const SearchBar: React.FC = () => {
 export default SearchBar;
 
 function PitchItem({ pitch }: { pitch: IPitch }) {
+  const handleNavigateToGoogleMap = () => {
+    let href = `https://www.google.com/maps/place/`;
+    if (pitch.lat && pitch.long)
+      href += `@${pitch.lat},${pitch.long},16z?entry=ttu`;
+    else
+      href = `https://www.google.com/maps/search/${pitch.name.replace(
+        " ",
+        "+"
+      )}`;
+
+    window.open(href, "_blank");
+  };
+
   return (
     <div
       className="relative flex space-x-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4"
@@ -127,14 +140,23 @@ function PitchItem({ pitch }: { pitch: IPitch }) {
         />
         <div className="flex flex-col justify-around h-full flex-1">
           <div className="space-y-2">
-          <h3 className="text-xl font-bold text-gray-800">{pitch?.name}</h3>
-          <p className="text-gray-600 text-sm">{pitch.address}</p>
-          <Stars className="flex text-sm" rating={Number(pitch?.rate)} />
+            <h3 className="text-xl font-bold text-gray-800">{pitch?.name}</h3>
+            <p className="text-gray-600 text-sm">{pitch.address}</p>
+            <Stars className="flex text-sm" rating={Number(pitch?.rate)} />
           </div>
-          <p className="font-semibold text-xl text-end pr-10">{pitch?.min_price === pitch?.max_price ? pitch?.max_price : `${pitch?.min_price} - ${pitch?.max_price}`} <span className="text-sm font-normal">VND/h</span></p>
+          <p className="font-semibold text-xl text-end pr-10">
+            {pitch?.min_price === pitch?.max_price
+              ? pitch?.max_price
+              : `${pitch?.min_price} - ${pitch?.max_price}`}{" "}
+            <span className="text-sm font-normal">VND/h</span>
+          </p>
         </div>
       </Link>
-      <Button variant="ghost" className="hidden md:block absolute top-0 right-0">
+      <Button
+        variant="ghost"
+        className="hidden md:block absolute top-0 right-0"
+        onClick={handleNavigateToGoogleMap}
+      >
         <MapPin color="green" />
       </Button>
     </div>
