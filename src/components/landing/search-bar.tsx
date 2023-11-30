@@ -112,7 +112,7 @@ const SearchBar: React.FC = () => {
 
 export default SearchBar;
 
-function PitchItem({ pitch }: { pitch: IPitch }) {
+export function PitchItem({ pitch }: { pitch: IPitch }) {
   const handleNavigateToGoogleMap = () => {
     let href = `https://www.google.com/maps/place/`;
     if (pitch.lat && pitch.long)

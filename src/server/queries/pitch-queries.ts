@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { $fetch, $globalFetch } from "@/lib/axios";
+import { IPitch } from "@/types/pitch";
 
 export class PitchUseQuery {
   static search = (query: Record<string, any>) => {
@@ -80,7 +81,7 @@ export class PitchUseQuery {
         $fetch(`/v1/pitches/favorite`, {
           method: "GET",
           params: query,
-        }).then((res) => res.data),
+        }).then((res) => res.data as { result: IPitch[] }),
       cacheTime: 100,
       keepPreviousData: true,
     });
