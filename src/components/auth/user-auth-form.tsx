@@ -94,19 +94,23 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
       }
     } else {
       // register
-      setLoading(true);
-      const result = await register({ email: values.email });
-      setLoading(false);
-      await update({
-        accessToken: result?.tokens?.access,
-        refreshToken: result?.tokens?.refresh,
-        user: result?.user,
-      });
-      await setupPassword({
-        password: values.password,
-        accessToken: result?.tokens?.access?.token,
-      });
-      router.push("/register/otp");
+      try {
+        setLoading(true);
+        const result = await register({ email: values.email });
+        await setupPassword({
+          password: values.password,
+          accessToken: result?.tokens?.access?.token,
+        });
+        localStorage.setItem(
+          "REGISTER_TOKEN",
+          JSON.stringify(result?.tokens?.access?.token)
+        );
+        router.push("/register/otp");
+      } catch (error) {
+        console.log("Error while register:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   }
 

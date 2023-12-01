@@ -67,7 +67,7 @@ export const columns: ColumnDef<Booking>[] = [
       const time = ctx.row.original.createdAt;
       return (
         <div className={"text-bold"}>
-          {format(new Date(time), "hh:mm dd/MM/yyyy")}
+          {format(new Date(time), "HH:mm dd/MM/yyyy")}
         </div>
       );
     },

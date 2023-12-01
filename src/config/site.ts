@@ -38,9 +38,9 @@ export const adminConfig: DashboardConfig = {
       icon: "userSquare",
     },
     {
-      title: "Báo cáo",
+      title: "Tố cáo của người dùng",
       href: "/admin/report",
-      icon: "ticket",
+      icon: "scrollText",
     },
     {
       title: "Quảng cáo",
@@ -70,9 +70,9 @@ export const adminConfig: DashboardConfig = {
       icon: "userSquare",
     },
     {
-      title: "Báo cáo",
+      title: "Tố cáo của người dùng",
       href: "/admin/report",
-      icon: "ticket",
+      icon: "scrollText",
     },
     {
       title: "Quảng cáo",

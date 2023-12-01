@@ -59,18 +59,18 @@ export default function BookingTable() {
       <DataTable
         columns={[
           ...columns,
-          {
-            id: "actions",
-            cell: ({ row }) => {
-              return (
-                <DropdownMenuActions
-                  refetch={refetch}
-                  id={row.original.booking_id}
-                  url={`/history/${row.original.booking_id}`}
-                />
-              );
-            },
-          },
+          // {
+          //   id: "actions",
+          //   cell: ({ row }) => {
+          //     return (
+          //       <DropdownMenuActions
+          //         refetch={refetch}
+          //         id={row.original.booking_id}
+          //         url={`/history/${row.original.booking_id}`}
+          //       />
+          //     );
+          //   },
+          // },
         ]}
         data={data?.result.data}
         isLoading={isFetching}

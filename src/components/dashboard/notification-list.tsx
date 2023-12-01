@@ -81,7 +81,7 @@ function NotificationItem({ data }: { data: INotification }) {
             {data.data.text}
           </h5>
           <span className="text-sm text-gray-500">
-            {format(new Date(data.createdAt), "hh:mm dd/MM/yyyy")}
+            {format(new Date(data.createdAt), "HH:mm dd/MM/yyyy")}
           </span>
         </div>
       </div>

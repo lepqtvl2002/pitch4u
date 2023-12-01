@@ -26,6 +26,7 @@ const formSchema = z.object({
 
 export function OTPForm({ className, ...props }: { className?: string }) {
   const [loading, setLoading] = React.useState(false);
+  const token = JSON.parse(localStorage.getItem("REGISTER_TOKEN") ?? "");
   const { mutateAsync: verify } = AuthenticationUseMutation.verifyEmail();
   const { mutateAsync: resendVerify } =
     AuthenticationUseMutation.resendVerifyEmail();
@@ -39,14 +40,14 @@ export function OTPForm({ className, ...props }: { className?: string }) {
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    await verify({ code: values.otp });
+    await verify({ code: values.otp, token });
     setLoading(true);
     router.push("/");
   }
 
   async function resendVerifyEmail() {
     setLoading(true);
-    await resendVerify();
+    await resendVerify({ token });
     setLoading(true);
   }
 

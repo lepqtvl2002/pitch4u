@@ -50,12 +50,23 @@ export const columns: ColumnDef<BookingHistory>[] = [
     },
   },
   {
-    header: "Thời gian đặt sân",
+    header: "Thời gian đặt",
     cell: (ctx) => {
       const createdAt = ctx.row.original.pitch?.createdAt;
       return (
         <div className={"text-bold"}>
           {format(createdAt ? new Date(createdAt) : new Date(), "dd/MM/yyyy")}
+        </div>
+      );
+    },
+  },
+  {
+    header: "Giờ đá",
+    cell: (ctx) => {
+      const startTime = ctx.row.original.booking_pitches.at(0)?.start_time;
+      return (
+        <div className={"text-bold"}>
+          {format(startTime ? new Date(startTime) : new Date(), "HH:mm dd/MM/yyyy")}
         </div>
       );
     },

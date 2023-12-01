@@ -57,20 +57,18 @@ export type BookingHistory = {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  booking_pitches: [
-    {
-      booking_pitch_id: number;
-      booking_id: number;
-      subpitch_id: number;
-      start_time: string;
-      end_time: string;
-      price: number;
-      createdAt: string;
-      updatedAt: string;
-      deletedAt: string | null;
-      sub_pitch: ISubPitch;
-    }
-  ];
+  booking_pitches: {
+    booking_pitch_id: number;
+    booking_id: number;
+    subpitch_id: number;
+    start_time: string;
+    end_time: string;
+    price: number;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    sub_pitch: ISubPitch;
+  }[];
   pitch: IPitch;
 };
 

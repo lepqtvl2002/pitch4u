@@ -215,7 +215,7 @@ export class PitchUseMutation {
       },
       onError: (err: any) => {
         toast({
-          title: "Đã xảy ra lỗi trong khi thực hiện hành động",
+          title: err?.response?.status === 401 ? "Vui lòng đăng nhập để thực hiện hành động này" : "Đã xảy ra lỗi trong khi thực hiện hành động",
           description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
           variant: "destructive",
         });

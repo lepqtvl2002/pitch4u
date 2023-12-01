@@ -6,7 +6,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Stars } from "@/components/ui/vote-stars";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { IPitch } from "@/types/pitch";
-import { MapPin } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -33,9 +33,24 @@ export default function FavoritePage() {
         <>Loading...</>
       ) : (
         <div>
-          {data?.result?.map((pitch) => (
-            <PitchItem key={pitch.pitch_id} pitch={pitch} />
-          ))}
+          {data?.result?.length ? (
+            data?.result?.map((pitch) => (
+              <PitchItem key={pitch.pitch_id} pitch={pitch} />
+            ))
+          ) : (
+            <center className="w-full">
+              <h3 className="m-10 text-xl font-medium">
+                Có vẻ bạn chưa chọn được cho mình sân yêu thích
+              </h3>
+              <p>Hãy tới và chọn sân ngay nào!</p>
+              <Link
+                href="/#find-pitch"
+                className="rounded-lg px-4 py-2 flex w-fit text-white bg-primary hover:bg-emerald-500"
+              >
+                <Search /> Tìm sân ngay
+              </Link>
+            </center>
+          )}
         </div>
       )}
     </div>

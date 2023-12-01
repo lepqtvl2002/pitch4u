@@ -16,10 +16,15 @@ export class AuthenticationUseMutation {
           description: "Vui lòng nhập mã OPT để xác thực tài khoản",
         });
       },
-      onError: () => {
+      onError: (error: any) => {
         toast({
-          title: "Đã xảy ra lỗi trong khi thực hiện đăng ký",
-          description: "Vui kiểm tra và thử lại",
+          title:
+            error?.response?.status === 400
+              ? "Email đã tồn tại"
+              : "Đã xảy ra lỗi trong khi thực hiện đăng ký",
+          description: error?.response?.data?.message
+            ? error?.response?.data?.message
+            : "Vui kiểm tra và thử lại",
           variant: "destructive",
         });
       },
@@ -28,10 +33,13 @@ export class AuthenticationUseMutation {
 
   static verifyEmail = () => {
     return useMutation({
-      mutationFn: ({ code }: { code: string }) =>
-        $fetch(`/v1/auth/verify-email`, {
+      mutationFn: ({ code, token }: { code: string; token: string }) =>
+        $globalFetch(`/v1/auth/verify-email`, {
           method: "PATCH",
           data: { code },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }).then((res) => res.data),
       onSuccess: () => {
         toast({
@@ -53,9 +61,12 @@ export class AuthenticationUseMutation {
 
   static resendVerifyEmail = () => {
     return useMutation({
-      mutationFn: () =>
-        $fetch(`/v1/auth/resend-verify-email`, {
+      mutationFn: ({ token }: { token: string }) =>
+        $globalFetch(`/v1/auth/resend-verify-email`, {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }).then((res) => res.data),
       onSuccess: () => {
         toast({

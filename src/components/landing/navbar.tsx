@@ -49,7 +49,7 @@ export default async function Navbar({
           </ul>
         </div>
         {session?.user ? (
-          <DropdownMenuProfile user={session?.user} className={"flex"} />
+          <DropdownMenuProfile user={session?.user} className={"hidden md:flex"} />
         ) : (
           <div className="hidden md:flex gap-2 w-fit">
             <Button>

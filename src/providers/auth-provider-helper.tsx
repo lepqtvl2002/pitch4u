@@ -14,7 +14,6 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
 
   const refreshAccessToken = useCallback(
     async (refreshToken?: string | null) => {
-      console.log("refreshToken: ", refreshToken);
       try {
         const { data } = await $globalFetch.post<IRefreshReturn>(
           "/v1/auth/refresh-tokens",
@@ -31,23 +30,9 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         return data;
       } catch (error) {
         toast({
-          title: "Phiên đăng nhập hết hạn",
-          description: "Vui lòng đăng nhập lại, error when refresh token",
+          title: "Lỗi kết nối",
+          description: "Vui lòng kiểm tra kết nối mạng của bạn",
           variant: "destructive",
-          action: (
-            <ToastAction
-              onClick={() => {
-                const callbackUrl = new URL(window.location.href);
-                signOut({
-                  redirect: true,
-                  callbackUrl: `/login?callbackUrl=${callbackUrl}`,
-                });
-              }}
-              altText={"relogin"}
-            >
-              Đăng nhập
-            </ToastAction>
-          ),
         });
       }
     },
@@ -58,7 +43,6 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
     const requestInterceptor = $fetch.interceptors.request.use(
       (config) => {
         if (data?.accessToken?.token) {
-          console.log("The token is attached: ", data?.accessToken?.token);
           connectSocket(data?.accessToken?.token);
           config.headers.Authorization = `Bearer ${data?.accessToken?.token}`;
         }
@@ -80,7 +64,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           originalRequest._retry = true;
           toast({
             title: "Phiên đăng nhập hết hạn",
-            description: "Vui lòng đăng nhập lại, have no session",
+            description: "Vui lòng đăng nhập lại",
             variant: "destructive",
             action: (
               <ToastAction
@@ -111,23 +95,9 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
               });
             } else {
               toast({
-                title: "Phiên đăng nhập hết hạn",
-                description: "Vui lòng đăng nhập lại, can not refresh token",
+                title: "Đã có lỗi xảy ra khi tải dữ liệu",
+                description: "Vui lòng thử lại, can not refresh token",
                 variant: "destructive",
-                action: (
-                  <ToastAction
-                    onClick={() => {
-                      const callbackUrl = new URL(window.location.href);
-                      signOut({
-                        redirect: true,
-                        callbackUrl: `/login?callbackUrl=${callbackUrl}`,
-                      });
-                    }}
-                    altText={"relogin"}
-                  >
-                    Đăng nhập
-                  </ToastAction>
-                ),
               });
             }
           } catch (error) {

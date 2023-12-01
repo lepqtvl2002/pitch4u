@@ -11,6 +11,10 @@ import { toast } from "../ui/use-toast";
 import Image from "next/image";
 import { Stars } from "../ui/vote-stars";
 import { Skeleton } from "../ui/skeleton";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { $globalFetch } from "@/lib/axios";
+
+const LIMIT = 3;
 
 const Conditions = [
   { title: "Gần bạn", value: "near" },
@@ -26,12 +30,27 @@ const Conditions = [
 const SearchBar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [conditions, setConditions] = useState<string[]>([]);
-  const [pitches, setPitches] = useState<IPitch[]>([]);
-  const debouncedSearch = useDebounce(searchQuery);
-  const { data, isFetching, isError } = PitchUseQuery.search({
-    name: debouncedSearch,
-    limit: 10,
-    page: 1,
+
+  const fetchPitches = async ({ pageParam = 1 }) => {
+    const res = await $globalFetch(`/v1/pitches?limit=${LIMIT}&page=${pageParam}`);
+    return res.data;
+  };
+
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ["pitches"],
+    queryFn: fetchPitches,
+    getNextPageParam: (lastPage, pages) => {
+      if (pages?.length > (lastPage?.result.total - 1) / LIMIT + 1) return false;
+      return Number(lastPage?.result?.page + 1);
+    },
   });
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -47,11 +66,7 @@ const SearchBar: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (data?.result?.data) setPitches(data?.result?.data);
-  }, [data]);
-
-  if (isError) {
+  if (error) {
     toast({
       title: "Có lỗi xảy ra khi tải sân bóng",
       description: "Vui lòng thử lại",
@@ -94,17 +109,37 @@ const SearchBar: React.FC = () => {
           </Button>
         ))}
       </div>
-      <div className="mt-4 list-inside list-disc max-h-screen overflow-y-auto no-scrollbar">
+      <div className="mt-4 list-inside list-disc no-scrollbar">
         {isFetching ? (
           <div className="flex gap-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4">
-            <Skeleton className="w-[200px] h-[200px]"/>
-            <Skeleton className="flex-1 h-[200px]"/>
+            <Skeleton className="w-[200px] h-[200px]" />
+            <Skeleton className="flex-1 h-[200px]" />
           </div>
         ) : (
-          pitches.map((pitch: IPitch) => (
-            <PitchItem key={pitch?.pitch_id} pitch={pitch} />
-          ))
+          data?.pages.map((group, i) => {
+            const pitches = group?.result.data;
+            return (
+              <React.Fragment key={i}>
+                {pitches?.map((pitch: IPitch) => (
+                  <PitchItem key={pitch?.pitch_id} pitch={pitch} />
+                ))}
+              </React.Fragment>
+            );
+          })
         )}
+        <div>
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+          >
+            {isFetchingNextPage
+              ? "Loading more..."
+              : hasNextPage
+              ? "Load More"
+              : "Nothing more to load"}
+          </button>
+        </div>
+        <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
       </div>
     </div>
   );

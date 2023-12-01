@@ -38,7 +38,7 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
             )}
           >
             <Icon className="mr-2" />
-            {item.title}
+            <span className="hidden md:inline-block">{item.title}</span>
           </Link>
         );
       })}
