@@ -10,6 +10,6 @@ export default function PitchPage() {
   if (session?.user.userRole.name === "admin" || "staff") {
     router.push("/dashboard");
   } else {
-    router.push("/dashboard/pitch/register");
+    router.push("/pitch/register");
   }
 }
