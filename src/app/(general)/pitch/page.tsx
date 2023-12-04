@@ -7,7 +7,7 @@ export default function PitchPage() {
   const router = useRouter();
 
   if (status === "loading") return <>Loading...</>;
-  if (session?.user.userRole.name === "admin" || "staff") {
+  if (session?.user.userRole.name === "admin" || session?.user.userRole.name === "staff") {
     router.push("/dashboard");
   } else {
     router.push("/pitch/register");
