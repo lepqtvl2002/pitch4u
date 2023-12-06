@@ -2,7 +2,7 @@
 import { DataTable } from "@/components/dashboard/data-table";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns} from "./column";
+import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { toast } from "@/components/ui/use-toast";
 import DropdownMenuPitch from "./dropdown-menu-action";
@@ -59,18 +59,24 @@ export default function BookingTable() {
       <DataTable
         columns={[
           ...columns,
-          // {
-          //   id: "actions",
-          //   cell: ({ row }) => {
-          //     return (
-          //       <DropdownMenuActions
-          //         refetch={refetch}
-          //         id={row.original.booking_id}
-          //         url={`/history/${row.original.booking_id}`}
-          //       />
-          //     );
-          //   },
-          // },
+          {
+            id: "actions",
+            cell: ({ row }) => {
+              return (
+                <DropdownMenuActions
+                  refetch={refetch}
+                  id={row.original.booking_id}
+                  url={`/history/${row.original.booking_id}`}
+                  isCancelable={
+                    row.original.status === "success" &&
+                    new Date(
+                      row.original.booking_pitches.at(0)?.end_time ?? ""
+                    ) > new Date()
+                  }
+                />
+              );
+            },
+          },
         ]}
         data={data?.result.data}
         isLoading={isFetching}

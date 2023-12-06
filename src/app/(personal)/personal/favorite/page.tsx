@@ -3,16 +3,23 @@ import { PitchItem } from "@/components/landing/search-bar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
-import { Stars } from "@/components/ui/vote-stars";
+import { mutatingToast } from "@/lib/quick-toast";
+import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
-import { IPitch } from "@/types/pitch";
-import { MapPin, Search } from "lucide-react";
-import Image from "next/image";
+import { Search, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 
 export default function FavoritePage() {
   const { data, isLoading, isError, refetch } =
     PitchUseQuery.getPitchesFavorite({});
+  const { mutateAsync: likePitchMutate } = PitchUseMutation.likePitch();
+
+  async function unLikePitch(pitchId: number | string) {
+    mutatingToast();
+    await likePitchMutate(pitchId);
+    refetch();
+  }
+
   if (isError) {
     toast({
       title: "Không thể tải danh sách",
@@ -35,7 +42,17 @@ export default function FavoritePage() {
         <div>
           {data?.result?.length ? (
             data?.result?.map((pitch) => (
-              <PitchItem key={pitch.pitch_id} pitch={pitch} />
+              <div key={pitch.pitch_id} className="flex items-center">
+                <PitchItem pitch={pitch} />
+                <Button
+                  variant="destructive"
+                  onClick={async () => {
+                    await unLikePitch(pitch.pitch_id);
+                  }}
+                >
+                  <Trash2Icon />
+                </Button>
+              </div>
             ))
           ) : (
             <center className="w-full">

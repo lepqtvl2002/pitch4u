@@ -200,9 +200,9 @@ export class PitchUseMutation {
   };
 
   // Like pitch
-  static likePitch = (pitchId: number | string) => {
+  static likePitch = () => {
     return useMutation({
-      mutationFn: () =>
+      mutationFn: (pitchId: number | string) =>
         $fetch(`/v1/pitches/like`, {
           method: "POST",
           data: { pitch_id: pitchId },

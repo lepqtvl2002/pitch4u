@@ -39,9 +39,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
     pitch_id: pitch.pitch_id,
   });
   const { mutateAsync } = PitchUseMutation.bookingPitch();
-  const { mutateAsync: likePitchMutate } = PitchUseMutation.likePitch(
-    pitch?.pitch_id as string
-  );
+  const { mutateAsync: likePitchMutate } = PitchUseMutation.likePitch();
 
   async function bookingPitch(data: {
     subpitch_id: string | number;
@@ -117,7 +115,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
 
   async function handleLikePitch() {
     setIsLoading(true);
-    await likePitchMutate();
+    await likePitchMutate(pitch?.pitch_id as string);
     setIsLoading(false);
   }
 

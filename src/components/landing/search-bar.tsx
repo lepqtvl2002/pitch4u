@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import useDebounce from "@/hooks/use-debounce";
 import { IPitch } from "@/types/pitch";
-import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import Link from "next/link";
 import { CircleDollarSign, MapPin, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -118,6 +117,7 @@ const SearchBar: React.FC = () => {
         ) : (
           data?.pages.map((group, i) => {
             const pitches = group?.result.data;
+            console.log(pitches)
             return (
               <React.Fragment key={i}>
                 {pitches?.map((pitch: IPitch) => (

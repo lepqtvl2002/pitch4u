@@ -274,13 +274,13 @@ export default function DashboardPage() {
                 <CardTitle>
                   Những sân bóng có doanh thu cao nhất trong tháng này
                 </CardTitle>
-                <CardDescription>
+                {/* <CardDescription>
                   Bạn đã có {data?.result.thisMonthOverview.orders || 0} lượt
                   đặt trong tháng này.
-                </CardDescription>
+                </CardDescription> */}
               </CardHeader>
               <CardContent>
-                <RecentSales />
+                {/* <RecentSales /> */}
               </CardContent>
             </Card>
           </div>
