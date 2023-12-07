@@ -74,7 +74,7 @@ function PitchTable() {
                 <DropdownMenuPitch
                   refetch={refetch}
                   pitchId={row.original.pitch_id}
-                  url={`/admin/pitch/${row.original.pitch_id}`}
+                  url={`/dashboard/pitch/${row.original.pitch_id}`}
                 />
               );
             },

@@ -58,6 +58,9 @@ const SearchBar: React.FC = () => {
   };
 
   const handleConditionChange = (condition: string) => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      console.log(position.coords.latitude, position.coords.longitude);
+    });
     if (conditions.includes(condition)) {
       setConditions(conditions.filter((c) => c !== condition));
     } else {

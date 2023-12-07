@@ -12,7 +12,6 @@ export const connectSocket = (token: string): void => {
     autoConnect: false,
   });
   socket.connect();
-
 };
 
 export const getSocket = (): Socket => socket;

@@ -3,13 +3,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PanelLeftClose, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useEffect, useMemo, useState } from "react";
-import { connectSocket, getSocket, joinChat, loadChats } from "../socket";
+import { useContext, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ChatObject } from "@/types/message";
 import { MessageCard } from "@/components/ui/message-components";
+import { SocketContext } from "@/providers/socket-provider";
 
 export default function LayoutMessagePage({
   children,
@@ -17,15 +16,8 @@ export default function LayoutMessagePage({
   children: React.ReactNode;
 }) {
   const [isOpenSearch, setIsOpenSearch] = useState(true);
-  const { data: session, status } = useSession();
   const [conversations, setConversations] = useState<ChatObject[]>([]);
-  useMemo(() => {
-    console.log("connect socket");
-    if (status === "authenticated")
-      connectSocket(session?.accessToken?.token as string);
-  }, [session?.accessToken?.token, status]);
-
-  const socket = getSocket();
+  const { socket, loadChats, joinChat } = useContext(SocketContext);
 
   function onReadMessage(msg: any) {
     loadChats();
@@ -82,7 +74,7 @@ export default function LayoutMessagePage({
             conversations.map((chat, idx) => (
               <Link
                 key={String(idx)}
-                href={`/dashboard/message/${chat.chat_id}?avatar=${chat.members[1]?.avatar}&fullname=${chat.members[1]?.fullname}`}
+                href={`/admin/message/${chat.chat_id}?avatar=${chat.members[1]?.avatar}&fullname=${chat.members[1]?.fullname}`}
               >
                 <MessageCard
                   avatarUrl={chat.members[1]?.avatar}
