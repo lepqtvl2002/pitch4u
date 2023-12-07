@@ -28,10 +28,24 @@ const Conditions = [
  */
 const SearchBar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const debounceValue = useDebounce(searchQuery);
   const [conditions, setConditions] = useState<string[]>([]);
+  const [location, setLocation] = useState<{ long?: number; lat?: number }>({
+    long: undefined,
+    lat: undefined,
+  });
+  const [rate, setRate] = useState(0);
 
   const fetchPitches = async ({ pageParam = 1 }) => {
-    const res = await $globalFetch(`/v1/pitches?limit=${LIMIT}&page=${pageParam}`);
+    const params = new URLSearchParams({
+      limit: LIMIT,
+      page: pageParam,
+      long: location.long,
+      lat: location.lat,
+      name: searchQuery,
+      rate_gte: rate,
+    } as unknown as string[][]);
+    const res = await $globalFetch(`/v1/pitches?${params}`);
     return res.data;
   };
 
@@ -42,15 +56,18 @@ const SearchBar: React.FC = () => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
+    refetch,
     status,
   } = useInfiniteQuery({
     queryKey: ["pitches"],
     queryFn: fetchPitches,
     getNextPageParam: (lastPage, pages) => {
-      if (pages?.length > (lastPage?.result.total - 1) / LIMIT + 1) return false;
+      if (pages?.length > (lastPage?.result.total - 1) / LIMIT + 1)
+        return false;
       return Number(lastPage?.result?.page + 1);
     },
   });
+
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -58,15 +75,34 @@ const SearchBar: React.FC = () => {
   };
 
   const handleConditionChange = (condition: string) => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      console.log(position.coords.latitude, position.coords.longitude);
-    });
-    if (conditions.includes(condition)) {
-      setConditions(conditions.filter((c) => c !== condition));
+    const newConditions = conditions.includes(condition)
+      ? conditions.filter((c) => c !== condition)
+      : [...conditions, condition];
+
+    if (newConditions?.includes("near")) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLocation({
+          lat: position.coords.latitude,
+          long: position.coords.longitude,
+        });
+      });
     } else {
-      setConditions([...conditions, condition]);
+      setLocation({
+        lat: undefined,
+        long: undefined,
+      });
     }
+    if (newConditions.includes("quality")) {
+      setRate(4);
+    } else {
+      setRate(0);
+    }
+    setConditions(newConditions);
   };
+
+  useEffect(() => {
+    refetch();
+  }, [debounceValue, rate, location.lat, location.long]);
 
   if (error) {
     toast({
@@ -120,7 +156,7 @@ const SearchBar: React.FC = () => {
         ) : (
           data?.pages.map((group, i) => {
             const pitches = group?.result.data;
-            console.log(pitches)
+            console.log(pitches);
             return (
               <React.Fragment key={i}>
                 {pitches?.map((pitch: IPitch) => (
