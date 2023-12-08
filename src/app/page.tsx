@@ -7,17 +7,18 @@ import Script from "next/script";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/server/auth";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
   if (session?.user) {
     if (session.user.userRole.name === "super_admin") {
-      window.location.href = "/admin";
+      redirect("/admin");
     } else if (
       session.user.userRole.name === "admin" ||
       session.user.userRole.name === "staff"
     ) {
-      window.location.href = "/dashboard";
+      redirect("/dashboard");
     }
   }
   return (

@@ -58,7 +58,6 @@ export function PitchRegisterForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      card_id: "999999",
       lat: 0,
       long: 0,
     },
@@ -251,11 +250,7 @@ export function PitchRegisterForm({
                     </div>
                     <div className="flex flex-col items-center space-y-2">
                       {form.watch("uploadPhotos")?.length > 0 && (
-                        <pre
-                          className={
-                            "overflow-auto gap-2 border-muted"
-                          }
-                        >
+                        <pre className={"overflow-auto gap-2 border-muted"}>
                           {Array.from(form.getValues("uploadPhotos"))?.map(
                             (uploadPhoto: any, index: number) => (
                               <Image
@@ -289,7 +284,6 @@ export function PitchRegisterForm({
                           )}
                         </pre>
                       )}
-                      
                     </div>
                   </div>
                 </>
@@ -323,34 +317,25 @@ export function PitchRegisterForm({
                     Đăng ký ngay
                   </Button>
                 )}
-                {/* {step === 2 && (
-                  <Button
-                    variant="outline"
-                    disabled={
-                      loading ||
-                      form.getValues().address === "" ||
-                      form.getValues().phone === ""
-                    }
-                    type="button"
-                    onClick={goNextStep}
-                  >
-                    {loading && (
-                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Đăng ký thêm danh sách sân
-                  </Button>
-                )} */}
-                {step > 1 && (
+                {step > 1 ? (
                   <Button
                     variant="outline"
                     disabled={loading}
                     type="button"
                     onClick={goPrevStep}
                   >
-                    {loading && (
-                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                    )}
                     Quay lại
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      window.location.href = "/";
+                    }}
+                    variant="outline"
+                    disabled={loading}
+                    type="button"
+                  >
+                    Trở về trang chủ
                   </Button>
                 )}
               </div>
