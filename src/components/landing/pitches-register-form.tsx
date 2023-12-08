@@ -226,14 +226,51 @@ export function PitchRegisterForm({
               </div>
               {step === 3 && (
                 <>
+                <FormField
+                      control={form.control}
+                      name="pitch_name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              id="pitch_name"
+                              placeholder="Tên sân bóng"
+                              autoCorrect="off"
+                              disabled={loading}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="pitch_address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              id="pitch_address"
+                              type="text"
+                              placeholder="Địa chỉ sân"
+                              autoComplete="address"
+                              disabled={loading}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   {/* Images */}
                   <div className="grid gap-2">
                     <div className="grid gap-2">
                       <FormLabel htmlFor="uploadPhotos">
-                        Hình ảnh chứng minh
+                        Hình ảnh minh chứng
                       </FormLabel>
                       <p className="text-sm text-muted-foreground">
-                        Thêm hình ảnh để xác thực danh tính
+                        Thêm hình ảnh để xác minh chủ sở hữu của sân này
                       </p>
                       <Input
                         id="uploadPhotos"

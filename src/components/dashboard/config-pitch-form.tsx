@@ -222,6 +222,47 @@ export function ConfigPitchForm({ pitch }: FormProps) {
             </FormItem>
           )}
         />
+        <FormLabel>Giá trung bình của các loại sân</FormLabel>
+        <FormDescription>
+          Bạn có thể thay đổi giá của những khung giờ đặc biệt bằng việc nhấn
+          vào nút chỉnh sửa ở khung thời gian hoạt động bên dưới.
+        </FormDescription>
+        <FormField
+          control={form.control}
+          name="open_at"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Sân 5</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Giá sân 5"
+                  defaultValue={field.value}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="close_at"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Sân 7</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  placeholder="Giá sân 7"
+                  defaultValue={field.value}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div>
           <Button

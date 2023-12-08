@@ -34,6 +34,13 @@ const SearchBar: React.FC = () => {
     long: undefined,
     lat: undefined,
   });
+  const [sort, setSort] = React.useState<{
+    sortBy: string;
+    direction: "asc" | "desc";
+  }>({
+    sortBy: "createdAt",
+    direction: "desc",
+  });
   const [rate, setRate] = useState(0);
 
   const fetchPitches = async ({ pageParam = 1 }) => {
@@ -97,12 +104,17 @@ const SearchBar: React.FC = () => {
     } else {
       setRate(0);
     }
+    if (newConditions.includes("price")) {
+      setSort({ sortBy: "price", direction: "asc" });
+    } else {
+      setSort({ sortBy: "createdAt", direction: "desc" });
+    }
     setConditions(newConditions);
   };
 
   useEffect(() => {
     refetch();
-  }, [debounceValue, rate, location.lat, location.long]);
+  }, [debounceValue, rate, location.lat, location.long, sort]);
 
   if (error) {
     toast({
