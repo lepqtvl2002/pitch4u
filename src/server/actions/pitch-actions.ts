@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { $fetch, $globalFetch } from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
 
-interface PitchInfo {
+export interface PitchInfo {
   card_id: string;
   fullname: string;
   email: string;

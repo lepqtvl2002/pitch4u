@@ -260,7 +260,7 @@ export function EditPitchForm({ pitch }: FormProps) {
             )}
           </div>
           <div className="flex flex-col items-center space-y-2">
-            {form.watch("uploadPhotos")?.length > 1 && (
+            {form.watch("uploadPhotos")?.length > 0 && (
               <pre className={"inline-flex overflow-auto gap-2 border-muted"}>
                 {Array.from(form.getValues("uploadPhotos"))?.map(
                   (uploadPhoto: any, index: number) => (

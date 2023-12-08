@@ -1,9 +1,6 @@
 import { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 
 import { PitchRegisterForm } from "@/components/landing/pitches-register-form";
-import AuthFormContainer from "@/components/auth/auth-form-container";
 
 export const metadata: Metadata = {
   title: "Đăng ký làm chủ sân",
@@ -12,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function PitchRegisterPage() {
   return (
-    <AuthFormContainer>
+    <div className="m-auto p-10">
       <PitchRegisterForm />
-    </AuthFormContainer>
+    </div>
   );
 }

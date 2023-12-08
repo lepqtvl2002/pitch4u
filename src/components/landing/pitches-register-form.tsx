@@ -7,7 +7,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -22,6 +22,8 @@ import { toast } from "../ui/use-toast";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { mutatingToast } from "@/lib/quick-toast";
+import Image from "next/image";
 
 const formSchema = z.object({
   card_id: z.string(),
@@ -29,16 +31,11 @@ const formSchema = z.object({
   email: z.string().min(2).max(50),
   address: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
-  pitchList: z
-    .array(
-      z.object({
-        pitch_name: z.string().min(2).max(50),
-        pitch_address: z.string().min(2).max(50),
-      })
-    )
-    .optional(),
+  pitch_name: z.string().min(2).max(50),
+  pitch_address: z.string().min(2).max(50),
   lat: z.number(),
   long: z.number(),
+  uploadPhotos: z.any().nullable(),
 });
 
 export function PitchRegisterForm({
@@ -58,8 +55,6 @@ export function PitchRegisterForm({
   function goPrevStep() {
     setStep((pre) => pre - 1);
   }
-
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,32 +65,12 @@ export function PitchRegisterForm({
     mode: "onChange",
   });
 
-  const { fields, append, remove } = useFieldArray({
-    name: "pitchList",
-    control: form.control,
-  });
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     try {
       setLoading(true);
-      const { pitchList, ...data } = values;
-      await mutateAsync({
-        ...data,
-        pitch_address: pitchList?.at(0)?.pitch_address
-          ? pitchList?.at(0)?.pitch_address
-          : "unknown",
-        pitch_name: pitchList?.at(0)?.pitch_name
-          ? pitchList?.at(0)?.pitch_name
-          : "unknown",
-      });
-
-      toast({
-        title: "Đang gửi yêu cầu...",
-        description: "Vui lòng chờ trong giây lát",
-        variant: "default",
-      });
+      mutatingToast();
+      const { uploadPhotos, ...sendValues } = values;
+      await mutateAsync(sendValues);
 
       localStorage.setItem(
         "REGISTER",
@@ -115,13 +90,25 @@ export function PitchRegisterForm({
   }
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+      <div className="flex justify-around">
+        {[1, 2, 3].map((number, index) => (
+          <Button
+            variant={step === number ? "default" : "outline"}
+            key={index}
+            className="w-10 h-10 rounded-full"
+            onClick={() => setStep(number)}
+          >
+            {index + 1}
+          </Button>
+        ))}
+      </div>
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
-          Đăng ký {step === 3 && "sân"}
+          Đăng ký làm chủ sân
         </h1>
         <p className="text-sm text-muted-foreground">
           {step === 3
-            ? "Bạn có thể bỏ qua bước này và thực hiện đăng ký sân sau khi tài khoản được duyệt"
+            ? "Nếu bạn có nhiều hơn một sân, đừng lo lắng, bạn có thể đăng ký thêm sân sau khi hồ sơ được duyệt."
             : "Điền thông tin cần thiết vào bên dưới để đăng ký làm chủ sân"}
         </p>
       </div>
@@ -178,6 +165,25 @@ export function PitchRegisterForm({
                   <>
                     <FormField
                       control={form.control}
+                      name="card_id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              id="card_id"
+                              placeholder="CCCD/CMND"
+                              type="text"
+                              autoCorrect="off"
+                              disabled={loading}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
                       name="address"
                       render={({ field }) => (
                         <FormItem>
@@ -221,71 +227,76 @@ export function PitchRegisterForm({
               </div>
               {step === 3 && (
                 <>
-                  <div className="grid gap-4 max-h-72 overflow-y-auto px-2 -mx-2">
-                    {fields.map((field, index) => (
-                      <div key={field.id} className="grid gap-2">
-                        <div className="flex justify-between items-center">
-                          <FormLabel className={cn("text-lg")}>
-                            Sân {index + 1}
-                          </FormLabel>
-                          <Button
-                            variant="ghost"
-                            onClick={() => {
-                              remove(index);
-                            }}
-                          >
-                            <Icons.trash className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <FormField
-                          control={form.control}
-                          name={`pitchList.${index}.pitch_name`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  placeholder={`Tên sân ${index + 1}`}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
+                  {/* Images */}
+                  <div className="grid gap-2">
+                    <div className="grid gap-2">
+                      <FormLabel htmlFor="uploadPhotos">
+                        Hình ảnh chứng minh
+                      </FormLabel>
+                      <p className="text-sm text-muted-foreground">
+                        Thêm hình ảnh để xác thực danh tính
+                      </p>
+                      <Input
+                        id="uploadPhotos"
+                        placeholder="Thêm hình ảnh"
+                        type="file"
+                        multiple
+                        {...form.register("uploadPhotos")}
+                      />
+                      {form.formState.errors.uploadPhotos && (
+                        <p className="text-sm text-red-500">
+                          {form.formState.errors.uploadPhotos?.message?.toString()}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-center space-y-2">
+                      {form.watch("uploadPhotos")?.length > 0 && (
+                        <pre
+                          className={
+                            "overflow-auto gap-2 border-muted"
+                          }
+                        >
+                          {Array.from(form.getValues("uploadPhotos"))?.map(
+                            (uploadPhoto: any, index: number) => (
+                              <Image
+                                onClick={() => {
+                                  const currentFileList =
+                                    form.getValues("uploadPhotos");
+                                  // Remove the file at the specified index
+                                  const updatedFileList = Array.from(
+                                    currentFileList
+                                  ).filter((file, i) => i !== index);
+
+                                  // Create a new FileList with the updated files
+                                  const newFileList = new DataTransfer();
+                                  updatedFileList.forEach((file: any) => {
+                                    newFileList.items.add(file);
+                                  });
+
+                                  form.setValue(
+                                    "uploadPhotos",
+                                    newFileList.files
+                                  );
+                                }}
+                                key={index}
+                                src={URL.createObjectURL(uploadPhoto)}
+                                alt={form.getValues("fullname") + index}
+                                width={1000}
+                                height={100}
+                                className="w-full border"
+                              />
+                            )
                           )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`pitchList.${index}.pitch_address`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  placeholder={`Địa chỉ sân ${index + 1}`}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    ))}
+                        </pre>
+                      )}
+                      
+                    </div>
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="mt-2"
-                    onClick={() =>
-                      append({ pitch_name: "", pitch_address: "" })
-                    }
-                  >
-                    Thêm sân
-                  </Button>
                 </>
               )}
 
               <div className="grid gap-2">
-                {step === 1 ? (
+                {step < 3 ? (
                   <Button
                     disabled={
                       loading ||
@@ -312,7 +323,7 @@ export function PitchRegisterForm({
                     Đăng ký ngay
                   </Button>
                 )}
-                {step === 2 && (
+                {/* {step === 2 && (
                   <Button
                     variant="outline"
                     disabled={
@@ -328,8 +339,8 @@ export function PitchRegisterForm({
                     )}
                     Đăng ký thêm danh sách sân
                   </Button>
-                )}
-                {step !== 1 && (
+                )} */}
+                {step > 1 && (
                   <Button
                     variant="outline"
                     disabled={loading}
@@ -355,14 +366,14 @@ export function PitchRegisterForm({
       >
         Bằng cách nhấp vào tiếp tục, bạn đồng ý với{" "}
         <Link
-          href="/terms"
+          href="/terms-of-use"
           className="underline underline-offset-4 hover:text-primary"
         >
           Điều khoản dịch vụ
         </Link>{" "}
         và{" "}
         <Link
-          href="/privacy"
+          href="/privacy-policy"
           className="underline underline-offset-4 hover:text-primary"
         >
           Chính sách quyền riêng tư

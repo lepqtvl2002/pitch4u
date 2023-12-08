@@ -5,8 +5,21 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import Script from "next/script";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/server/auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+  if (session?.user) {
+    if (session.user.userRole.name === "super_admin") {
+      window.location.href = "/admin";
+    } else if (
+      session.user.userRole.name === "admin" ||
+      session.user.userRole.name === "staff"
+    ) {
+      window.location.href = "/dashboard";
+    }
+  }
   return (
     <main className="bg-emerald-300 scroll-smooth">
       <div className="md:container px-2 flex min-h-screen flex-col items-center justify-between">
