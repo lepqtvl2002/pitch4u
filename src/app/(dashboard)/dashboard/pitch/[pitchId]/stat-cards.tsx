@@ -33,7 +33,9 @@ function PitchDetailStatCards({ pitch }: { pitch: IPitch }) {
         <CardContent className="flex flex-col">
           <div>
             <Label>Ngày tạo: </Label>
-            <span>{format(new Date(pitch?.createdAt), "dd/MM/yyyy")}</span>
+            <span>
+              {format(new Date(pitch?.createdAt as string), "dd/MM/yyyy")}
+            </span>
           </div>
           <div>
             <Label>Trạng thái: </Label>

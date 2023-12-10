@@ -49,19 +49,40 @@ function PitchDetailTable() {
         <PitchDetailStatCards pitch={data?.result} />
       )}
       <DataTable
-        columns={[...columns, 
-            {
-              id: "actions",
-              cell: ({ row }) => {
-                return (
-                  <DropdownMenuSubPitch
-                    subPitchId={row.original.subpitch_id}
-                    url={`/dashboard/pitch/${row.original.pitch_id}/${row.original.subpitch_id}`}
-                    refetch={refetch}
-                  />
-                );
-              },
-            },]}
+        columns={[
+          ...columns,
+          {
+            id: "actions",
+            cell: ({ row }) => {
+              const subPitchParams = new URLSearchParams(
+                row.original as unknown as string[][]
+              );
+              const specialPrices = row.original.special_prices;
+              const timeFrames: number[] = [];
+              const prices: number[] = [];
+              specialPrices?.forEach((e) => {
+                e.time_frames.forEach((pair) => {
+                  timeFrames.push(pair[0]);
+                  prices.push(e.price);
+                });
+              });
+              const openAt = data?.result?.config.open_at;
+              const closeAt = data?.result?.config.close_at;
+
+              subPitchParams.set("open_at", openAt);
+              subPitchParams.set("close_at", closeAt);
+              subPitchParams.set("time_frames_special", timeFrames.join(","));
+              subPitchParams.set("special_prices", prices.join(","));
+              return (
+                <DropdownMenuSubPitch
+                  subPitchId={row.original.subpitch_id}
+                  url={`/dashboard/pitch/${row.original.pitch_id}/${row.original.subpitch_id}?${subPitchParams}`}
+                  refetch={refetch}
+                />
+              );
+            },
+          },
+        ]}
         data={data?.result?.sub_pitches}
         isLoading={isFetching}
         pageCount={Math.floor(data?.result?.sub_pitches.length / pageSize)}

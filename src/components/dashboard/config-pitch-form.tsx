@@ -392,7 +392,7 @@ export function PopoverPrice({
     pitch11: initialPrices?.pitch11,
   });
   const { mutateAsync: setPriceMutate, isLoading } =
-    PitchUseMutation.setSpecialPrice(pitchId);
+    PitchUseMutation.setSpecialPrice();
 
   // async function handleSetPrice() {
   //   mutatingToast();

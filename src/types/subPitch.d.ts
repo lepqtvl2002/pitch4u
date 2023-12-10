@@ -15,4 +15,9 @@ export type ISubPitch = {
     subpitch_id: number;
     booking_id: number;
   };
+  special_prices?: {
+    time_frames: number[][];
+    price_id: number;
+    price: number;
+  }[];
 };

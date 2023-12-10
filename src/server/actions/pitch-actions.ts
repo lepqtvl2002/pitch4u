@@ -228,14 +228,14 @@ export class PitchUseMutation {
   };
 
   // Set price special by hours
-  static setSpecialPrice = (pitchId: number | string) => {
+  static setSpecialPrice = () => {
     return useMutation({
       mutationFn: (data: {
         price: number;
         time_frames: number[][];
         subpitch_id: number;
       }) =>
-        $fetch(`/v1/pitches/${pitchId}/special-price`, {
+        $fetch(`/v1/pitches/subpitches/special-price`, {
           method: "POST",
           data,
         }).then((res) => res.data),
@@ -259,14 +259,14 @@ export class PitchUseMutation {
   };
 
   // Set price special by hours
-  static updateSpecialPrice = (pitchId: number | string) => {
+  static updateSpecialPrice = () => {
     return useMutation({
       mutationFn: (data: {
         price: number;
         time_frames?: number[][];
         subpitch_id: number;
       }) =>
-        $fetch(`/v1/pitches/${pitchId}/special-price`, {
+        $fetch(`/v1/pitches/subpitches/special-price`, {
           method: "PUT",
           data,
         }).then((res) => res.data),

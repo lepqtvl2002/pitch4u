@@ -63,7 +63,7 @@ function ActionsDropdownMenu({
         <DropdownMenuItem>
           <Link href={link}>Xem chi tiết</Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuItem
           className="bg-green-500 text-white"
           onClick={handleApprove}
@@ -75,7 +75,7 @@ function ActionsDropdownMenu({
           onClick={handleDenyRegistration}
         >
           Từ chối
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );
