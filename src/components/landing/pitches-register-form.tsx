@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,6 +25,11 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { mutatingToast } from "@/lib/quick-toast";
 import Image from "next/image";
+import { ImageUseMutation } from "@/server/actions/image-actions";
+import GoogleMapReact, { ClickEventValue } from "google-map-react";
+import { IPitch } from "@/types/pitch";
+import { IUser } from "@/types/user";
+import { UserProfile } from "@/server/queries/user-queries";
 
 const formSchema = z.object({
   card_id: z.string(),
@@ -33,20 +39,34 @@ const formSchema = z.object({
   phone: z.string().min(2).max(50),
   pitch_name: z.string().min(2).max(50),
   pitch_address: z.string().min(2).max(50),
-  lat: z.number(),
-  long: z.number(),
   uploadPhotos: z.any().nullable(),
 });
-
+type MarkerProps = {
+  lat: number;
+  lng: number;
+};
+const Marker = (props: MarkerProps) => (
+  <Image width={30} height={30} src={"/assets/marker-icon.png"} alt="marker" />
+);
+type RegisterFormProps = {
+  pitch?: IPitch;
+  user?: UserProfile;
+};
 export function PitchRegisterForm({
+  pitch,
+  user,
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLDivElement> & RegisterFormProps) {
   const { data: session } = useSession();
   const [loading, setLoading] = React.useState(false);
   const [step, setStep] = React.useState(1);
   const { mutateAsync } = PitchUseMutation.pitchRegister();
   const router = useRouter();
+  const [markerPos, setMarkerPos] = React.useState({
+    lat: 16.0544068,
+    lng: 108.1655063,
+  });
 
   function goNextStep() {
     setStep((pre) => pre + 1);
@@ -58,18 +78,38 @@ export function PitchRegisterForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      lat: 0,
-      long: 0,
+      fullname: user?.fullname,
+      email: user?.email,
+      phone: user?.phone,
     },
     mode: "onChange",
   });
+  const mapDefaultProps = {
+    center: {
+      lat: 16.0544068,
+      lng: 108.1655063,
+    },
+    zoom: 11,
+  };
+  const handleMark = (event: ClickEventValue) => {
+    setMarkerPos({ lat: event.lat, lng: event.lng });
+  };
+  const { mutateAsync: uploadImage } = ImageUseMutation.upload();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setLoading(true);
       mutatingToast();
       const { uploadPhotos, ...sendValues } = values;
-      await mutateAsync(sendValues);
+      const uploadImageUrls = await Promise.all(
+        Array.from(uploadPhotos)?.map((file) => uploadImage({ image: file }))
+      );
+      await mutateAsync({
+        ...sendValues,
+        long: markerPos.lng,
+        lat: markerPos.lat,
+        proofs: uploadImageUrls.map((e: any) => e?.result),
+      });
 
       localStorage.setItem(
         "REGISTER",
@@ -226,51 +266,77 @@ export function PitchRegisterForm({
               </div>
               {step === 3 && (
                 <>
-                <FormField
-                      control={form.control}
-                      name="pitch_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              id="pitch_name"
-                              placeholder="Tên sân bóng"
-                              autoCorrect="off"
-                              disabled={loading}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="pitch_address"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              id="pitch_address"
-                              type="text"
-                              placeholder="Địa chỉ sân"
-                              autoComplete="address"
-                              disabled={loading}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <FormField
+                    control={form.control}
+                    name="pitch_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            id="pitch_name"
+                            placeholder="Tên sân bóng"
+                            autoCorrect="off"
+                            disabled={loading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="pitch_address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            id="pitch_address"
+                            type="text"
+                            placeholder="Địa chỉ sân"
+                            autoComplete="address"
+                            disabled={loading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="relative h-screen pb-10">
+                    <FormLabel>Địa chỉ trên Google map</FormLabel>
+                    <FormDescription>
+                      Hãy chọn chính xác địa chỉ sân bóng của bạn trên bản đồ để
+                      người dùng có thể dễ dàng tìm kiếm.
+                    </FormDescription>
+                    <div className="space-x-2">
+                      <FormLabel>Lat:</FormLabel>
+                      <span>{markerPos.lat}</span>
+                      <FormLabel>Long:</FormLabel>
+                      <span>{markerPos.lng}</span>
+                    </div>
+                    <GoogleMapReact
+                      bootstrapURLKeys={{
+                        key: "AIzaSyDFaXNvUSNlqQoqlNBgCgppWcSeYxb5kDM",
+                      }}
+                      defaultCenter={mapDefaultProps.center}
+                      defaultZoom={mapDefaultProps.zoom}
+                      onClick={handleMark}
+                    >
+                      <Marker lat={markerPos.lat} lng={markerPos.lng} />
+                    </GoogleMapReact>
+                  </div>
                   {/* Images */}
-                  <div className="grid gap-2">
+                  <div className="grid gap-2 mt-10">
                     <div className="grid gap-2">
                       <FormLabel htmlFor="uploadPhotos">
                         Hình ảnh minh chứng
                       </FormLabel>
                       <p className="text-sm text-muted-foreground">
-                        Thêm hình ảnh để xác minh chủ sở hữu của sân này
+                        Thêm hình ảnh để xác minh chủ sở hữu của sân này. Nếu
+                        đây là lần đầu tiên đăng ký sân của bạn, vui lòng cung
+                        cấp thêm hình ảnh CCCD/CMND để quá trình xác minh được
+                        diễn ra nhanh hơn.
                       </p>
                       <Input
                         id="uploadPhotos"

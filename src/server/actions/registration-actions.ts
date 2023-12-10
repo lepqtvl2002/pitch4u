@@ -32,15 +32,22 @@ export class RegistrationUseMutation {
 
   static deny = () => {
     return useMutation({
-      mutationFn: ({ registration_id }: { registration_id: string | number }) =>
+      mutationFn: ({
+        registration_id,
+        deny_reason,
+      }: {
+        registration_id: string | number;
+        deny_reason: string;
+      }) =>
         $fetch("/v1/pitches/registrations/deny", {
           method: "PATCH",
           data: {
             registration_id,
+            deny_reason,
           },
         }).then((res) => res.status),
       onSuccess: (data) => {
-        console.log(data)
+        console.log(data);
         toast({
           title: "Đã từ chối thông tin đăng ký",
         });

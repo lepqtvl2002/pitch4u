@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { $fetch, $globalFetch } from "@/lib/axios";
+import { $fetch } from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
 
 export interface PitchInfo {
@@ -12,6 +12,7 @@ export interface PitchInfo {
   pitch_address?: string;
   lat: number;
   long: number;
+  proofs?: string[];
 }
 export class PitchUseMutation {
   // Register pitch
@@ -109,7 +110,7 @@ export class PitchUseMutation {
   // Suspend pitch
   static suspendPitch = () => {
     return useMutation({
-      mutationFn: (pitch_id : number | string) =>
+      mutationFn: (pitch_id: number | string) =>
         $fetch(`/v1/pitches/${pitch_id}/suspend`, {
           method: "PATCH",
         }).then((res) => res.data),
@@ -215,7 +216,72 @@ export class PitchUseMutation {
       },
       onError: (err: any) => {
         toast({
-          title: err?.response?.status === 401 ? "Vui lòng đăng nhập để thực hiện hành động này" : "Đã xảy ra lỗi trong khi thực hiện hành động",
+          title:
+            err?.response?.status === 401
+              ? "Vui lòng đăng nhập để thực hiện hành động này"
+              : "Đã xảy ra lỗi trong khi thực hiện hành động",
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  // Set price special by hours
+  static setSpecialPrice = (pitchId: number | string) => {
+    return useMutation({
+      mutationFn: (data: {
+        price: number;
+        time_frames: number[][];
+        pitch_type: "PITCH5" | "PITCH7" | "PITCH11";
+      }) =>
+        $fetch(`/v1/pitches/${pitchId}/special-price`, {
+          method: "POST",
+          data,
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Cập nhật giá thành công",
+          variant: "success",
+        });
+      },
+      onError: (err: any) => {
+        toast({
+          title:
+            err?.response?.status === 401
+              ? "Vui lòng đăng nhập để thực hiện hành động này"
+              : "Đã xảy ra lỗi trong khi thực hiện hành động",
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  // Set price special by hours
+  static updateSpecialPrice = (pitchId: number | string) => {
+    return useMutation({
+      mutationFn: (data: {
+        price: number;
+        time_frames?: number[][];
+        pitch_type: "PITCH5" | "PITCH7" | "PITCH11";
+      }) =>
+        $fetch(`/v1/pitches/${pitchId}/special-price`, {
+          method: "PUT",
+          data,
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Cập nhật giá thành công",
+          variant: "success",
+        });
+      },
+      onError: (err: any) => {
+        toast({
+          title:
+            err?.response?.status === 401
+              ? "Vui lòng đăng nhập để thực hiện hành động này"
+              : "Đã xảy ra lỗi trong khi thực hiện hành động",
           description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
           variant: "destructive",
         });

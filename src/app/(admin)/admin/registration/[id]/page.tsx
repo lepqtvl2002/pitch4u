@@ -4,8 +4,10 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { registrationStatusToString } from "@/lib/convert";
 import { formatDateTimeToddMMyyyyHHmm } from "@/lib/format-datetime";
+import { mutatingToast } from "@/lib/quick-toast";
 import { cn } from "@/lib/utils";
 import { RegistrationUseMutation } from "@/server/actions/registration-actions";
+import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -43,9 +45,11 @@ function RegistrationDetail() {
       });
     }
   }
+
   return (
     <div className="w-full lg:w-2/3 p-10">
-      <h3 className="text-xl font-bold mb-10">Chi tiết hồ sơ đăng ký</h3>
+      <h3 className="text-3xl font-medium mb-10">Chi tiết hồ sơ đăng ký</h3>
+      <h4 className="text-xl font-medium mb-4">Thông tin về người đăng ký</h4>
       <div className="grid grid-cols-3 mb-20">
         <Label className="col-span-1">Tên người đăng ký</Label>
         <span className="text-gray-500 col-span-2">
@@ -83,6 +87,42 @@ function RegistrationDetail() {
           )}
         </span>
       </div>
+
+      <h4 className="text-xl font-medium mb-4">Thông tin sân đăng ký</h4>
+      <div className="grid grid-cols-3 mb-20">
+        <Label className="col-span-1">Tên sân</Label>
+        <span className="text-gray-500 col-span-2">
+          {searchParams.get("pitch_name")}
+        </span>
+        <Label className="col-span-1">Địa chỉ sân</Label>
+        <span className="text-gray-500 col-span-2">
+          {searchParams.get("pitch_address")}
+        </span>
+        <Label className="col-span-1">Tọa độ</Label>
+        <span className="text-gray-500 col-span-2">
+          {searchParams.get("long")} - {searchParams.get("lat")}
+        </span>
+      </div>
+      <div className="flex flex-col w-full">
+        <Label className="col-span-1">Hình ảnh minh chứng</Label>
+        <div className="w-full grid grid-cols-3 gap-4 p-4">
+          {searchParams
+            .get("proofs")
+            ?.split(",")
+            ?.map((item, index) => {
+              return (
+                <Image
+                  key={index}
+                  width={100}
+                  height={100}
+                  className="w-full h-full"
+                  src={item}
+                  alt={"Anh minh chung" + index}
+                />
+              );
+            })}
+        </div>
+      </div>
       <div className="grid grid-cols-2 gap-3">
         {status === "pending" && (
           <>
@@ -93,20 +133,73 @@ function RegistrationDetail() {
             >
               Xác nhận
             </Button>
-            <Button
-              disabled={isLoading}
-              className="col-span-1 bg-red-500 hover:bg-red-300"
-            >
-              Từ chối
-            </Button>
+            <PopoverDeny id={id as string} />
           </>
         )}
-        <Button disabled={isLoading} className="col-span-2">
+        {/* <Button disabled={isLoading} className="col-span-2">
           Liên hệ để lấy thêm thông tin
-        </Button>
+        </Button> */}
       </div>
     </div>
   );
 }
 
 export default RegistrationDetail;
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+
+export function PopoverDeny({ id }: { id: string | number }) {
+  const [value, setValue] = useState("");
+  const { mutateAsync: denyMutate, isLoading } = RegistrationUseMutation.deny();
+
+  async function handelDeny() {
+    mutatingToast();
+    await denyMutate({
+      registration_id: id,
+      deny_reason: value,
+    });
+    window.location.href = "/admin/registration";
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline">Từ chối đăng ký</Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h4 className="font-medium leading-none">Từ chối đăng ký</h4>
+            <p className="text-sm text-muted-foreground">
+              Vui lòng đưa ra lý do từ chối trước khi từ chối yêu cầu đăng ký
+              này.
+            </p>
+          </div>
+          <div className="grid gap-2">
+            <div className="grid">
+              <Textarea
+                id="reason"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="Điền lý do từ chối"
+                className=""
+              />
+            </div>
+            <Button
+              disabled={isLoading}
+              onClick={handelDeny}
+              variant="destructive"
+            >
+              Xác nhận từ chối
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}

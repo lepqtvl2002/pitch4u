@@ -51,7 +51,7 @@ function ActionsDropdownMenu({
 
   async function handleDenyRegistration() {
     mutatingToast();
-    await denyMutate({ registration_id: id });
+    await denyMutate({ registration_id: id, deny_reason: "some thing wrong" });
     if (refetch) refetch();
   }
   return (

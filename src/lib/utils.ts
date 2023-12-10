@@ -432,3 +432,89 @@ export function convertDayOfWeek(dayOfWeek: number): string {
   ];
   return daysOfWeek[dayOfWeek - 1 || 0];
 }
+
+export function numberToWords(num: number) {
+  const ones = [
+    "",
+    "một",
+    "hai",
+    "ba",
+    "bốn",
+    "năm",
+    "sáu",
+    "bảy",
+    "tám",
+    "chín",
+  ];
+  const teens = [
+    "mười",
+    "mười một",
+    "mười hai",
+    "mười ba",
+    "mười bốn",
+    "mười lăm",
+    "mười sáu",
+    "mười bảy",
+    "mười tám",
+    "mười chín",
+  ];
+  const tens = [
+    "",
+    "",
+    "hai mươi",
+    "ba mươi",
+    "bốn mươi",
+    "năm mươi",
+    "sáu mươi",
+    "bảy mươi",
+    "tám mươi",
+    "chín mươi",
+  ];
+  const hundreds = [
+    "",
+    "một trăm",
+    "hai trăm",
+    "ba trăm",
+    "bốn trăm",
+    "năm trăm",
+    "sáu trăm",
+    "bảy trăm",
+    "tám trăm",
+    "chín trăm",
+  ];
+  const scales = ["", "nghìn", "triệu", "tỷ"];
+
+  if (num === 0) {
+    return "Không đồng";
+  }
+
+  if (num < 0) {
+    return "Số tiền âm";
+  }
+
+  let words = "";
+
+  for (let i = 0; num > 0; i++) {
+    if (num % 1000 !== 0) {
+      let chunk = "";
+      if (num >= 100) {
+        chunk = hundreds[Math.round(num / 100)];
+      }
+      if (num % 100 < 10) {
+        chunk += " " + ones[num % 100];
+      } else if (num % 100 < 20) {
+        chunk += " " + teens[num % 10];
+      } else {
+        chunk +=
+          " " + tens[Math.floor((num % 100) / 10)] + " " + ones[num % 10];
+      }
+      if (i > 0) {
+        chunk += " " + scales[i];
+      }
+      words = chunk + " " + words;
+    }
+    num = Math.floor(num / 1000);
+  }
+
+  return words.trim() + " đồng";
+}

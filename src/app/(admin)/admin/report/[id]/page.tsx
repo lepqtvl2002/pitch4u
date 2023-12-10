@@ -1,18 +1,15 @@
 "use client";
-import { AvatarCustom } from "@/components/ui/avatar-custom";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { formatDateTimeToddMMyyyyHHmm } from "@/lib/format-datetime";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function RegistrationDetail() {
-  const { id } = useParams();
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const router = useRouter();
-
   return (
     <div className="w-full lg:w-2/3 p-10">
       <h3 className="text-3xl font-medium mb-10">Chi tiết tố cáo</h3>
@@ -53,21 +50,27 @@ function RegistrationDetail() {
             searchParams.get("createdAt") as string
           )}
         </span>
-        
       </div>
       <div className="flex flex-col w-full">
-          <Label className="col-span-1">Tệp đính kèm</Label>
-          <div className="w-full grid grid-cols-3 gap-4 p-4">
-            {searchParams
-              .get("attaches")
-              ?.split(",")
-              ?.map((item, index) => {
-                return (
-                  <Image key={index} width={100} height={100} className="w-full h-full" src={item} alt={"Anh to cao" + index} />
-                );
-              })}
-          </div>
+        <Label className="col-span-1">Tệp đính kèm</Label>
+        <div className="w-full grid grid-cols-3 gap-4 p-4">
+          {searchParams
+            .get("attaches")
+            ?.split(",")
+            ?.map((item, index) => {
+              return (
+                <Image
+                  key={index}
+                  width={100}
+                  height={100}
+                  className="w-full h-full"
+                  src={item}
+                  alt={"Anh to cao" + index}
+                />
+              );
+            })}
         </div>
+      </div>
       <div className="grid grid-cols-2 gap-3 my-20">
         <Button onClick={() => router.back()}>Trở lại</Button>
       </div>

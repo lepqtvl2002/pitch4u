@@ -9,7 +9,7 @@ export default function CreatePitchPage() {
   if (isLoading) return <>Loading...</>;
   return (
     <div className="p-10">
-      <PitchRegisterForm />
+      <PitchRegisterForm user={data?.result} />
     </div>
   );
 }

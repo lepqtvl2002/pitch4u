@@ -23,6 +23,7 @@ import {
   convertTimeStringToDecimal,
   createRangeArray,
   decimalToTimeString,
+  numberToWords,
 } from "@/lib/utils";
 import { Icons } from "../icons";
 import { Label } from "../ui/label";
@@ -88,6 +89,11 @@ export function ConfigPitchForm({ pitch }: FormProps) {
     { day: "CN", active: true },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [prices, setPrices] = useState({
+    pitch5: pitch?.min_price,
+    pitch7: pitch?.min_price,
+    pitch11: pitch?.min_price,
+  });
 
   const { mutateAsync } = PitchUseMutation.configPitch(pitch?.pitch_id);
   const route = useRouter();
@@ -116,7 +122,16 @@ export function ConfigPitchForm({ pitch }: FormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pitch?.config?.open_days]);
 
-  async function onSubmit(values: ProfileFormValues) {
+  function onSubmit(values: ProfileFormValues) {
+    const numbers = createRangeArray(
+      convertTimeStringToDecimal(values.open_at),
+      convertTimeStringToDecimal(values.close_at)
+    );
+
+    setTimeFrames(numbers.map((number) => ({ number, active: true })));
+  }
+
+  async function handelUpdatePitchConfig(values: ProfileFormValues) {
     const data = {
       open_at: convertTimeStringToDecimal(values.open_at),
       close_at: convertTimeStringToDecimal(values.close_at),
@@ -132,7 +147,6 @@ export function ConfigPitchForm({ pitch }: FormProps) {
     });
     await mutateAsync(data);
     setIsLoading(false);
-    route.push(`/dashboard/pitch/${pitch.pitch_id}`);
   }
 
   return (
@@ -222,48 +236,53 @@ export function ConfigPitchForm({ pitch }: FormProps) {
             </FormItem>
           )}
         />
-        <FormLabel>Giá trung bình của các loại sân</FormLabel>
-        <FormDescription>
+        <Button type="submit">Cập nhật khung giờ hoạt động</Button>
+        <h3 className="text-lg font-medium">Cài đặt giá sân</h3>
+        <p className="text-sm text-muted-foreground">
           Bạn có thể thay đổi giá của những khung giờ đặc biệt bằng việc nhấn
           vào nút chỉnh sửa ở khung thời gian hoạt động bên dưới.
-        </FormDescription>
-        <FormField
-          control={form.control}
-          name="open_at"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sân 5</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Giá sân 5"
-                  defaultValue={field.value}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="close_at"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sân 7</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  placeholder="Giá sân 7"
-                  defaultValue={field.value}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        </p>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="price-pitch5">Giá sân 5</Label>
+          <Input
+            id="price-pitch5"
+            type="number"
+            placeholder="Giá sân 5"
+            defaultValue={prices.pitch5}
+            onChange={(e) => {
+              setPrices({ ...prices, pitch5: e.target.value });
+            }}
+          />
+          <span className="mb-4">
+            {numberToWords(prices.pitch5) || "Vui lòng nhập giá trị hợp lệ"}
+          </span>
+          <Label htmlFor="price-pitch7">Giá sân 7</Label>
+          <Input
+            id="price-pitch7"
+            type="number"
+            placeholder="Giá sân 7"
+            defaultValue={prices.pitch7}
+            onChange={(e) => {
+              setPrices({ ...prices, pitch7: e.target.value });
+            }}
+          />
+          <span className="mb-4">
+            {numberToWords(prices.pitch7) || "Vui lòng nhập giá trị hợp lệ"}
+          </span>
+          <Label htmlFor="price-pitch11">Giá sân 11</Label>
+          <Input
+            id="price-pitch11"
+            type="number"
+            placeholder="Giá sân 11"
+            defaultValue={prices.pitch11}
+            onChange={(e) => {
+              setPrices({ ...prices, pitch11: e.target.value });
+            }}
+          />
+          <span className="mb-4">
+            {numberToWords(prices.pitch11) || "Vui lòng nhập giá trị hợp lệ"}
+          </span>
+        </div>
         <div>
           <Button
             type="button"
@@ -289,15 +308,15 @@ export function ConfigPitchForm({ pitch }: FormProps) {
                       {decimalToTimeString(item.number + 1)}
                     </span>
                     <div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        onClick={() => {
-                          console.log("do something here");
+                      <PopoverPrice
+                        initialPrices={{
+                          pitch5: 100000,
+                          pitch7: 100000,
+                          pitch11: 100000,
                         }}
-                      >
-                        <Icons.edit className="h-4 w-4" />
-                      </Button>
+                        pitchId={pitch?.pitch_id}
+                        timeFrame={[item.number, item.number + 1]}
+                      />
                       <Button
                         type="button"
                         variant="ghost"
@@ -328,10 +347,102 @@ export function ConfigPitchForm({ pitch }: FormProps) {
           )}
         </div>
 
-        <Button disabled={isLoading} type="submit">
+        <Button type="button" disabled={isLoading}>
           Cập nhật cài đặt
         </Button>
       </form>
     </Form>
+  );
+}
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { mutatingToast } from "@/lib/quick-toast";
+
+export function PopoverPrice({
+  pitchId,
+  initialPrices,
+  timeFrame,
+}: {
+  pitchId: number;
+  initialPrices: any;
+  timeFrame: number[];
+}) {
+  const [prices, setPrices] = useState({
+    pitch5: initialPrices?.pitch5,
+    pitch7: initialPrices?.pitch7,
+    pitch11: initialPrices?.pitch11,
+  });
+  const { mutateAsync: setPriceMutate, isLoading } =
+    PitchUseMutation.setSpecialPrice(pitchId);
+
+  async function handleSetPrice() {
+    mutatingToast();
+    await setPriceMutate({
+      pitch_type: "PITCH5",
+      price: prices.pitch5,
+      time_frames: [timeFrame],
+    });
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="ghost">
+          <Icons.edit className="h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h4 className="font-medium leading-none">Giá</h4>
+            <p className="text-sm text-muted-foreground">
+              Thay đổi giá sân khung giờ này.
+            </p>
+          </div>
+          <div className="grid gap-2">
+            <div className="grid grid-cols-3 items-center gap-4">
+              <Label htmlFor="price-pitch5">Sân 5</Label>
+              <Input
+                id="price-pitch5"
+                value={prices.pitch5}
+                onChange={(e) =>
+                  setPrices({ ...prices, pitch5: e.target.value })
+                }
+                className="col-span-2 h-8"
+              />
+            </div>
+            <div className="grid grid-cols-3 items-center gap-4">
+              <Label htmlFor="price-pitch7">Sân 7</Label>
+              <Input
+                id="price-pitch7"
+                value={prices.pitch7}
+                onChange={(e) =>
+                  setPrices({ ...prices, pitch7: e.target.value })
+                }
+                className="col-span-2 h-8"
+              />
+            </div>
+            <div className="grid grid-cols-3 items-center gap-4">
+              <Label htmlFor="price-pitch11">Sân 11</Label>
+              <Input
+                id="price-pitch11"
+                value={prices.pitch11}
+                onChange={(e) =>
+                  setPrices({ ...prices, pitch11: e.target.value })
+                }
+                className="col-span-2 h-8"
+              />
+            </div>
+            <Button disabled={isLoading} onClick={handleSetPrice}>
+              Lưu thay đổi
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
