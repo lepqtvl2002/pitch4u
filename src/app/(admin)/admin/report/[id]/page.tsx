@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { formatDateTimeToddMMyyyyHHmm } from "@/lib/format-datetime";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function RegistrationDetail() {
@@ -54,21 +55,26 @@ function RegistrationDetail() {
       <div className="flex flex-col w-full">
         <Label className="col-span-1">Tệp đính kèm</Label>
         <div className="w-full grid grid-cols-3 gap-4 p-4">
-          {searchParams
-            .get("attaches")
-            ?.split(",")
-            ?.map((item, index) => {
-              return (
-                <Image
-                  key={index}
-                  width={100}
-                  height={100}
-                  className="w-full h-full"
-                  src={item}
-                  alt={"Anh to cao" + index}
-                />
-              );
-            })}
+          {searchParams.get("attaches") !== "null" ? (
+            searchParams
+              .get("attaches")
+              ?.split(",")
+              ?.map((item, index) => {
+                return (
+                  <Link href={item} key={index} target="_blank">
+                    <Image
+                      width={100}
+                      height={100}
+                      className="w-full h-full"
+                      src={item}
+                      alt={"Anh to cao" + index}
+                    />
+                  </Link>
+                );
+              })
+          ) : (
+            <span>Không có nội dung đính kèm</span>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3 my-20">

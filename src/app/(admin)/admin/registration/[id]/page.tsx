@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
@@ -9,7 +10,14 @@ import { cn } from "@/lib/utils";
 import { RegistrationUseMutation } from "@/server/actions/registration-actions";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { MapPinIcon } from "lucide-react";
+import Link from "next/link";
 
 function RegistrationDetail() {
   const { id } = useParams();
@@ -45,6 +53,22 @@ function RegistrationDetail() {
       });
     }
   }
+
+  const handleNavigateToGoogleMap = ({
+    long,
+    lat,
+    name,
+  }: {
+    long: number;
+    lat: number;
+    name: string;
+  }) => {
+    let href = `https://www.google.com/maps/place/`;
+    if (lat && long) href += `@${lat},${long},16z?entry=ttu`;
+    else href = `https://www.google.com/maps/search/${name.replace(" ", "+")}`;
+
+    window.open(href, "_blank");
+  };
 
   return (
     <div className="w-full lg:w-2/3 p-10">
@@ -101,26 +125,43 @@ function RegistrationDetail() {
         <Label className="col-span-1">Tọa độ</Label>
         <span className="text-gray-500 col-span-2">
           {searchParams.get("long")} - {searchParams.get("lat")}
+          <Button
+            variant="ghost"
+            onClick={() =>
+              handleNavigateToGoogleMap({
+                long: searchParams.get("long") as unknown as number,
+                lat: searchParams.get("lat") as unknown as number,
+                name: searchParams.get("pitch_name") as string,
+              })
+            }
+          >
+            Xem trên Google Map <MapPinIcon />
+          </Button>
         </span>
       </div>
       <div className="flex flex-col w-full">
         <Label className="col-span-1">Hình ảnh minh chứng</Label>
         <div className="w-full grid grid-cols-3 gap-4 p-4">
-          {searchParams
-            .get("proofs")
-            ?.split(",")
-            ?.map((item, index) => {
-              return (
-                <Image
-                  key={index}
-                  width={100}
-                  height={100}
-                  className="w-full h-full"
-                  src={item}
-                  alt={"Anh minh chung" + index}
-                />
-              );
-            })}
+          {searchParams.get("proofs") !== "null" ? (
+            searchParams
+              .get("proofs")
+              ?.split(",")
+              ?.map((item, index) => {
+                return (
+                  <Link href={item} key={index} target="_blank">
+                    <Image
+                      width={100}
+                      height={100}
+                      className="w-full h-full"
+                      src={item}
+                      alt={"Anh minh chung" + index}
+                    />
+                  </Link>
+                );
+              })
+          ) : (
+            <span>Không có ảnh minh chứng</span>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -136,9 +177,6 @@ function RegistrationDetail() {
             <PopoverDeny id={id as string} />
           </>
         )}
-        {/* <Button disabled={isLoading} className="col-span-2">
-          Liên hệ để lấy thêm thông tin
-        </Button> */}
       </div>
     </div>
   );
@@ -146,14 +184,7 @@ function RegistrationDetail() {
 
 export default RegistrationDetail;
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
-
-export function PopoverDeny({ id }: { id: string | number }) {
+function PopoverDeny({ id }: { id: string | number }) {
   const [value, setValue] = useState("");
   const { mutateAsync: denyMutate, isLoading } = RegistrationUseMutation.deny();
 

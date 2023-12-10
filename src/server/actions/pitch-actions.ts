@@ -233,7 +233,7 @@ export class PitchUseMutation {
       mutationFn: (data: {
         price: number;
         time_frames: number[][];
-        pitch_type: "PITCH5" | "PITCH7" | "PITCH11";
+        subpitch_id: number;
       }) =>
         $fetch(`/v1/pitches/${pitchId}/special-price`, {
           method: "POST",
@@ -264,7 +264,7 @@ export class PitchUseMutation {
       mutationFn: (data: {
         price: number;
         time_frames?: number[][];
-        pitch_type: "PITCH5" | "PITCH7" | "PITCH11";
+        subpitch_id: number;
       }) =>
         $fetch(`/v1/pitches/${pitchId}/special-price`, {
           method: "PUT",

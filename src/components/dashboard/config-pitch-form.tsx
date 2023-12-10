@@ -122,16 +122,13 @@ export function ConfigPitchForm({ pitch }: FormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pitch?.config?.open_days]);
 
-  function onSubmit(values: ProfileFormValues) {
+  async function onSubmit(values: ProfileFormValues) {
     const numbers = createRangeArray(
       convertTimeStringToDecimal(values.open_at),
       convertTimeStringToDecimal(values.close_at)
     );
-
     setTimeFrames(numbers.map((number) => ({ number, active: true })));
-  }
 
-  async function handelUpdatePitchConfig(values: ProfileFormValues) {
     const data = {
       open_at: convertTimeStringToDecimal(values.open_at),
       close_at: convertTimeStringToDecimal(values.close_at),
@@ -148,6 +145,24 @@ export function ConfigPitchForm({ pitch }: FormProps) {
     await mutateAsync(data);
     setIsLoading(false);
   }
+
+  // async function handelUpdatePitchConfig(values: ProfileFormValues) {
+  //   const data = {
+  //     open_at: convertTimeStringToDecimal(values.open_at),
+  //     close_at: convertTimeStringToDecimal(values.close_at),
+  //     time_frames: timeFrames
+  //       .filter((timeFrame) => timeFrame.active)
+  //       .map((timeFrame) => [timeFrame.number, timeFrame.number + 1]),
+  //     open_days: openDays.filter((day) => day.active).map((day) => day.day),
+  //   };
+  //   setIsLoading(true);
+  //   toast({
+  //     title: "Đang xử lý yêu cầu",
+  //     description: "Vui lòng chờ trong giây lát",
+  //   });
+  //   await mutateAsync(data);
+  //   setIsLoading(false);
+  // }
 
   return (
     <Form {...form}>
@@ -236,7 +251,7 @@ export function ConfigPitchForm({ pitch }: FormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit">Cập nhật khung giờ hoạt động</Button>
+        {/* <Button type="submit">Cập nhật khung giờ hoạt động</Button>
         <h3 className="text-lg font-medium">Cài đặt giá sân</h3>
         <p className="text-sm text-muted-foreground">
           Bạn có thể thay đổi giá của những khung giờ đặc biệt bằng việc nhấn
@@ -345,9 +360,9 @@ export function ConfigPitchForm({ pitch }: FormProps) {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
 
-        <Button type="button" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading}>
           Cập nhật cài đặt
         </Button>
       </form>
@@ -379,14 +394,14 @@ export function PopoverPrice({
   const { mutateAsync: setPriceMutate, isLoading } =
     PitchUseMutation.setSpecialPrice(pitchId);
 
-  async function handleSetPrice() {
-    mutatingToast();
-    await setPriceMutate({
-      pitch_type: "PITCH5",
-      price: prices.pitch5,
-      time_frames: [timeFrame],
-    });
-  }
+  // async function handleSetPrice() {
+  //   mutatingToast();
+  //   await setPriceMutate({
+  //     pitch_type: "PITCH5",
+  //     price: prices.pitch5,
+  //     time_frames: [timeFrame],
+  //   });
+  // }
 
   return (
     <Popover>
@@ -437,7 +452,7 @@ export function PopoverPrice({
                 className="col-span-2 h-8"
               />
             </div>
-            <Button disabled={isLoading} onClick={handleSetPrice}>
+            <Button disabled={isLoading} onClick={() => {}}>
               Lưu thay đổi
             </Button>
           </div>
