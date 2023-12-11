@@ -9,6 +9,7 @@ import Link from "next/link";
 import { ChatObject } from "@/types/message";
 import { MessageCard } from "@/components/ui/message-components";
 import { SocketContext } from "@/providers/socket-provider";
+import { useSession } from "next-auth/react";
 
 export default function LayoutMessagePage({
   children,
@@ -18,6 +19,7 @@ export default function LayoutMessagePage({
   const [isOpenSearch, setIsOpenSearch] = useState(true);
   const [conversations, setConversations] = useState<ChatObject[]>([]);
   const { socket, loadChats, joinChat } = useContext(SocketContext);
+  const { data: session } = useSession();
 
   function onReadMessage(msg: any) {
     loadChats();
@@ -71,18 +73,24 @@ export default function LayoutMessagePage({
           }
         >
           {conversations.length ? (
-            conversations.map((chat, idx) => (
-              <Link
-                key={String(idx)}
-                href={`/admin/message/${chat.chat_id}?avatar=${chat.members[1]?.avatar}&fullname=${chat.members[1]?.fullname}`}
-              >
-                <MessageCard
-                  avatarUrl={chat.members[1]?.avatar}
-                  name={chat.members[1]?.fullname || "Unknown"}
-                  lastMessage={chat?.last_message?.text}
-                />
-              </Link>
-            ))
+            conversations.map((chat, idx) => {
+              const user =
+                chat.members.find((e) => e.email !== session?.user.email) ??
+                chat.members[0];
+
+              return (
+                <Link
+                  key={String(idx)}
+                  href={`/dashboard/message/${chat.chat_id}?avatar=${user.avatar}&fullname=${user.fullname}`}
+                >
+                  <MessageCard
+                    avatarUrl={user.avatar}
+                    name={user.fullname || "Unknown"}
+                    lastMessage={chat?.last_message?.text}
+                  />
+                </Link>
+              );
+            })
           ) : (
             <Skeleton className="w-10 h-10 rounded-full" />
           )}
