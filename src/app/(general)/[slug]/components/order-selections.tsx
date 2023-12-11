@@ -219,14 +219,17 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup className="max-h-52 overflow-auto">
-                {subPitches.map((subPitch: any) => (
-                  <SelectItem
-                    key={subPitch.subpitch_id}
-                    value={subPitch.subpitch_id}
-                  >
-                    {subPitch.name} - {subPitch.price}đ/h
-                  </SelectItem>
-                ))}
+                {subPitches.map((subPitch: any) => {
+                  console.log(subPitch);
+                  return (
+                    <SelectItem
+                      key={subPitch.subpitch_id}
+                      value={subPitch.subpitch_id}
+                    >
+                      {subPitch.name} - {subPitch.price}đ/h
+                    </SelectItem>
+                  );
+                })}
               </SelectGroup>
             </SelectContent>
           </Select>

@@ -46,6 +46,7 @@ export default function SocketProvider({
     });
     setSocket(newSocket);
     if (newSocket) newSocket.connect();
+    console.log("connect socket");
   };
 
   const getSocket = (): Socket | undefined => socket;

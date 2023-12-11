@@ -168,7 +168,6 @@ const SearchBar: React.FC = () => {
         ) : (
           data?.pages.map((group, i) => {
             const pitches = group?.result.data;
-            console.log(pitches);
             return (
               <React.Fragment key={i}>
                 {pitches?.map((pitch: IPitch) => (

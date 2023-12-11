@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2Icon, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
-import { getSocket, loadChats, loadMessages, sendMessage } from "../../socket";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Message } from "@/types/message";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { SocketContext } from "@/providers/socket-provider";
 
 export default function MessagePage() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -19,7 +19,8 @@ export default function MessagePage() {
   const { id } = useParams();
   const searchParams = useSearchParams();
   const route = useRouter();
-  const socket = getSocket();
+  const { socket, connectSocket, loadMessages, loadChats, sendMessage } =
+    useContext(SocketContext);
 
   useEffect(() => {
     loadMessages({ chatId: id as string, page });
@@ -32,7 +33,6 @@ export default function MessagePage() {
       setMaximumNumberOfMessages(total);
     };
     function onNewMessage(msg: Message) {
-      console.log(msg.text);
       setMessages([msg, ...messages]);
     }
     loadChats();
@@ -90,7 +90,9 @@ export default function MessagePage() {
         >
           <div>
             {messages.length ? (
-              <MessageList messages={messages} />
+              <MessageList
+                messages={messages?.filter((e) => e.chat_id == Number(id))}
+              />
             ) : (
               <Loader2Icon className="animate-spin m-auto" />
             )}

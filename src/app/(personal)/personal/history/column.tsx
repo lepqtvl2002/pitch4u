@@ -52,7 +52,7 @@ export const columns: ColumnDef<BookingHistory>[] = [
   {
     header: "Thời gian đặt",
     cell: (ctx) => {
-      const createdAt = ctx.row.original.pitch?.createdAt;
+      const createdAt = ctx.row.original.createdAt;
       return (
         <div className={"text-bold"}>
           {format(createdAt ? new Date(createdAt) : new Date(), "dd/MM/yyyy")}

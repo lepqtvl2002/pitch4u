@@ -89,7 +89,9 @@ export default function MessagePage() {
         >
           <div>
             {messages.length ? (
-              <MessageList messages={messages} />
+              <MessageList
+                messages={messages.filter((e) => e.chat_id == Number(id))}
+              />
             ) : (
               <Loader2Icon className="animate-spin m-auto" />
             )}
@@ -106,4 +108,3 @@ export default function MessagePage() {
     </div>
   );
 }
-

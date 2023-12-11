@@ -259,20 +259,42 @@ export class PitchUseMutation {
   };
 
   // Set price special by hours
-  static updateSpecialPrice = () => {
+  static updateSpecialPrice = (price_id: string | number) => {
     return useMutation({
-      mutationFn: (data: {
-        price: number;
-        time_frames?: number[][];
-        subpitch_id: number;
-      }) =>
-        $fetch(`/v1/pitches/subpitches/special-price`, {
-          method: "PUT",
+      mutationFn: (data: { price: number }) =>
+        $fetch(`/v1/pitches/subpitches/special-price/${price_id}`, {
+          method: "PATCH",
           data,
         }).then((res) => res.data),
       onSuccess: () => {
         toast({
           title: "Cập nhật giá thành công",
+          variant: "success",
+        });
+      },
+      onError: (err: any) => {
+        toast({
+          title:
+            err?.response?.status === 401
+              ? "Vui lòng đăng nhập để thực hiện hành động này"
+              : "Đã xảy ra lỗi trong khi thực hiện hành động",
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  // Delete price special by hours
+  static deleteSpecialPrice = (price_id: string | number) => {
+    return useMutation({
+      mutationFn: () =>
+        $fetch(`/v1/pitches/subpitches/special-price/${price_id}`, {
+          method: "DELETE",
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Đã trả về giá sân trung bình",
           variant: "success",
         });
       },
