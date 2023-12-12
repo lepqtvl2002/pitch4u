@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Stars } from "@/components/ui/vote-stars";
@@ -303,9 +303,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
               payment_type: "pay_later",
               start_time: `${format(date, "yyyy-MM-dd")} ${frame[0]}`,
               end_time: `${format(date, "yyyy-MM-dd")} ${frame[1]}`,
-              voucher_id: 1,
             };
-            console.log("Book:", data);
             await bookingPitch(data);
           }}
         >

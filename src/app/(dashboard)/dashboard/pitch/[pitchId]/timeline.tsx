@@ -246,7 +246,6 @@ function PitchTimeline() {
                                 await bookingPitch({
                                   subpitch_id: subPitch.subpitch_id,
                                   payment_type: "pay_later",
-                                  voucher_id: 1,
                                   start_time: `${format(
                                     date,
                                     "yyyy-MM-dd"
