@@ -36,7 +36,7 @@ function PitchTable() {
           name: debouncedSearch,
           sort_by: sort.columnName,
           sort: sort.direction,
-          suspended: statuses.includes("suspended") ? true : false,
+          is_suspended: statuses.includes("suspended") ? true : false,
         })
       : PitchUseQuery.getMyPitches({
           limit: pageSize,
@@ -86,30 +86,30 @@ function PitchTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        facets={[
-          {
-            title: "Trạng thái",
-            columnName: "status",
-            options: pitchStatusOptions,
-            onChange: setStatusesHandler,
-          },
-        ]}
+        // facets={[
+        //   {
+        //     title: "Trạng thái",
+        //     columnName: "status",
+        //     options: pitchStatusOptions,
+        //     onChange: setStatusesHandler,
+        //   },
+        // ]}
+        otherButton={{
+          url: "/dashboard/pitch/register",
+          title: "Đăng ký thêm sân +",
+        }}
         search={{
           placeholder: "Tìm kiếm",
           value: search || "",
           onChange: setSearchHandler,
         }}
-        otherButton={{
-          url: "/dashboard/pitch/register",
-          title: "Đăng ký thêm sân +",
-        }}
-        sort={{
-          columnName: sort.columnName,
-          direction: sort.direction,
-          onChange: (columnName, direction) => {
-            setSort({ columnName, direction });
-          },
-        }}
+        // sort={{
+        //   columnName: sort.columnName,
+        //   direction: sort.direction,
+        //   onChange: (columnName, direction) => {
+        //     setSort({ columnName, direction });
+        //   },
+        // }}
       />
     </div>
   );

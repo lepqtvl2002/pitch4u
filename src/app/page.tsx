@@ -3,7 +3,6 @@ import Image from "next/image";
 import SearchBar from "@/components/landing/search-bar";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
-import Script from "next/script";
 import Link from "next/link";
 
 export default async function Home() {
@@ -13,7 +12,7 @@ export default async function Home() {
         <Navbar />
         <section
           id="general"
-          className="opacity-0 flex flex-col lg:flex-row w-full justify-between pb-20"
+          className=" flex flex-col lg:flex-row w-full justify-between pb-20"
         >
           <div className="flex w-full flex-col space-y-6 lg:p-10 pb-10 z-10">
             <div className="text-center text-4xl font-bold md:text-6xl lg:text-7xl xl:text-8xl lg:text-start font-sans">
@@ -23,7 +22,7 @@ export default async function Home() {
             </div>
             <span className="text-center text-2xl">Tìm ở đây!!!</span>
             <div className="flex space-x-10">
-              <a href="#general" className={"w-1/2 scroll-link"}>
+              <Link href="#general" className={"w-1/2 scroll-link"}>
                 <Button
                   className={
                     "w-full md:h-16 md:text-xl rounded-full bg-emerald-500"
@@ -31,8 +30,8 @@ export default async function Home() {
                 >
                   Tải app ngay
                 </Button>
-              </a>
-              <a href="#find-pitch" className={"w-1/2 scroll-link"}>
+              </Link>
+              <Link href="#find-pitch" className={"w-1/2 scroll-link"}>
                 <Button
                   variant="outline"
                   className={
@@ -41,7 +40,7 @@ export default async function Home() {
                 >
                   Tìm sân
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
           <div className="w-full p-10 lg:p-0 flex justify-center absolute top-24 left-0 lg:relative lg:top-0">
@@ -58,7 +57,7 @@ export default async function Home() {
 
         <section
           id="find-pitch"
-          className="opacity-0 transition duration-1000 w-full relative p-2 md:pl-10 lg:pl-20 flex-col justify-between  py-10 md:py-20 z-10 bg-cyan-200 bg-opacity-50 rounded"
+          className="w-full relative p-2 md:pl-10 lg:pl-20 flex-col justify-betweenpy-10 md:py-20 z-10 bg-cyan-200 bg-opacity-50 rounded"
         >
           <h2 className={"pb-6 md:pb-10 text-3xl"}>Nhanh và dễ dàng</h2>
           <h4 className="text-bold pb-4 md:pb-8 text-sm md:text-xl">
@@ -77,7 +76,7 @@ export default async function Home() {
 
         <section
           id={"community"}
-          className="opacity-0 transition z-10 duration-1000 flex w-full flex-col items-center justify-between md:space-y-10 py-10 md:py-20"
+          className="z-10 flex w-full flex-col items-center justify-between md:space-y-10 py-10 md:py-20"
         >
           <h2 className={"pb-10 text-center text-3xl"}>Giao lưu gắn kết</h2>
           <div className="w-full px-4 md:px-10 lg:px-20 grid grid-cols-1 md:grid-cols-3 md:gap-4 lg:gap-10 xl:gap-32 rounded-none">
@@ -87,9 +86,6 @@ export default async function Home() {
                 src={"/pitch4u-photo03.webp"}
                 width={200}
                 height={160}
-                className={
-                  "hidden-image opacity-0 -translate-x-full blur transition duration-1000 "
-                }
               />
               <div className="flex flex-col items-center">
                 <h3 className="text-xl font-bold">Tìm đồng đội</h3>
@@ -105,9 +101,6 @@ export default async function Home() {
                 src={"/pitch4u-photo04.webp"}
                 width={200}
                 height={160}
-                className={
-                  "hidden-image opacity-0 -translate-x-full blur transition duration-1000 "
-                }
               />
               <div className="flex flex-col items-center">
                 <h3 className="text-xl font-bold">Tìm đối thủ</h3>
@@ -122,9 +115,6 @@ export default async function Home() {
                 src={"/pitch4u-photo05.webp"}
                 width={200}
                 height={160}
-                className={
-                  "hidden-image opacity-0 -translate-x-full blur transition duration-1000 "
-                }
               />
               <div className="flex flex-col items-center">
                 <h3 className="text-xl font-bold">Tham gia cộng đồng</h3>
@@ -143,7 +133,7 @@ export default async function Home() {
 
         <section
           id={"register-master"}
-          className="opacity-0 transition duration-1000 flex w-full flex-col justify-between py-10 md:py-20 md:flex-row space-y-2"
+          className="flex w-full flex-col justify-between py-10 md:py-20 md:flex-row space-y-2"
         >
           <div className="flex w-full md:pl-10 h-full flex-col justify-center items-center md:items-start space-y-2 md:space-y-8">
             <h2 className="pb-2 text-3xl">Đăng ký làm chủ sân</h2>
@@ -169,7 +159,7 @@ export default async function Home() {
 
         <section
           id={"contact"}
-          className="opacity-0 transition duration-1000 flex w-full flex-col-reverse justify-between py-10 md:py-20 md:flex-row"
+          className="flex w-full flex-col-reverse justify-between py-10 md:py-20 md:flex-row"
         >
           <div className=" flex w-full justify-center">
             <Image
@@ -198,7 +188,6 @@ export default async function Home() {
         </section>
         <Footer />
       </div>
-      <Script src={"./js/intersection-observer.js"} />
     </main>
   );
 }

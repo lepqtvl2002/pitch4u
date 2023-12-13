@@ -82,11 +82,11 @@ function RegistrationTable() {
             onChange: setStatusesHandler,
           },
         ]}
-        search={{
-          placeholder: "Tìm kiếm",
-          value: search || "",
-          onChange: setSearchHandler,
-        }}
+        // search={{
+        //   placeholder: "Tìm kiếm",
+        //   value: search || "",
+        //   onChange: setSearchHandler,
+        // }}
         sort={{
           columnName: sort.columnName,
           direction: sort.direction,

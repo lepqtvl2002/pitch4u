@@ -34,6 +34,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
   const [timeFrame, setTimeFrame] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [isToday, setIsToday] = React.useState(true);
+  const [isLiked, setIsLiked] = React.useState(pitch?.isLiked);
 
   const { data, isFetching, isError } = PitchUseQuery.getBookingStatus({
     pitch_id: pitch.pitch_id,
@@ -50,9 +51,8 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
   }) {
     try {
       setIsLoading(true);
-      const result = await mutateAsync(data);
+      await mutateAsync(data);
       setIsLoading(false);
-      console.log(result);
       toast({
         title: "Đã đặt sân thành công",
         description: "Chúc mừng bạn, bạn đã đặt sân thành công.",
@@ -115,7 +115,9 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
 
   async function handleLikePitch() {
     setIsLoading(true);
-    await likePitchMutate(pitch?.pitch_id as string);
+    const data = await likePitchMutate(pitch?.pitch_id as string);
+    if (data?.result == 1) setIsLiked(false);
+    else setIsLiked(true);
     setIsLoading(false);
   }
 
@@ -220,7 +222,6 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
             <SelectContent>
               <SelectGroup className="max-h-52 overflow-auto">
                 {subPitches.map((subPitch: any) => {
-                  console.log(subPitch);
                   return (
                     <SelectItem
                       key={subPitch.subpitch_id}
@@ -255,7 +256,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
           className={"hidden md:flex"}
           variant={"outline"}
         >
-          <Heart className={"mr-2"} />
+          <Heart className={"mr-2"} fill={isLiked ? "black" : "white"} />
           <span className={"text-sm"}>Thêm vào danh sách yêu thích</span>
         </Button>
         <Button
@@ -263,7 +264,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
           className={"w-1/4 md:hidden rounded-none flex-col p-0 m-0"}
           variant={"outline"}
         >
-          <Heart />
+          <Heart fill={isLiked ? "black" : "white"} />
           <span className={"text-xs"}>Yêu thích</span>
         </Button>
         <Button

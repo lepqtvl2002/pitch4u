@@ -50,7 +50,7 @@ const Review = ({
         <span className={"text-xs md:text-sm text-gray-500"}>
           {format(new Date(review.createdAt), "dd/MM/yyyy")}
         </span>
-        <Stars rating={review.star} />
+        <Stars size={12} rating={review.star} />
         <span className={"text-sm"}>{review.text}</span>
         {/* <div className={"flex"}>
                     <Button className={"flex space-x-2 text-xs"} variant={"ghost"}>

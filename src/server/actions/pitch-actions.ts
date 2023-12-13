@@ -208,7 +208,12 @@ export class PitchUseMutation {
           method: "POST",
           data: { pitch_id: pitchId },
         }).then((res) => res.data),
-      onSuccess: () => {
+      onSuccess: (data) => {
+        if (data?.result == 1) {
+          toast({
+            title: "Bạn đã xóa sân này ra khỏi danh sách yêu thích"
+          });
+        } else 
         toast({
           title: "Sân đã được thêm vào danh sách yêu thích",
           variant: "success",

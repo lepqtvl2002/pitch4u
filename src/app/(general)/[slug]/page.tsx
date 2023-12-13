@@ -2,17 +2,27 @@ import PitchOrder from "@/components/landing/order";
 import Review, { ReviewType } from "@/components/landing/review";
 import { notFound } from "next/navigation";
 import { Stars } from "@/components/ui/vote-stars";
-import { $globalFetch } from "@/lib/axios";
+import { $fetch } from "@/lib/axios";
 import { pitchTypesArray } from "@/enums/pitchTypes";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/server/auth";
 
 const PitchDetail = async ({ params }: { params: { slug: string } }) => {
   const slug = params.slug;
-  const res = await $globalFetch.get(`/v1/pitches/slugs/${slug}`);
+  const session = await getServerSession(authOptions);
+  const res = await $fetch.get(`/v1/pitches/slugs/${slug}`, {
+    headers: {
+      Authorization: `Bearer ${session?.accessToken?.token}`,
+    },
+  });
   const pitch = {
     ...res.data.result,
     types: pitchTypesArray,
     imageUrls: res.data.result.images,
+    isLiked: res.data.result?.likes?.find(
+      (e: { user_id: number }) => e.user_id === session?.user.userId
+    ),
   };
 
   if (res.status !== 200) return notFound();

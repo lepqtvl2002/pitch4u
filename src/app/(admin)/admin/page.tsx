@@ -33,18 +33,18 @@ const TabItems = [
     name: "Tổng quan",
     value: "overview",
   },
-  {
-    name: "Phân tích",
-    value: "analytics",
-  },
-  {
-    name: "Báo cáo",
-    value: "reports",
-  },
-  {
-    name: "Thông báo",
-    value: "notifications",
-  },
+  // {
+  //   name: "Phân tích",
+  //   value: "analytics",
+  // },
+  // {
+  //   name: "Báo cáo",
+  //   value: "reports",
+  // },
+  // {
+  //   name: "Thông báo",
+  //   value: "notifications",
+  // },
 ];
 type GeneralInformation = {
   revenue: number;

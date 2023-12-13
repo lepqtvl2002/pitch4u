@@ -26,7 +26,7 @@ export default function ImageGallery({ pitch }: { pitch: any }) {
           className={"w-auto h-full content-center"}
         />
       </div>
-      <div className="flex space-x-2 md:space-x-4 w-full py-1 px-1 h-24 md:h-60 overflow-auto no-scrollbar md:show-scrollbar mt-2 md:mt-4 items-center border border-main md:rounded">
+      <div className="flex space-x-2 md:space-x-4 w-full py-1 px-1 h-24 md:h-40 overflow-auto no-scrollbar md:show-scrollbar mt-2 md:mt-4 items-center border border-main md:rounded">
         {pitch.imageUrls.map((imageUrl: string, index: number) => (
             <Image
               key={imageUrl + index}
@@ -35,7 +35,7 @@ export default function ImageGallery({ pitch }: { pitch: any }) {
               width={100}
               height={100}
               style={{ objectFit: "contain" }}
-              className={"w-1/4 h-full border m-auto rounded hover:cursor-pointer"}
+              className={"w-auto h-full border m-auto rounded hover:cursor-pointer"}
               onClick={() => handleMiniImageClick(imageUrl)}
             />
         ))}

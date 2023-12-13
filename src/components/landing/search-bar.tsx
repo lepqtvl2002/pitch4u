@@ -126,7 +126,7 @@ const SearchBar: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col space-y-4 w-full md:w-2/3 xl:w-1/2">
+    <div className="flex flex-col space-y-4 w-full lg:w-2/3 xl:w-1/2">
       <div className="flex items-center space-x-2 md:space-x-4">
         <input
           type="text"
@@ -213,27 +213,27 @@ export function PitchItem({ pitch }: { pitch: IPitch }) {
 
   return (
     <div
-      className="relative flex space-x-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4"
+      className="relative flex flex-1 space-x-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4"
       style={{ listStyleType: "none" }}
     >
       <Link
         href={`/${pitch?.slug}`}
-        className="flex justify-between items-center w-full min-h-[200px] gap-2"
+        className="flex justify-between items-start w-full gap-2"
       >
         <Image
           src={pitch.logo || "/pitch4u-logo.png"}
           width={200}
           height={200}
           alt={pitch.name}
-          className="border rounded"
+          className="border rounded w-1/3"
         />
-        <div className="flex flex-col justify-around h-full flex-1">
-          <div className="space-y-2">
-            <h3 className="text-xl font-bold text-gray-800">{pitch?.name}</h3>
-            <p className="text-gray-600 text-sm">{pitch.address}</p>
+        <div className="flex flex-col justify-between h-full flex-1">
+          <div className="md:space-y-2">
+            <h3 className="text-md md:text-xl font-semibold text-gray-800">{pitch?.name}</h3>
+            <p className="text-gray-600 text-xs md:text-sm">{pitch.address}</p>
             <Stars className="flex text-sm" rating={Number(pitch?.rate)} />
           </div>
-          <p className="font-semibold text-xl text-end pr-10">
+          <p className="font-semibold md:text-xl text-end pr-2 md:pr-10">
             {pitch?.min_price === pitch?.max_price
               ? pitch?.max_price?.toLocaleString()
               : `${pitch?.min_price?.toLocaleString()} - ${pitch?.max_price?.toLocaleString()}`}{" "}

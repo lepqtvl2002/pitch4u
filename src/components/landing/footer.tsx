@@ -58,22 +58,22 @@ export default function Footer({
         <div className="pr-4">
           <div className="flex justify-end space-x-10">
             <div className="flex flex-col justify-around h-32">
-              <a href="/" className="p-2 bg-white rounded shadow">
+              <Link href="/" className="p-2 bg-white rounded shadow">
                 <Image
                   src="/logo-play-store.png"
                   alt="logo-play-store"
                   width={100}
                   height={80}
                 />
-              </a>
-              <a href="/" className="p-2 bg-white rounded shadow">
+              </Link>
+              <Link href="/" className="p-2 bg-white rounded shadow">
                 <Image
                   src="/logo-app-store.png"
                   alt="logo-app-store"
                   width={100}
                   height={80}
                 />
-              </a>
+              </Link>
             </div>
             <Image
               src="/test-qr-code.jpg"

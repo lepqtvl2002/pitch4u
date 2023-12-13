@@ -47,8 +47,10 @@ export default function VoteStars({
 export function Stars({
   rating,
   className,
+  size,
   ...props
 }: {
+  size?: number;
   rating: number;
   className?: string;
 }) {
@@ -60,11 +62,11 @@ export function Stars({
       stars.push(
         <span key={i}>
           {isFilled ? (
-            <Star color="yellow" fill="yellow" />
+            <Star size={size} color="yellow" fill="yellow" />
           ) : isHalfFilled ? (
-            <StarHalf color="yellow" fill="yellow" />
+            <StarHalf size={size} color="yellow" fill="yellow" />
           ) : (
-            <Star color="yellow" />
+            <Star size={size} color="yellow" />
           )}
         </span>
       );

@@ -42,7 +42,7 @@ export default function FavoritePage() {
         <div>
           {data?.result?.length ? (
             data?.result?.map((pitch) => (
-              <div key={pitch.pitch_id} className="flex items-center">
+              <div key={pitch.pitch_id} className="flex justify-between gap-2 items-center">
                 <PitchItem pitch={pitch} />
                 <Button
                   variant="destructive"

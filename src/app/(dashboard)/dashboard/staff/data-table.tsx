@@ -1,7 +1,7 @@
 "use client";
 import { DataTable } from "@/components/dashboard/data-table";
 import { type PaginationState } from "@tanstack/react-table";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { UserUseQuery } from "@/server/queries/user-queries";
@@ -40,6 +40,7 @@ function StaffTable() {
       variant: "destructive",
     });
   }
+
   return (
     <div>
       <DataTable
@@ -65,22 +66,22 @@ function StaffTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        search={{
-          placeholder: "Tìm kiếm",
-          value: search || "",
-          onChange: setSearchHandler,
-        }}
         otherButton={{
           url: "/dashboard/staff/create",
           title: "Thêm nhân viên +",
         }}
-        sort={{
-          columnName: sort.columnName,
-          direction: sort.direction,
-          onChange: (columnName, direction) => {
-            setSort({ columnName, direction });
-          },
-        }}
+        // search={{
+        //   placeholder: "Tìm kiếm",
+        //   value: search || "",
+        //   onChange: setSearchHandler,
+        // }}
+        // sort={{
+        //   columnName: sort.columnName,
+        //   direction: sort.direction,
+        //   onChange: (columnName, direction) => {
+        //     setSort({ columnName, direction });
+        //   },
+        // }}
       />
     </div>
   );

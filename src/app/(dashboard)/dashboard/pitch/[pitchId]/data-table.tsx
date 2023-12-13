@@ -94,22 +94,22 @@ function PitchDetailTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
+        otherButton={{
+          url: `/dashboard/pitch/${params.pitchId}/create`,
+          title: "Thêm sân +",
+        }}
         search={{
           placeholder: "Tìm kiếm",
           value: search || "",
           onChange: setSearchHandler,
         }}
-        otherButton={{
-          url: `/dashboard/pitch/${params.pitchId}/create`,
-          title: "Thêm sân +",
-        }}
-        sort={{
-          columnName: sort.columnName,
-          direction: sort.direction,
-          onChange: (columnName, direction) => {
-            setSort({ columnName, direction });
-          },
-        }}
+        // sort={{
+        //   columnName: sort.columnName,
+        //   direction: sort.direction,
+        //   onChange: (columnName, direction) => {
+        //     setSort({ columnName, direction });
+        //   },
+        // }}
       />
     </div>
   );

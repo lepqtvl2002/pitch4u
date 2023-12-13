@@ -98,13 +98,13 @@ function PitchTable() {
           value: search || "",
           onChange: setSearchHandler,
         }}
-        sort={{
-          columnName: sort.columnName,
-          direction: sort.direction,
-          onChange: (columnName, direction) => {
-            setSort({ columnName, direction });
-          },
-        }}
+        // sort={{
+        //   columnName: sort.columnName,
+        //   direction: sort.direction,
+        //   onChange: (columnName, direction) => {
+        //     setSort({ columnName, direction });
+        //   },
+        // }}
       />
     </div>
   );

@@ -1,5 +1,4 @@
 import PitchDetailTable from "./data-table";
-import PitchTimeline from "./timeline";
 
 function PitchDetailPage() {
   return (
@@ -7,7 +6,6 @@ function PitchDetailPage() {
       <div className="mx-auto">
         <PitchDetailTable />
       </div>
-      <PitchTimeline/>
     </div>
   );
 }

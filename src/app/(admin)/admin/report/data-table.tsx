@@ -53,18 +53,18 @@ export default function ReportTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        search={{
-          placeholder: "Tìm kiếm",
-          value: search || "",
-          onChange: setSearchHandler,
-        }}
-        sort={{
-          columnName: sort.columnName,
-          direction: sort.direction,
-          onChange: (columnName, direction) => {
-            setSort({ columnName, direction });
-          },
-        }}
+        // search={{
+        //   placeholder: "Tìm kiếm",
+        //   value: search || "",
+        //   onChange: setSearchHandler,
+        // }}
+        // sort={{
+        //   columnName: sort.columnName,
+        //   direction: sort.direction,
+        //   onChange: (columnName, direction) => {
+        //     setSort({ columnName, direction });
+        //   },
+        // }}
       />
     </div>
   );

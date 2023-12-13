@@ -102,18 +102,18 @@ export default function BookingTable() {
         //         onChange: setTypesHandler,
         //     },
         // ]}
-        search={{
-          placeholder: "Tìm kiếm",
-          value: search || "",
-          onChange: setSearchHandler,
-        }}
-        sort={{
-          columnName: sort.columnName,
-          direction: sort.direction,
-          onChange: (columnName, direction) => {
-            setSort({ columnName, direction });
-          },
-        }}
+        // search={{
+        //   placeholder: "Tìm kiếm",
+        //   value: search || "",
+        //   onChange: setSearchHandler,
+        // }}
+        // sort={{
+        //   columnName: sort.columnName,
+        //   direction: sort.direction,
+        //   onChange: (columnName, direction) => {
+        //     setSort({ columnName, direction });
+        //   },
+        // }}
       />
     </div>
   );

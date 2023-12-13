@@ -33,7 +33,6 @@ function VoucherTable() {
 
   const { data, isError, isFetched, refetch } =
     VoucherUseQuery.getVoucherList();
-  console.log(data);
 
   const setTypesHandler = useCallback((values: string[]) => {
     //Convert string to voucher type
@@ -99,22 +98,22 @@ function VoucherTable() {
         //         onChange: setTypesHandler,
         //     },
         // ]}
-        search={{
-          placeholder: "Tìm kiếm",
-          value: search || "",
-          onChange: setSearchHandler,
-        }}
         otherButton={{
           url: "/dashboard/voucher/create",
           title: "Tạo mới +",
         }}
-        sort={{
-          columnName: sort.columnName,
-          direction: sort.direction,
-          onChange: (columnName, direction) => {
-            setSort({ columnName, direction });
-          },
-        }}
+        // search={{
+        //   placeholder: "Tìm kiếm",
+        //   value: search || "",
+        //   onChange: setSearchHandler,
+        // }}
+        // sort={{
+        //   columnName: sort.columnName,
+        //   direction: sort.direction,
+        //   onChange: (columnName, direction) => {
+        //     setSort({ columnName, direction });
+        //   },
+        // }}
       />
     </div>
   );
