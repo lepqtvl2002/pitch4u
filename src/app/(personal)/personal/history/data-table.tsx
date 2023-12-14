@@ -5,11 +5,10 @@ import React, { useCallback } from "react";
 import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { toast } from "@/components/ui/use-toast";
-import DropdownMenuPitch from "./dropdown-menu-action";
 import { UserUseQuery } from "@/server/queries/user-queries";
 import DropdownMenuActions from "./dropdown-menu-action";
 
-type PitchStatus = "success" | string;
+type PitchStatus = "success" | "pending" | string;
 export default function BookingTable() {
   // const [statuses, setStatuses] = React.useState<PitchStatus[]>(["active"]);
   const [search, setSearch] = React.useState<string>();

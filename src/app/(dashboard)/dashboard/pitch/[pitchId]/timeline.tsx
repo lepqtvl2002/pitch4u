@@ -23,6 +23,7 @@ import { DatePickerBookingPitch } from "@/components/ui/date-picker";
 import { toast } from "@/components/ui/use-toast";
 import { mutatingToast } from "@/lib/quick-toast";
 import Link from "next/link";
+import BookingStatuses from "@/enums/bookingStatuses";
 
 type TimeFramesProps = {
   frame: number[];
@@ -42,6 +43,8 @@ function PitchTimeline() {
   const { mutateAsync, isLoading: isBooking } = PitchUseMutation.bookingPitch();
   const { mutateAsync: cancelBookingMutate, isLoading: isCanceling } =
     PitchUseMutation.cancelBookingPitch();
+  const { mutateAsync: approveBookingMutate, isLoading: isApproving } =
+    PitchUseMutation.approveBookingPitch();
 
   useEffect(() => {
     const day = date.getDate();
@@ -82,6 +85,12 @@ function PitchTimeline() {
   async function cancelBooking(data: { booking_id: number | string }) {
     mutatingToast();
     await cancelBookingMutate(data);
+    refetch();
+  }
+
+  async function approveBooking(data: { booking_id: number | string }) {
+    mutatingToast();
+    await approveBookingMutate(data);
     refetch();
   }
 
@@ -156,17 +165,22 @@ function PitchTimeline() {
                             variant={"outline"}
                             className={cn(
                               "w-40 h-10",
-                              ordered ? "bg-emerald-400" : "bg-white",
+                              !ordered
+                                ? "bg-white"
+                                : ordered.booking?.status ===
+                                  BookingStatuses.Pending
+                                ? "bg-yellow-300"
+                                : "bg-emerald-500",
                               !canBooking && "opacity-30"
                             )}
                           ></Button>
                         </PopoverTrigger>
                         <PopoverContent>
                           {ordered ? (
-                            <>
+                            <div className="space-y-2">
                               <Button
                                 disabled={isCanceling}
-                                className="w-full mb-2"
+                                className="w-full"
                                 onClick={() => {
                                   toast({
                                     title: "Thông tin đặt sân:",
@@ -205,19 +219,41 @@ function PitchTimeline() {
                                             {ordered.booking?.subpitch_id}
                                           </code>
                                         </pre>
-                                        <Button
-                                          disabled={!canBooking || isCanceling}
-                                          className="bg-red-500 hover:bg-red-200 w-full mt-2"
-                                          onClick={() => {
-                                            cancelBooking({
-                                              booking_id:
-                                                ordered.booking?.booking_id ||
-                                                "0",
-                                            });
-                                          }}
-                                        >
-                                          Hủy đặt sân
-                                        </Button>
+                                        <div className="flex mt-2 gap-2">
+                                          {ordered.booking?.status ===
+                                            BookingStatuses.Pending && (
+                                            <Button
+                                              disabled={
+                                                !canBooking || isCanceling
+                                              }
+                                              className="bg-emerald-500 hover:bg-emerald-200 w-full flex-1"
+                                              onClick={() => {
+                                                approveBooking({
+                                                  booking_id:
+                                                    ordered.booking
+                                                      ?.booking_id || "0",
+                                                });
+                                              }}
+                                            >
+                                              Chấp nhận
+                                            </Button>
+                                          )}
+                                          <Button
+                                            disabled={
+                                              !canBooking || isCanceling
+                                            }
+                                            className="bg-red-500 hover:bg-red-200 w-full flex-1"
+                                            onClick={() => {
+                                              cancelBooking({
+                                                booking_id:
+                                                  ordered.booking?.booking_id ||
+                                                  "0",
+                                              });
+                                            }}
+                                          >
+                                            Hủy đặt sân
+                                          </Button>
+                                        </div>
                                       </div>
                                     ),
                                     variant: "default",
@@ -226,6 +262,21 @@ function PitchTimeline() {
                               >
                                 Xem thông tin đặt sân
                               </Button>
+                              {ordered.booking?.status ===
+                                BookingStatuses.Pending && (
+                                <Button
+                                  disabled={!canBooking || isCanceling}
+                                  className="bg-emerald-500 hover:bg-emerald-200 w-full"
+                                  onClick={() => {
+                                    approveBooking({
+                                      booking_id:
+                                        ordered.booking?.booking_id || "0",
+                                    });
+                                  }}
+                                >
+                                  Chấp nhận yêu cầu đặt sân
+                                </Button>
+                              )}
                               <Button
                                 disabled={!canBooking || isCanceling}
                                 className="bg-red-500 hover:bg-red-200 w-full"
@@ -238,7 +289,7 @@ function PitchTimeline() {
                               >
                                 Hủy đặt sân
                               </Button>
-                            </>
+                            </div>
                           ) : (
                             <Button
                               disabled={!canBooking || isBooking}
@@ -276,7 +327,12 @@ function PitchTimeline() {
         ) : (
           <span className="my-6">
             Chưa có sân con, hãy{" "}
-            <Link className="underline" href={`/dashboard/pitch/${pitchId}/create`}>tạo sân con</Link>{" "}
+            <Link
+              className="underline"
+              href={`/dashboard/pitch/${pitchId}/create`}
+            >
+              tạo sân con
+            </Link>{" "}
             ngay nào!
           </span>
         )}

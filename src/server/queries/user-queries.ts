@@ -48,7 +48,7 @@ export type BookingHistory = {
   booking_id: number;
   user_id: number;
   payment_type: "pay_later" | "vnpay";
-  status: "success" | string;
+  status: "success" | "pending" | "canceled";
   discount: number;
   total: number;
   voucher_id: number;

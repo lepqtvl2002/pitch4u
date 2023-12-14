@@ -200,6 +200,25 @@ export const userStateVariant = cva(
   }
 );
 
+export const bookingStateVariant = cva(
+  "text-sm font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
+  {
+    variants: {
+      variant: {
+        success:
+          "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        pending:
+          "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
+        canceled:
+          "bg-red-300/50 text-red-600 dark:text-red-400 dark:bg-red-600/50",
+      },
+      defaultVariants: {
+        variant: "canceled",
+      },
+    },
+  }
+);
+
 export const activeVariant = cva(
   "text-sm font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
   {
@@ -272,6 +291,17 @@ export const voucherStatusToString = (status: string) => {
       return "❌ Hết hạn";
     default:
       return "🕛 Đang chạy";
+  }
+};
+
+export const bookingStatusToString = (status: string) => {
+  switch (status) {
+    case "success":
+      return "Thành công";
+    case "pending":
+      return "Đang xử lý";
+    default:
+      return "Đã hủy";
   }
 };
 

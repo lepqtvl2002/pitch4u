@@ -36,7 +36,6 @@ export default function BookingTable() {
     // sort: sort.direction,
     // sort_by: sort.direction,
   });
-  console.log(data);
 
   const setTypesHandler = useCallback((values: string[]) => {
     //Convert string to voucher type

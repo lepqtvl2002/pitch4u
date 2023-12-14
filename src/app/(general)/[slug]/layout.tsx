@@ -11,7 +11,7 @@ export default function GeneralLayout({
       <div className="md:container flex min-h-screen flex-col items-center justify-between ">
         <Navbar />
         {children}
-        <div className="px-2">
+        <div className="px-2 w-full">
           <Footer />
         </div>
       </div>

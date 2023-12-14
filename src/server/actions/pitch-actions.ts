@@ -86,6 +86,27 @@ export class PitchUseMutation {
     });
   };
 
+  // Approve booking for user pay later
+  static approveBookingPitch = () => {
+    return useMutation({
+      mutationFn: (data: { booking_id: string | number }) =>
+        $fetch(`/v1/booking/approve`, {
+          method: "POST",
+          data,
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({ title: "Đã chấp nhận đặt sân thành công", variant: "success" });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Đã xảy ra lỗi trong khi thực hiện hành động",
+          description: `${err?.message || "Đã xảy ra lỗi"}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
   // Add sub pitch
   static addSubPitch = () => {
     return useMutation({
@@ -211,13 +232,13 @@ export class PitchUseMutation {
       onSuccess: (data) => {
         if (data?.result == 1) {
           toast({
-            title: "Bạn đã xóa sân này ra khỏi danh sách yêu thích"
+            title: "Bạn đã xóa sân này ra khỏi danh sách yêu thích",
           });
-        } else 
-        toast({
-          title: "Sân đã được thêm vào danh sách yêu thích",
-          variant: "success",
-        });
+        } else
+          toast({
+            title: "Sân đã được thêm vào danh sách yêu thích",
+            variant: "success",
+          });
       },
       onError: (err: any) => {
         toast({

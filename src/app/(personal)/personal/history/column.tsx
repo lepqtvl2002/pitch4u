@@ -3,7 +3,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 // import { DataFacetedOptionsType } from "@/components/dashboard/table-facet";
-import { userStateVariant } from "@/lib/utils";
+import { bookingStateVariant, bookingStatusToString } from "@/lib/utils";
 import { BookingHistory } from "@/server/queries/user-queries";
 import { format } from "date-fns";
 
@@ -40,11 +40,11 @@ export const columns: ColumnDef<BookingHistory>[] = [
       const status = ctx.row.original?.status;
       return (
         <div
-          className={userStateVariant({
-            variant: status === "success" ? "active" : "suspended",
+          className={bookingStateVariant({
+            variant: status,
           })}
         >
-          {status === "success" ? "Thành công" : "Đã hủy"}
+          {bookingStatusToString(status)}
         </div>
       );
     },
@@ -66,7 +66,10 @@ export const columns: ColumnDef<BookingHistory>[] = [
       const startTime = ctx.row.original.booking_pitches.at(0)?.start_time;
       return (
         <div className={"text-bold"}>
-          {format(startTime ? new Date(startTime) : new Date(), "HH:mm dd/MM/yyyy")}
+          {format(
+            startTime ? new Date(startTime) : new Date(),
+            "HH:mm dd/MM/yyyy"
+          )}
         </div>
       );
     },

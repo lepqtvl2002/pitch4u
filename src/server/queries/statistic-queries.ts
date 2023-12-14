@@ -3,12 +3,13 @@ import { $fetch } from "@/lib/axios";
 import { Data as DataStatisticOwner } from "@/app/(dashboard)/dashboard/page";
 import { Data as DataStatisticSystem } from "@/app/(admin)/admin/page";
 import IPaginated from "@/types/paginated";
+import { PitchType } from "@/enums/pitchTypes";
 
 export type Booking = {
   booking_id: number;
   user_id: number;
   payment_type: string;
-  status: string;
+  status: "success" | "pending" | "canceled";
   discount: number;
   total: number;
   voucher_id: number | null;
@@ -59,7 +60,7 @@ type SubPitch = {
   pitch_id: number;
   name: string;
   price: number;
-  type: string;
+  type: PitchType;
   active: boolean;
   createdAt: string;
   updatedAt: string;

@@ -17,7 +17,7 @@ export function MessageList({ messages }: { messages: Message[] }) {
             key={message.message_id}
             className={cn(
               "w-full flex relative",
-              message.user_id === Number(session?.user.userId)
+              message.user_id == Number(session?.user.userId)
                 ? "justify-end"
                 : "justify-start"
             )}

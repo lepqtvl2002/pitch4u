@@ -2,18 +2,16 @@
 
 import { type DataFacetedOptionsType } from "@/components/dashboard/table-facet";
 import {
+  bookingStateVariant,
+  bookingStatusToString,
   cn,
   formatMoney,
-  stringToVoucherType,
-  voucherStatusToString,
-  voucherTypeToString,
-  voucherVariant,
+  pitchTypeVariant,
 } from "@/lib/utils";
 import { type ColumnDef } from "@tanstack/react-table";
-import { type IVoucher } from "@/types/voucher";
-import { IPost } from "@/types/post";
 import { Booking } from "@/server/queries/statistic-queries";
 import { format } from "date-fns";
+import { pitchTypeToString } from "@/lib/convert";
 
 export const vouchersTypes: DataFacetedOptionsType[] = [
   {
@@ -41,17 +39,21 @@ export const voucherStatus: DataFacetedOptionsType[] = [
 
 export const columns: ColumnDef<Booking>[] = [
   {
-    header: "ID",
-    cell: (ctx) => {
-      const booking_id = ctx.row.original.booking_id;
-      return <div className={"text-bold"}>{booking_id}</div>;
-    },
-  },
-  {
-    header: "Sân bóng",
+    header: "Sân được đặt",
     cell: (ctx) => {
       const pitchName = ctx.row.original.pitches.name;
       return <div className={"text-bold"}>{pitchName}</div>;
+    },
+  },
+  {
+    header: "Loại sân",
+    cell: (ctx) => {
+      const pitchType = ctx.row.original.booking_pitches[0].sub_pitch?.type;
+      return (
+        <div className={pitchTypeVariant({ variant: pitchType })}>
+          {pitchTypeToString(pitchType)}
+        </div>
+      );
     },
   },
   {
@@ -77,19 +79,14 @@ export const columns: ColumnDef<Booking>[] = [
     cell: (ctx) => {
       const status = ctx.row.original.status;
       return (
-        <div
-          className={cn(
-            "text-bold text-xs text-center px-2 py-1 font-bold text-white rounded-full",
-            status === "success" ? "bg-green-400" : "bg-red-500"
-          )}
-        >
-          {status === "success" ? "Thành công" : "Đã hủy"}
+        <div className={bookingStateVariant({ variant: status })}>
+          {bookingStatusToString(status)}
         </div>
       );
     },
   },
   {
-    header: "Giá",
+    header: "Số tiền",
     cell: (ctx) => {
       const total = ctx.row.original?.total;
       return <div className={"text-bold"}>{formatMoney(total)}</div>;

@@ -1,3 +1,4 @@
+import { Booking } from "@/server/queries/statistic-queries";
 import { ISubPitch } from "./subPitch";
 
 export interface IPitch {
@@ -31,3 +32,14 @@ export interface IPitch {
   };
   sub_pitches?: ISubPitch[];
 }
+
+export type BookingPitch = {
+  day: number;
+  time_frames: timeFrame[];
+};
+
+type TimeFrame = {
+  frame: number[][];
+  busy: ISubPitch[] & Booking;
+  free: ISubPitch[];
+};

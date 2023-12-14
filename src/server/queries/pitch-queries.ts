@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { $fetch, $globalFetch } from "@/lib/axios";
-import { IPitch } from "@/types/pitch";
+import { BookingPitch, IPitch } from "@/types/pitch";
 
 export class PitchUseQuery {
   static search = (query: Record<string, any>) => {
@@ -69,7 +69,7 @@ export class PitchUseQuery {
         $globalFetch(`/v1/pitches/booking-status`, {
           method: "GET",
           params: query,
-        }).then((res) => res.data),
+        }).then((res) => res.data as { result: BookingPitch[] }),
       cacheTime: 100,
       keepPreviousData: true,
     });

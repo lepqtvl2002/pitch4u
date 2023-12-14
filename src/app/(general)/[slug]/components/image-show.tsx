@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { ArrowRightIcon } from "lucide-react";
 
 export default function ImageGallery({ pitch }: { pitch: any }) {
   const [bigImage, setBigImage] = useState(pitch.imageUrls[0]); // Initialize bigImage with the first image URL
@@ -28,16 +27,18 @@ export default function ImageGallery({ pitch }: { pitch: any }) {
       </div>
       <div className="flex space-x-2 md:space-x-4 w-full py-1 px-1 h-24 md:h-40 overflow-auto no-scrollbar md:show-scrollbar mt-2 md:mt-4 items-center border border-main md:rounded">
         {pitch.imageUrls.map((imageUrl: string, index: number) => (
-            <Image
-              key={imageUrl + index}
-              src={imageUrl}
-              alt="Mini Image 1"
-              width={100}
-              height={100}
-              style={{ objectFit: "contain" }}
-              className={"w-auto h-full border m-auto rounded hover:cursor-pointer"}
-              onClick={() => handleMiniImageClick(imageUrl)}
-            />
+          <Image
+            key={imageUrl + index}
+            src={imageUrl}
+            alt="Mini Image 1"
+            width={100}
+            height={100}
+            style={{ objectFit: "contain" }}
+            className={
+              "w-auto h-full border m-auto rounded hover:cursor-pointer"
+            }
+            onClick={() => handleMiniImageClick(imageUrl)}
+          />
         ))}
       </div>
     </div>
