@@ -6,6 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { type BookingStatus } from "@/enums/bookingStatuses";
 import { mutatingToast } from "@/lib/quick-toast";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { MoreHorizontal } from "lucide-react";
@@ -15,16 +16,19 @@ type DropdownMenuPitchProps = {
   id: string | number;
   link: string;
   refetchTable: any;
+  status: BookingStatus;
 };
 export default function DropdownMenuActions({
   id,
   link,
   refetchTable,
+  status,
 }: DropdownMenuPitchProps) {
   const { mutateAsync: approveBookingMutate, isLoading } =
     PitchUseMutation.approveBookingPitch();
   const { mutateAsync: cancelBookingMutate, isLoading: isCanceling } =
     PitchUseMutation.cancelBookingPitch();
+
   async function handelApproveBooking() {
     mutatingToast();
     await approveBookingMutate({ booking_id: id });
@@ -48,19 +52,28 @@ export default function DropdownMenuActions({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Button
-            onClick={handelApproveBooking}
-            className="bg-emerald-500 w-full"
-          >
-            Chấp nhận yêu cầu đặt sân
-          </Button>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Button onClick={handelCancelBooking} className="bg-red-500 w-full">
-            Từ chối yêu cầu đặt sân
-          </Button>
-        </DropdownMenuItem>
+        {status === "pending" && (
+          <>
+            <DropdownMenuItem>
+              <Button
+                disabled={isLoading}
+                onClick={handelApproveBooking}
+                className="bg-emerald-500 w-full"
+              >
+                Chấp nhận yêu cầu đặt sân
+              </Button>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Button
+                disabled={isCanceling}
+                onClick={handelCancelBooking}
+                className="bg-red-500 w-full"
+              >
+                Từ chối yêu cầu đặt sân
+              </Button>
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -68,14 +68,23 @@ export default function BookingTable() {
             id: "actions",
             cell: ({ row }) => {
               const id = row.original.booking_id;
+              const userAvatar = row.original.user.avatar;
+              const userName = row.original.user.fullname;
+              const userPhone = row.original.user.phone;
+              const userEmail = row.original.user.email;
               const params = new URLSearchParams(
                 row.original as unknown as Record<string, string>
               );
+              params.set("user_avatar", userAvatar);
+              params.set("user_name", userName);
+              params.set("user_phone", userPhone);
+              params.set("user_email", userEmail);
               return (
                 <DropdownMenuActions
                   refetchTable={refetch}
                   id={id}
                   link={`/dashboard/booking/${id}?${params}`}
+                  status={row.original.status}
                 />
               );
             },

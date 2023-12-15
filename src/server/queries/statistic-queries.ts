@@ -4,12 +4,13 @@ import { Data as DataStatisticOwner } from "@/app/(dashboard)/dashboard/page";
 import { Data as DataStatisticSystem } from "@/app/(admin)/admin/page";
 import IPaginated from "@/types/paginated";
 import { PitchType } from "@/enums/pitchTypes";
+import { BookingStatus } from "@/enums/bookingStatuses";
 
 export type Booking = {
   booking_id: number;
   user_id: number;
   payment_type: string;
-  status: "success" | "pending" | "canceled";
+  status: BookingStatus;
   discount: number;
   total: number;
   voucher_id: number | null;

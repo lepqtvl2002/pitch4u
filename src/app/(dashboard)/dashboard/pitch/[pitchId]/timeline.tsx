@@ -116,6 +116,10 @@ function PitchTimeline() {
             <span>Đã được đặt</span>
           </div>
           <div className="flex items-center justify-center space-x-2">
+            <div className="w-8 h-8 border rounded-full bg-yellow-400"></div>
+            <span>Đang xử lý</span>
+          </div>
+          <div className="flex items-center justify-center space-x-2">
             <div className="w-8 h-8 border rounded-full"></div>
             <span>Còn trống</span>
           </div>

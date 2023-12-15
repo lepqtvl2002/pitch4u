@@ -28,6 +28,9 @@ export default function EditPitchPage({
         <p className="text-sm text-muted-foreground">
           Bạn có thể đổi tên cũng như cài đặt sân ở đây.
         </p>
+        <i className="text-sm text-muted-foreground">
+          Nếu bạn muốn thay đổi giá sân, hãy vào chi tiết từng sân con.
+        </i>
       </div>
       <Separator />
       <EditPitchForm pitch={data?.result} />
@@ -35,10 +38,11 @@ export default function EditPitchPage({
       <div id="config-pitch">
         <h3 className="text-lg font-medium">Cài đặt nâng cao</h3>
         <p className="text-sm text-muted-foreground">
-          Bạn có thể đổi giờ mở cửa, giờ đóng cửa cũng như giá từng giờ cụ thể ở đây.
+          Bạn có thể đổi giờ mở cửa, giờ đóng cửa cũng như giá từng giờ cụ thể ở
+          đây.
         </p>
       </div>
-      <ConfigPitchForm pitch={data?.result}/>
+      <ConfigPitchForm pitch={data?.result} />
     </div>
   );
 }
