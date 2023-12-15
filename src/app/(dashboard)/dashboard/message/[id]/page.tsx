@@ -1,14 +1,12 @@
 "use client";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2Icon, MoreHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Message } from "@/types/message";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { SocketContext } from "@/providers/socket-provider";
+import { MessageInput, MessageList } from "@/components/ui/message-components";
 
 export default function MessagePage() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -106,66 +104,6 @@ export default function MessagePage() {
           />
         </div>
       </div>
-    </div>
-  );
-}
-
-// MessageList.js
-function MessageList({ messages }: { messages: Message[] }) {
-  const { data: session } = useSession();
-
-  return (
-    <div className="flex flex-col-reverse w-full space-y-0.5 max-h-full">
-      {messages?.map((message, index: number) => {
-        return (
-          <div
-            key={message.message_id}
-            className={cn(
-              "w-full flex relative",
-              message.user_id === Number(session?.user.userId)
-                ? "justify-end"
-                : "justify-start"
-            )}
-          >
-            <div
-              className={cn(
-                "flex items-start py-2 px-4 rounded-3xl bg-blue-200"
-              )}
-            >
-              <p className={cn("max-w-sm xl:max-w-lg break-all")}>
-                {message.text}
-              </p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// MessageInput.js
-function MessageInput({
-  message,
-  setMessage,
-  sendMessage,
-}: {
-  message: string;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
-  sendMessage: any;
-}) {
-  return (
-    <div className="flex space-x-2 p-2">
-      <Input
-        className={"flex-1"}
-        type="text"
-        placeholder="Type your message..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyUp={(e) => {
-          if (e.key === "Enter") sendMessage();
-        }}
-      />
-      <Button onClick={sendMessage}>Send</Button>
     </div>
   );
 }

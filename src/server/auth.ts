@@ -8,7 +8,6 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { IToken } from "@/types/token";
 import { $fetch } from "@/lib/axios";
-import { connectSocket, getSocket } from "@/app/(dashboard)/dashboard/socket";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -80,8 +79,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.accessToken = token?.accessToken as IToken;
       session.refreshToken = token?.refreshToken as IToken;
-
-      connectSocket(session.accessToken.token);
+      
       if (session?.user) {
         return {
           ...session,

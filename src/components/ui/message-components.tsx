@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { Input } from "./input";
 import { Button } from "./button";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { Send } from "lucide-react";
 
 // MessageList.js
 export function MessageList({ messages }: { messages: Message[] }) {
@@ -12,19 +13,19 @@ export function MessageList({ messages }: { messages: Message[] }) {
   return (
     <div className="flex flex-col-reverse w-full space-y-0.5 max-h-full">
       {messages?.map((message, index: number) => {
+        const isYou = message.user_id == Number(session?.user.userId);
         return (
           <div
             key={message.message_id}
             className={cn(
               "w-full flex relative",
-              message.user_id == Number(session?.user.userId)
-                ? "justify-end"
-                : "justify-start"
+              isYou ? "justify-end" : "justify-start"
             )}
           >
             <div
               className={cn(
-                "flex items-start py-2 px-4 rounded-3xl bg-blue-200"
+                "flex items-start py-2 px-4 rounded-3xl",
+                isYou ? "bg-green-200" : "bg-gray-200"
               )}
             >
               <p className={cn("max-w-sm xl:max-w-lg break-all")}>
@@ -53,14 +54,16 @@ export function MessageInput({
       <Input
         className={"flex-1"}
         type="text"
-        placeholder="Type your message..."
+        placeholder="Nhập tin nhắn..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyUp={(e) => {
           if (e.key === "Enter") sendMessage();
         }}
       />
-      <Button onClick={sendMessage}>Send</Button>
+      <Button onClick={sendMessage}>
+        <Send />
+      </Button>
     </div>
   );
 }
