@@ -17,7 +17,7 @@ export default function MessagePage() {
           <MoreHorizontal />
         </Button>
       </div>
-      <div className="w-full h-full text-center mt-20">
+      <div className="w-full h-full text-center pt-20">
         <span className="m-auto">Qua trái và tìm kiếm cuộc trò chuyện nào</span>
       </div>
     </div>
