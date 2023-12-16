@@ -4,7 +4,20 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { IPitch } from "@/types/pitch";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 import { userStateVariant } from "@/lib/utils";
+import { DataFacetedOptionsType } from "@/components/dashboard/table-facet";
 
+export const pitchStatusOptions: DataFacetedOptionsType[] = [
+  {
+    label: "Hoạt động",
+    value: "active",
+    icon: "check",
+  },
+  {
+    label: "Bị khóa",
+    value: "suspended",
+    icon: "close",
+  },
+];
 export const columns: ColumnDef<IPitch>[] = [
   {
     header: " ",

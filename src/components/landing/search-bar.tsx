@@ -183,13 +183,13 @@ const SearchBar: React.FC = () => {
             disabled={!hasNextPage || isFetchingNextPage}
           >
             {isFetchingNextPage
-              ? "Loading more..."
+              ? "Đang tải..."
               : hasNextPage
-              ? "Load More"
-              : "Nothing more to load"}
+              ? "Tải thêm"
+              : "Không có gì để hiển thị thêm"}
           </button>
         </div>
-        <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
+        <div>{isFetching && !isFetchingNextPage ? "Đang tải..." : null}</div>
       </div>
     </div>
   );

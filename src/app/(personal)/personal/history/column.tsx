@@ -7,18 +7,6 @@ import { bookingStateVariant, bookingStatusToString } from "@/lib/utils";
 import { BookingHistory } from "@/server/queries/user-queries";
 import { format } from "date-fns";
 
-// export const pitchStatusOptions: DataFacetedOptionsType[] = [
-//   {
-//     label: "Hoạt động",
-//     value: "active",
-//     icon: "check",
-//   },
-//   {
-//     label: "Bị khóa",
-//     value: "suspended",
-//     icon: "close",
-//   },
-// ];
 export const columns: ColumnDef<BookingHistory>[] = [
   {
     header: " ",

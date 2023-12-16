@@ -232,4 +232,32 @@ export class UserUseMutation {
       },
     });
   };
+
+  static joinChat = () => {
+    return useMutation({
+      mutationKey: ["joinChat"],
+      mutationFn: (userId: number | string) =>
+        $fetch(`/v1/chats`, {
+          method: "POST",
+          data: {
+            userId,
+          },
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Tham gia cuộc hội thoại thành công",
+          variant: "success",
+          description: "Bạn có thể nhắn tin cho người dùng này.",
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+        toast({
+          title: "Hành động thất bại",
+          variant: "destructive",
+          description: "Đã xảy ra lỗi trong lúc thực hiện hành động này.",
+        });
+      },
+    });
+  };
 }

@@ -2,14 +2,13 @@
 import { DataTable } from "@/components/dashboard/data-table";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns } from "./column";
+import { columns, pitchStatusOptions } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { toast } from "@/components/ui/use-toast";
 import DropdownMenuPitch from "./dropdown-menu-action";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { pitchStatusOptions } from "@/app/(admin)/admin/pitch/column";
 
 type PitchStatus = "suspended" | "active";
 function PitchTable() {

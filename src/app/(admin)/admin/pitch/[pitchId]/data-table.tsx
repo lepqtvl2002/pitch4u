@@ -2,11 +2,11 @@
 import { DataTable } from "@/components/dashboard/data-table";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns } from "./column";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { useParams } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
 import PitchDetailStatCards from "@/app/(dashboard)/dashboard/pitch/[pitchId]/stat-cards";
+import { columns } from "@/app/(dashboard)/dashboard/pitch/[pitchId]/column";
 
 function PitchDetailTable() {
   const params = useParams();
