@@ -20,6 +20,20 @@ export const columns: ColumnDef<IPitch>[] = [
     },
   },
   {
+    header: " ",
+    accessorKey: "rate",
+    cell: (ctx) => {
+      const rate = ctx.row.original?.rate;
+      return (
+        <div
+          className="font-bold text-yellow-400"
+        >
+          {Number(rate).toFixed(1)}
+        </div>
+      );
+    },
+  },
+  {
     header: "Trạng thái",
     accessorKey: "status",
     cell: (ctx) => {

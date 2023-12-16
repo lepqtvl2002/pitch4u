@@ -5,9 +5,8 @@ import React, { useCallback } from "react";
 import { columns } from "./column";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { useParams } from "next/navigation";
-import PitchDetailStatCards from "./stat-cards";
 import { toast } from "@/components/ui/use-toast";
-import DropdownMenuSubPitch from "./dropdown-menu-action";
+import PitchDetailStatCards from "@/app/(dashboard)/dashboard/pitch/[pitchId]/stat-cards";
 
 function PitchDetailTable() {
   const params = useParams();
@@ -49,19 +48,7 @@ function PitchDetailTable() {
         <PitchDetailStatCards pitch={data?.result} />
       )}
       <DataTable
-        columns={[...columns, 
-            {
-              id: "actions",
-              cell: ({ row }) => {
-                return (
-                  <DropdownMenuSubPitch
-                    subPitchId={row.original.subpitch_id}
-                    url={`/admin/pitch/${row.original.pitch_id}/${row.original.subpitch_id}`}
-                    refetch={refetch}
-                  />
-                );
-              },
-            },]}
+        columns={columns}
         data={data?.result?.sub_pitches}
         isLoading={isFetching}
         pageCount={Math.floor(data?.result?.sub_pitches.length / pageSize)}

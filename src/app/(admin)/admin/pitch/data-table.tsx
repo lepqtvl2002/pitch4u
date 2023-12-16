@@ -10,7 +10,7 @@ import DropdownMenuPitch from "./dropdown-menu-action";
 
 type PitchStatus = "suspended" | "active";
 function PitchTable() {
-  const [statuses, setStatuses] = React.useState<PitchStatus[]>(["active"]);
+  const [statuses, setStatuses] = React.useState<PitchStatus[]>([]);
   const [search, setSearch] = React.useState<string>();
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
@@ -98,13 +98,13 @@ function PitchTable() {
           value: search || "",
           onChange: setSearchHandler,
         }}
-        // sort={{
-        //   columnName: sort.columnName,
-        //   direction: sort.direction,
-        //   onChange: (columnName, direction) => {
-        //     setSort({ columnName, direction });
-        //   },
-        // }}
+        sort={{
+          columnName: sort.columnName,
+          direction: sort.direction,
+          onChange: (columnName, direction) => {
+            setSort({ columnName, direction });
+          },
+        }}
       />
     </div>
   );

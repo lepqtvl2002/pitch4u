@@ -97,7 +97,7 @@ function RegistrationDetail() {
             "col-span-2 text-white rounded-full w-fit px-4",
             status === "pending"
               ? "bg-yellow-400"
-              : status === "rejected"
+              : status === "denied"
               ? "bg-red-500"
               : "bg-emerald-500"
           )}

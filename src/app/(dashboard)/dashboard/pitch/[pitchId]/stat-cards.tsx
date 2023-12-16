@@ -13,7 +13,11 @@ import { FileEdit } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import Link from "next/link";
-import { convertDayOfWeek, decimalToTimeString } from "@/lib/utils";
+import {
+  activeVariant,
+  convertDayOfWeek,
+  decimalToTimeString,
+} from "@/lib/utils";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 
 function PitchDetailStatCards({ pitch }: { pitch: IPitch }) {
@@ -39,8 +43,8 @@ function PitchDetailStatCards({ pitch }: { pitch: IPitch }) {
           </div>
           <div>
             <Label>Trạng thái: </Label>
-            <span>
-              {pitch?.config?.active ? "Hoạt động" : "Đã dừng hoạt động"}
+            <span className={activeVariant({ variant: pitch.config?.active })}>
+              {pitch.config?.active ? "Hoạt động" : "Đã bị khóa"}
             </span>
           </div>
           <div>

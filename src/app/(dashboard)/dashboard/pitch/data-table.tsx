@@ -7,6 +7,8 @@ import useDebounce from "@/hooks/use-debounce";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { toast } from "@/components/ui/use-toast";
 import DropdownMenuPitch from "./dropdown-menu-action";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { pitchStatusOptions } from "@/app/(admin)/admin/pitch/column";
 
 type PitchStatus = "suspended" | "active";
@@ -18,7 +20,7 @@ function PitchTable() {
     columnName: string;
     direction: "asc" | "desc";
   }>({
-    columnName: "createdAt",
+    columnName: "createAt",
     direction: "desc",
   });
 
@@ -86,18 +88,14 @@ function PitchTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        // facets={[
-        //   {
-        //     title: "Trạng thái",
-        //     columnName: "status",
-        //     options: pitchStatusOptions,
-        //     onChange: setStatusesHandler,
-        //   },
-        // ]}
-        otherButton={{
-          url: "/dashboard/pitch/register",
-          title: "Đăng ký thêm sân +",
-        }}
+        facets={[
+          {
+            title: "Trạng thái",
+            columnName: "status",
+            options: pitchStatusOptions,
+            onChange: setStatusesHandler,
+          },
+        ]}
         search={{
           placeholder: "Tìm kiếm",
           value: search || "",
@@ -110,6 +108,11 @@ function PitchTable() {
         //     setSort({ columnName, direction });
         //   },
         // }}
+        headerPrefix={
+          <Link href="/dashboard/pitch/register">
+            <Button className="">Đăng ký thêm sân +</Button>
+          </Link>
+        }
       />
     </div>
   );

@@ -12,10 +12,13 @@ import { UserNav } from "@/components/dashboard/user-nav";
 import { SidebarNavItem } from "@/types";
 
 type Props = {
-  user: {
-    name?: string | null | undefined;
-    email?: string | null | undefined;
-    image?: string | null | undefined;
+  user?: {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    userRole: {
+      name: string;
+    };
   };
   items: SidebarNavItem[];
 };
@@ -82,6 +85,11 @@ function DashboardSidebar({ user, items }: Props) {
             )}
           </AnimatePresence>
         </Link>
+        {user?.userRole.name === "admin" && (
+          <Link className="w-full mb-4" href="/dashboard/pitch/register">
+            <Button variant="outline" size="lg" className="shadow-lg w-full">Đăng ký thêm sân +</Button>
+          </Link>
+        )}
         <DashboardNav isShrink={isShrink} setShrink={setShrink} items={items} />
       </div>
       <AnimatePresence key={"user-nav"}>

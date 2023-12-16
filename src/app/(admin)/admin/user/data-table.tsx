@@ -11,7 +11,7 @@ import ActionsDropdownMenuActions from "./dropdown-menu-actions";
 type UserStatus = "suspended" | "active";
 
 function UserTable() {
-  const [statuses, setStatuses] = React.useState<UserStatus[]>(["active"]);
+  const [statuses, setStatuses] = React.useState<UserStatus[]>([]);
   const [search, setSearch] = React.useState<string>(" ");
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
