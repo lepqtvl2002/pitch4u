@@ -33,6 +33,7 @@ export default function BookingTable() {
 
   const { data, isError, isFetched, refetch } = StatisticUseQuery.getBooking({
     page: pageIndex + 1,
+    limit: pageSize,
     // sort: sort.direction,
     // sort_by: sort.direction,
   });

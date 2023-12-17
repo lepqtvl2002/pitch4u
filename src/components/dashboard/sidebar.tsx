@@ -1,6 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronsLeft } from "lucide-react";
+import { ChevronsLeft, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { siteConfig } from "@/config/site";
@@ -80,14 +80,20 @@ function DashboardSidebar({ user, items }: Props) {
                 }}
                 exit={{ opacity: 0, x: -20 }}
               >
-                {siteConfig.name}
+                {siteConfig.name.toUpperCase()}
               </motion.span>
             )}
           </AnimatePresence>
         </Link>
         {user?.userRole.name === "admin" && (
           <Link className="w-full mb-4" href="/dashboard/pitch/register">
-            <Button variant="outline" size="lg" className="shadow-lg w-full">Đăng ký thêm sân +</Button>
+            <Button
+              variant="outline"
+              size={isShrink ? "icon" : "lg"}
+              className="shadow-lg w-full"
+            >
+              {isShrink ? <PlusIcon /> : "Đăng ký thêm sân +"}
+            </Button>
           </Link>
         )}
         <DashboardNav isShrink={isShrink} setShrink={setShrink} items={items} />

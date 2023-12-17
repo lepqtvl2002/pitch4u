@@ -93,13 +93,13 @@ export class StatisticUseQuery {
       keepPreviousData: true,
     });
   };
-  static getBooking = (query?: Record<string, any>) => {
+  static getBooking = (params?: Record<string, any>) => {
     return useQuery({
-      queryKey: ["booking", query],
+      queryKey: ["booking", params],
       queryFn: () =>
         $fetch(`/v1/booking`, {
           method: "GET",
-          params: query,
+          params,
         }).then(
           (res) => res.data as { result: { data: Booking[] } & IPaginated }
         ),

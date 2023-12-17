@@ -20,8 +20,8 @@ export default function ImageGallery({ pitch }: { pitch: any }) {
         <Image
           src={bigImage}
           alt="Big Image"
-          width={460}
-          height={460}
+          width={2000}
+          height={2000}
           className={"w-auto h-full content-center"}
         />
       </div>
@@ -31,8 +31,8 @@ export default function ImageGallery({ pitch }: { pitch: any }) {
             key={imageUrl + index}
             src={imageUrl}
             alt="Mini Image 1"
-            width={100}
-            height={100}
+            width={1000}
+            height={1000}
             style={{ objectFit: "contain" }}
             className={
               "w-auto h-full border m-auto rounded hover:cursor-pointer"
