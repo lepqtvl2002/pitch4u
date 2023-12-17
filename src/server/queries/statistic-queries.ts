@@ -93,7 +93,7 @@ export class StatisticUseQuery {
       keepPreviousData: true,
     });
   };
-  static getBooking = (params?: Record<string, any>) => {
+  static getBooking = (params?: {limit?: number, page?: number, status?: string}) => {
     return useQuery({
       queryKey: ["booking", params],
       queryFn: () =>

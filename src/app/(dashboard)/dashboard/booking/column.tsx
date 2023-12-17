@@ -4,7 +4,6 @@ import { type DataFacetedOptionsType } from "@/components/dashboard/table-facet"
 import {
   bookingStateVariant,
   bookingStatusToString,
-  cn,
   formatMoney,
   pitchTypeVariant,
 } from "@/lib/utils";
@@ -12,28 +11,23 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { Booking } from "@/server/queries/statistic-queries";
 import { format } from "date-fns";
 import { pitchTypeToString } from "@/lib/convert";
+import BookingStatuses from "@/enums/bookingStatuses";
 
-export const vouchersTypes: DataFacetedOptionsType[] = [
+export const bookingStatusOptions: DataFacetedOptionsType[] = [
   {
-    label: "Giảm giá",
-    value: "REDUCE_AMOUNT",
-  },
-  {
-    label: "Giảm theo %",
-    value: "REDUCE_PERCENT",
-  },
-];
-
-export const voucherStatus: DataFacetedOptionsType[] = [
-  {
-    label: "Đang chạy",
-    value: "RUNNING",
+    label: bookingStatusToString(BookingStatuses.Pending),
+    value: BookingStatuses.Pending,
     icon: "clock",
   },
   {
-    label: "Hết hạn",
-    value: "EXPIRED",
+    label: bookingStatusToString(BookingStatuses.Canceled),
+    value: BookingStatuses.Canceled,
     icon: "close",
+  },
+  {
+    label: bookingStatusToString(BookingStatuses.Success),
+    value: BookingStatuses.Success,
+    icon: "check",
   },
 ];
 
@@ -76,6 +70,8 @@ export const columns: ColumnDef<Booking>[] = [
   },
   {
     header: "Trạng thái",
+    id: "status",
+    accessorKey: "status",
     cell: (ctx) => {
       const status = ctx.row.original.status;
       return (

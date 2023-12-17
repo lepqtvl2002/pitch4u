@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { IUser } from "@/types/user";
 import { cva } from "class-variance-authority";
+import BookingStatuses from "@/enums/bookingStatuses";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -302,6 +303,21 @@ export const bookingStatusToString = (status: string) => {
       return "Đang xử lý";
     default:
       return "Đã hủy";
+  }
+};
+
+export const stringToBookingStatus = (string: string) => {
+  switch (string) {
+    case "success":
+      return BookingStatuses.Success;
+    case "Thành công":
+      return BookingStatuses.Success;
+    case "pending":
+      return BookingStatuses.Pending;
+    case "Đang xử lý":
+      return BookingStatuses.Pending;
+    default:
+      return BookingStatuses.Canceled;
   }
 };
 
