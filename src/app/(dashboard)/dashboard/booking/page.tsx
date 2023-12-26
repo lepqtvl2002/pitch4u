@@ -2,11 +2,11 @@ import BookingTable from "./data-table";
 
 export default function BookingPage() {
   return (
-    <div className={"w-full py-4 md:py-10"}>
+    <div className="container py-4 md:py-10 max-w-7xl">
       <div className="grid grid-cols-2 gap-4  md:grid-cols-2">
-        {/* <VoucherStatCards /> */}
+        {/* <PitchStatCards /> */}
       </div>
-      <div className="mx-auto w-11/12">
+      <div className="mx-auto py-10 max-w-screen-2xl">
         <BookingTable />
       </div>
     </div>

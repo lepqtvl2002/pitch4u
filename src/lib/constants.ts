@@ -1,0 +1,1 @@
+export const SIDEBAR_SHIRK_KEY = 'sidebar_shirk_key';

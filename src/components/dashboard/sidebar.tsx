@@ -10,6 +10,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { UserNav } from "@/components/dashboard/user-nav";
 import { SidebarNavItem } from "@/types";
+import { SIDEBAR_SHIRK_KEY } from "@/lib/constants";
 
 type Props = {
   user?: {
@@ -24,7 +25,9 @@ type Props = {
 };
 
 function DashboardSidebar({ user, items }: Props) {
-  const [isShrink, setShrink] = useState(false);
+  const [isShrink, setShrink] = useState<boolean>(
+    JSON.parse(localStorage.getItem(SIDEBAR_SHIRK_KEY) ?? "false")
+  );
 
   return (
     <motion.aside
@@ -44,6 +47,7 @@ function DashboardSidebar({ user, items }: Props) {
           size={"sm"}
           onClick={() => {
             setShrink(!isShrink);
+            localStorage.setItem(SIDEBAR_SHIRK_KEY, JSON.stringify(!isShrink));
           }}
           className={cn(
             "mx-auto mb-4 aspect-square h-fit w-fit rounded-full bg-foreground p-0.5 opacity-80 transition-transform duration-500 ease-in-out",
@@ -63,7 +67,7 @@ function DashboardSidebar({ user, items }: Props) {
           href="/"
           className="mx-auto mb-4 hidden items-center space-x-2 md:flex border-b pb-3"
         >
-          <Icons.logo />
+          {/* <Icons.logo /> */}
           <AnimatePresence key={"title"} initial={false}>
             {isShrink || (
               <motion.span
@@ -119,7 +123,7 @@ function DashboardSidebar({ user, items }: Props) {
               }
             >
               <UserNav />
-              <span>{user?.name || user?.email}</span>
+              <span className="truncate">{user?.name || user?.email}</span>
             </div>
           </motion.div>
         )}
