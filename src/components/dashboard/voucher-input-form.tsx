@@ -28,12 +28,23 @@ import { IVoucher } from "@/types/voucher";
 import { VoucherUseMutation } from "@/server/actions/voucher-actions";
 import { mutatingToast } from "@/lib/quick-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { cn, voucherTypeToString } from "@/lib/utils";
+import { addDays, format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
+import VoucherTypes from "@/enums/voucherTypes";
 
-const voucherFormSchema = z.object({
+const createVoucherFormSchema = z.object({
+  code: z.string().min(2, {
+    message: "Code phải chứa tối thiểu 3 ký tự.",
+  }),
+  type: z.string(),
+  usage_count: z.string(),
+  discount: z.string(),
+  expire_date: z.date().optional(),
+});
+
+const updateVoucherFormSchema = z.object({
   code: z
     .string()
     .min(2, {
@@ -41,28 +52,33 @@ const voucherFormSchema = z.object({
     })
     .optional(),
   type: z.string().optional(),
-  pitch_id: z.string().optional(),
   usage_count: z.string().optional(),
   discount: z.string().optional(),
   expire_date: z.date().optional(),
 });
-
-type VoucherFormValues = z.infer<typeof voucherFormSchema>;
 
 type FormProps = {
   voucher?: IVoucher;
 };
 
 export function VoucherInputForm({ voucher }: FormProps) {
+  const voucherFormSchema = voucher
+    ? updateVoucherFormSchema
+    : createVoucherFormSchema;
+  type VoucherFormValues = z.infer<typeof voucherFormSchema>;
   const form = useForm<VoucherFormValues>({
     resolver: zodResolver(voucherFormSchema),
     defaultValues: {
       code: voucher?.code,
       type: voucher?.type,
-      pitch_id: voucher?.pitch_id?.toString(),
-      expire_date: new Date(),
+      expire_date: voucher?.expire_date
+        ? new Date(voucher.expire_date)
+        : addDays(new Date(), 1),
       usage_count: voucher?.usage_count?.toString(),
-      discount: voucher?.discount?.toString(),
+      discount:
+        voucher?.type === "percent"
+          ? (voucher?.discount * 100)?.toString()
+          : voucher?.discount.toString(),
     },
     // mode: "onChange",
   });
@@ -70,42 +86,43 @@ export function VoucherInputForm({ voucher }: FormProps) {
   const { mutateAsync: updateVoucher, isLoading: isUpdating } =
     VoucherUseMutation.update(voucher?.voucher_id!);
   const router = useRouter();
+  const [pitch, setPitch] = useState<{ pitchId: number; pitchName: string }>({
+    pitchId: Number(voucher?.pitch_id),
+    pitchName: voucher?.pitch_id ? voucher.pitch_id.toString() : "",
+  });
 
   async function onSubmit(data: VoucherFormValues) {
     if (voucher) {
       mutatingToast();
-      const { pitch_id, ...sendValues } = data;
+      const { ...sendValues } = data;
       await updateVoucher({
         ...sendValues,
         usage_count: Number(data.usage_count),
-        discount: Number(data.discount),
+        discount:
+          data.type == "fixed"
+            ? Number(data.discount)
+            : Number(data.discount) / 100,
       });
       router.push("/dashboard/voucher");
     } else {
-      const missingInfo: string[] = [];
-      if (!data.code) missingInfo.push("Code");
-      if (!data.type) missingInfo.push("Loại giảm giá");
-      if (!data.expire_date) missingInfo.push("Ngày hết hạn");
-      if (!data.pitch_id) missingInfo.push("ID sân áp dụng voucher");
-      if (!data.usage_count) missingInfo.push("Giảm");
-
-      if (missingInfo.length === 0) {
+      if (pitch) {
         mutatingToast();
-        const { expire_date, ...sendValues } = data;
+        const { ...sendValues } = data;
         await createVoucher({
           ...sendValues,
           code: data?.code || "CODE",
           // expire_date,
           type: data.type || "fixed",
           usage_count: Number(data?.usage_count),
-          discount: Number(data?.discount),
+          discount:
+            data.type == "fixed"
+              ? Number(data.discount)
+              : Number(data.discount) / 100,
+          pitch_id: pitch?.pitchId,
         });
         router.push("/dashboard/voucher");
       } else {
-        toast({
-          title: `Vui lòng điền đầy đủ thông tin: `,
-          description: `${missingInfo.join(", ")}`,
-        });
+        toast({ title: "" });
       }
     }
   }
@@ -146,8 +163,12 @@ export function VoucherInputForm({ voucher }: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={"fixed"}>Giảm luôn</SelectItem>
-                  <SelectItem value={"percent"}>Giảm theo phần trăm</SelectItem>
+                  <SelectItem value={VoucherTypes.Fixed}>
+                    {voucherTypeToString(VoucherTypes.Fixed)}
+                  </SelectItem>
+                  <SelectItem value={VoucherTypes.Percent}>
+                    {voucherTypeToString(VoucherTypes.Percent)}
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -176,6 +197,11 @@ export function VoucherInputForm({ voucher }: FormProps) {
               <FormControl>
                 <Input type="number" defaultValue={field.value} {...field} />
               </FormControl>
+              <FormDescription>
+                {form.getValues().type == "percent"
+                  ? "Nhập số phần trăm được giảm (1 - 100)."
+                  : "Nhập số tiền được giảm"}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -211,7 +237,7 @@ export function VoucherInputForm({ voucher }: FormProps) {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date) =>
-                      date < new Date() || date > new Date("2090-01-01")
+                      date <= new Date() || date > new Date("2090-01-01")
                     }
                     initialFocus
                   />
@@ -221,28 +247,71 @@ export function VoucherInputForm({ voucher }: FormProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="pitch_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ID sân bóng</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="ID sân bóng, nơi áp dụng mã giảm này."
-                  defaultValue={field.value}
-                  type="number"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!voucher ? <SelectPitch pitch={pitch} setPitch={setPitch} /> : null}
         <Button disabled={isLoading || isUpdating} type="submit">
           {voucher ? "Cập nhật thông tin" : "Thêm mới voucher"}
         </Button>
       </form>
     </Form>
+  );
+}
+
+import * as React from "react";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
+import { Card, CardContent, CardHeader } from "../ui/card";
+import useDebounce from "@/hooks/use-debounce";
+
+export function SelectPitch({
+  pitch,
+  setPitch,
+}: {
+  pitch: { pitchId: number; pitchName: string };
+  setPitch: any;
+}) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(pitch?.pitchName);
+  const debouncedSearch = useDebounce(value);
+  const { data, isLoading } = PitchUseQuery.getMyPitches({
+    name: debouncedSearch,
+  });
+  React.useEffect(() => {
+    if (value.length > 0) setOpen(true);
+    else setOpen(false);
+  }, [value]);
+  return (
+    <div className="grid gap-8 mt-8">
+      <FormLabel>Sân bóng sử dụng voucher này</FormLabel>
+      <Input
+        placeholder="Nhập tên sân"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      <div className={cn(open ? "flex" : "hidden")}>
+        <Card>
+          <CardHeader>Chọn sân sử dụng voucher</CardHeader>
+          {isLoading ? (
+            <>Loading...</>
+          ) : (
+            <CardContent>
+              {data?.result.data.map((item) => (
+                <Button
+                  type="button"
+                  key={item.pitch_id}
+                  variant={
+                    pitch?.pitchId == item.pitch_id ? "default" : "outline"
+                  }
+                  onClick={() => {
+                    setPitch({ pitchId: item.pitch_id });
+                    setValue(item.name);
+                  }}
+                >
+                  {item.name}
+                </Button>
+              ))}
+            </CardContent>
+          )}
+        </Card>
+      </div>
+    </div>
   );
 }

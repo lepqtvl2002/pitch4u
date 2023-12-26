@@ -8,13 +8,14 @@ import useDebounce from "@/hooks/use-debounce";
 import { VoucherUseQuery } from "@/server/queries/voucher-queries";
 import DropdownMenuActions from "./dropdown-menu-actions";
 import { toast } from "@/components/ui/use-toast";
-
-type VoucherTypes = "REDUCE_AMOUNT" | "REDUCE_PERCENT";
-type VoucherStatuses = "RUNNING" | "EXPIRED";
+import { VoucherType } from "@/enums/voucherTypes";
+import { VoucherStatus } from "@/enums/voucherStatues";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function VoucherTable() {
-  const [types, setTypes] = React.useState<VoucherTypes[]>([]);
-  const [statuses, setStatuses] = React.useState<VoucherStatuses[]>([]);
+  const [types, setTypes] = React.useState<VoucherType[]>([]);
+  const [statuses, setStatuses] = React.useState<VoucherStatus[]>([]);
   const [search, setSearch] = React.useState<string>();
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
@@ -84,24 +85,25 @@ function VoucherTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        // facets={[
-        //     {
-        //         title: "Trạng thái",
-        //         columnName: "status",
-        //         options: voucherStatus,
-        //         onChange: setStatusesHandler,
-        //     },
-        //     {
-        //         title: "Phân loại",
-        //         columnName: "type",
-        //         options: vouchersTypes,
-        //         onChange: setTypesHandler,
-        //     },
-        // ]}
-        otherButton={{
-          url: "/dashboard/voucher/create",
-          title: "Tạo mới +",
-        }}
+        facets={[
+            {
+                title: "Trạng thái",
+                columnName: "status",
+                options: voucherStatus,
+                onChange: setStatusesHandler,
+            },
+            {
+                title: "Phân loại",
+                columnName: "type",
+                options: vouchersTypes,
+                onChange: setTypesHandler,
+            },
+        ]}
+        headerPrefix={
+          <Link href="/dashboard/voucher/create">
+          <Button>Tạo thêm voucher +</Button>
+          </Link>
+        }
         // search={{
         //   placeholder: "Tìm kiếm",
         //   value: search || "",

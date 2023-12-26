@@ -1,7 +1,9 @@
+import { VoucherType } from "@/enums/voucherTypes";
+
 export interface IVoucher {
   voucher_id: number;
   code: string;
-  type: string;
+  type: VoucherType;
   active: boolean;
   expire_date: Date;
   usage_count: number | null;

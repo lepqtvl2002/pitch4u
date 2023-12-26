@@ -3,6 +3,8 @@ import { twMerge } from "tailwind-merge";
 import { IUser } from "@/types/user";
 import { cva } from "class-variance-authority";
 import BookingStatuses from "@/enums/bookingStatuses";
+import VoucherStatuses from "@/enums/voucherStatues";
+import VoucherTypes, { VoucherType } from "@/enums/voucherTypes";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -150,14 +152,14 @@ export const methodToType = (method: string) => {
 };
 
 export const voucherVariant = cva(
-  "text-xs font-medium rounded-full px-2 py-1 text-center cursor-default",
+  "text-sm font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
   {
     variants: {
       variant: {
-        REDUCE_AMOUNT:
+        fixed:
           "bg-green-100 text-green-600 dark:text-green-400 dark:bg-green-600/50",
-        REDUCE_PERCENT:
-          "bg-red-100 text-red-600 dark:text-red-400 dark:bg-red-600/50",
+        percent:
+          "bg-yellow-100 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
         default:
           "bg-yellow-100 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
       },
@@ -253,17 +255,10 @@ export const pitchTypeVariant = cva(
   }
 );
 
-enum VoucherType {
-  REDUCE_AMOUNT = "REDUCE_AMOUNT",
-  REDUCE_PERCENT = "REDUCE_PERCENT",
-}
-
 export const voucherTypeToString = (type: VoucherType) => {
   switch (type) {
-    case VoucherType.REDUCE_AMOUNT:
+    case VoucherTypes.Fixed:
       return "Giảm giá";
-    case VoucherType.REDUCE_PERCENT:
-      return "Giảm theo %";
     default:
       return "Giảm theo %";
   }
@@ -272,26 +267,20 @@ export const voucherTypeToString = (type: VoucherType) => {
 export const stringToVoucherType = (type: string) => {
   switch (type) {
     case "Giảm giá":
-      return "REDUCE_AMOUNT";
-    case "REDUCE_AMOUNT":
-      return "REDUCE_AMOUNT";
-    case "Giảm theo %":
-      return "REDUCE_PERCENT";
-    case "REDUCE_PERCENT":
-      return "REDUCE_PERCENT";
+      return VoucherTypes.Fixed;
+    case "fixed":
+      return VoucherTypes.Fixed;
     default:
-      return "REDUCE_PERCENT";
+      return VoucherTypes.Percent;
   }
 };
 
 export const voucherStatusToString = (status: string) => {
   switch (status) {
-    case "RUNNING":
-      return "🕛 Đang chạy";
-    case "EXPIRED":
-      return "❌ Hết hạn";
+    case VoucherStatuses.Running:
+      return "Đang chạy";
     default:
-      return "🕛 Đang chạy";
+      return "Hết hạn";
   }
 };
 
@@ -324,15 +313,11 @@ export const stringToBookingStatus = (string: string) => {
 export const stringToVoucherStatus = (status: string) => {
   switch (status) {
     case "Đang chạy":
-      return "RUNNING";
+      return VoucherStatuses.Running;
     case "RUNNING":
-      return "RUNNING";
-    case "Hết hạn":
-      return "EXPIRED";
-    case "EXPIRED":
-      return "EXPIRED";
+      return VoucherStatuses.Running;
     default:
-      return "EXPIRED";
+      return VoucherStatuses.Expired;
   }
 };
 

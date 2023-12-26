@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { $fetch, $globalFetch } from "@/lib/axios";
 import { BookingPitch, IPitch } from "@/types/pitch";
+import IPaginated from "@/types/paginated";
 
 export class PitchUseQuery {
   static search = (query: Record<string, any>) => {
@@ -27,14 +28,14 @@ export class PitchUseQuery {
       keepPreviousData: true,
     });
   };
-  static getMyPitches = (params: Record<string, any>) => {
+  static getMyPitches = (params?: Record<string, any>) => {
     return useQuery({
       queryKey: ["my-pitches", params],
       queryFn: () =>
         $fetch(`/v1/pitches/my-pitches`, {
           method: "GET",
           params: params,
-        }).then((res) => res.data),
+        }).then((res) => res.data as { result: { data: IPitch[] } & IPaginated }),
       cacheTime: 100,
       keepPreviousData: true,
     });

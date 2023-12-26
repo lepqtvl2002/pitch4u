@@ -2,48 +2,43 @@
 
 import { type DataFacetedOptionsType } from "@/components/dashboard/table-facet";
 import {
+  activeVariant,
   cn,
-  stringToVoucherType,
   voucherStatusToString,
   voucherTypeToString,
   voucherVariant,
 } from "@/lib/utils";
 import { type ColumnDef } from "@tanstack/react-table";
 import { type IVoucher } from "@/types/voucher";
-import { IPost } from "@/types/post";
+import VoucherStatuses from "@/enums/voucherStatues";
+import VoucherTypes from "@/enums/voucherTypes";
+import { format } from "date-fns";
 
 export const vouchersTypes: DataFacetedOptionsType[] = [
   {
-    label: "Giảm giá",
-    value: "REDUCE_AMOUNT",
+    label: voucherTypeToString(VoucherTypes.Fixed),
+    value: VoucherTypes.Fixed,
   },
   {
-    label: "Giảm theo %",
-    value: "REDUCE_PERCENT",
+    label: voucherTypeToString(VoucherTypes.Percent),
+    value: VoucherTypes.Percent,
   },
 ];
 
 export const voucherStatus: DataFacetedOptionsType[] = [
   {
-    label: "Đang chạy",
-    value: "RUNNING",
+    label: voucherStatusToString(VoucherStatuses.Running),
+    value: VoucherStatuses.Running,
     icon: "clock",
   },
   {
-    label: "Hết hạn",
-    value: "EXPIRED",
+    label: voucherStatusToString(VoucherStatuses.Expired),
+    value: VoucherStatuses.Expired,
     icon: "close",
   },
 ];
 
 export const columns: ColumnDef<IVoucher>[] = [
-  {
-    header: "ID",
-    cell: (ctx) => {
-      const id = ctx.row.id;
-      return <div className={"text-bold"}>{id}</div>;
-    },
-  },
   {
     header: "CODE",
     cell: (ctx) => {
@@ -52,17 +47,22 @@ export const columns: ColumnDef<IVoucher>[] = [
     },
   },
   {
-    header: "Loại",
+    header: "Loại voucher",
     cell: (ctx) => {
       const type = ctx.row.original.type;
-      return <div className={"text-bold"}>{type}</div>;
-    },
-  },
-  {
-    header: "Giảm",
-    cell: (ctx) => {
       const discount = ctx.row.original.discount;
-      return <div className={"text-bold"}>{discount}</div>;
+      return (
+        <div className="flex justify-between">
+          <div className={voucherVariant({ variant: type })}>
+            {voucherTypeToString(type)}
+          </div>
+          <div className={"text-bold"}>
+            {type == VoucherTypes.Fixed
+              ? discount.toLocaleString()
+              : `${discount * 100}%`}
+          </div>
+        </div>
+      );
     },
   },
   {
@@ -70,12 +70,7 @@ export const columns: ColumnDef<IVoucher>[] = [
     cell: (ctx) => {
       const active = ctx.row.original.active;
       return (
-        <div
-          className={cn(
-            "text-bold text-xs text-center px-2 py-1 font-bold text-white rounded-full",
-            active ? "bg-green-400" : "bg-red-500"
-          )}
-        >
+        <div className={activeVariant({ variant: active })}>
           {active ? "Đang hoạt động" : "Đã dừng"}
         </div>
       );
@@ -86,77 +81,17 @@ export const columns: ColumnDef<IVoucher>[] = [
     cell: (ctx) => {
       const expire_date = ctx.row.original?.expire_date;
       return (
-        <div className={"text-bold"}>
-          {expire_date
-            ? expire_date.toString()
-            : new Date().toLocaleDateString()}
+        <div
+          className={cn(
+            "text-bold",
+            new Date(expire_date) >= new Date() || !expire_date
+              ? "text-green-500"
+              : "text-red-500 line-through"
+          )}
+        >
+          {expire_date ? format(new Date(expire_date), "dd/MM/yyyy") : "--"}
         </div>
       );
     },
   },
-  // {
-  //     header: "Code",
-  //     accessorKey: "code",
-  //     cell: (ctx) => {
-  //         const voucher = ctx.row.original;
-  //         return <div className="text-sm text-foreground/60">{voucher.code}</div>;
-  //     },
-  // },
-  // {
-  //     header: "Thời gian có hiệu lực",
-  //     accessorKey: "startDateToEndDate",
-  //     accessorFn: (row) =>
-  //         `${new Date(row.startDate).toLocaleDateString()} - ${new Date(
-  //             row.endDate
-  //         ).toLocaleDateString()}`,
-  // },
-  // {
-  //     header: "Loại",
-  //     accessorKey: "type",
-  //     id: "type",
-  //     cell: ({ row }) => {
-  //         const typeLabel = stringToVoucherType(row.original.type);
-  //         // const type = vouchersTypes.find((t) => t.label === row.getValue("type"));
-  //         // if (!type) return null;
-  //
-  //         return (
-  //             <p className={cn("capitalize", voucherVariant({ variant: typeLabel }))}>
-  //         {voucherTypeToString(row.original.type)}
-  //         </p>
-  //     );
-  //     },
-  // },
-  // {
-  //     header: "Giảm",
-  //     accessorKey: "reduce",
-  //     accessorFn: (row) =>
-  //         row.type === "REDUCE_AMOUNT"
-  //             ? row.reduceByAmount
-  //             : row.reduceByPercent
-  //                 ? `${row.reduceByPercent}%`
-  //                 : 0,
-  // },
-  // {
-  //     header: "Trạng thái",
-  //     id: "status",
-  //     accessorKey: "endDate",
-  //     cell: (ctx) => {
-  //         const status =
-  //             new Date(ctx.row.original.endDate) < new Date() ? "EXPIRED" : "RUNNING";
-  //         return (
-  //             <p className={cn("capitalize")}>{voucherStatusToString(status)}</p>
-  //     );
-  //     },
-  // },
-  // {
-  //     id: "actions",
-  //     cell: ({ row }) => {
-  //         return (
-  //             <DropdownMenuVoucher
-  //                 voucherId={row.original._id}
-  //         url={`/dashboard/voucher/${row.original._id}`}
-  //         />
-  //     );
-  //     },
-  // },
 ];
