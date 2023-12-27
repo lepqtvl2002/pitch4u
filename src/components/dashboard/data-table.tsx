@@ -34,6 +34,15 @@ import LoadingTable from "./loading-table";
 import TableFacet, { type DataFacetedOptionsType } from "./table-facet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../ui/pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -282,43 +291,57 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
       <div className="mx-auto flex w-full items-center justify-center space-x-4 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          <Icons.chevronLeft />
-        </Button>
-        <div className="flex space-x-2 overflow-auto">
-          {Array.from({ length: table.getPageCount() }, (_, i) => i).map(
-            (pageIndex) => {
-              return (
-                <Button
-                  key={pageIndex}
-                  variant={
-                    pageIndex === table.getState().pagination.pageIndex
-                      ? "default"
-                      : "outline"
-                  }
-                  size="sm"
-                  onClick={() => table.setPageIndex(pageIndex)}
-                  disabled={pageIndex === table.getState().pagination.pageIndex}
-                >
-                  {pageIndex + 1}
-                </Button>
-              );
-            }
-          )}
-        </div>
-        <Button
-          variant={"outline"}
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          <Icons.chevronRight />
-        </Button>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious onClick={() => table.previousPage()} />
+            </PaginationItem>
+            <PaginationItem
+              className={
+                table.getState().pagination.pageIndex > 5 || !table.getPageCount() ? "flex" : "hidden"
+              }
+            >
+              <PaginationEllipsis />
+            </PaginationItem>
+            {Array.from({ length: table.getPageCount() }, (_, i) => i).map(
+              (pageIndex) => {
+                return (
+                  <PaginationItem
+                    key={pageIndex}
+                    className={
+                      Math.abs(
+                        table.getState().pagination.pageIndex - pageIndex
+                      ) > 5
+                        ? "hidden"
+                        : "flex"
+                    }
+                  >
+                    <PaginationLink
+                      isActive={
+                        pageIndex === table.getState().pagination.pageIndex
+                      }
+                      onClick={() => table.setPageIndex(pageIndex)}
+                    >
+                      {pageIndex + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              }
+            )}
+            <PaginationItem
+              className={
+                table.getPageCount() - table.getState().pagination.pageIndex > 6
+                  ? "flex"
+                  : "hidden"
+              }
+            >
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext onClick={() => table.nextPage()} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );
