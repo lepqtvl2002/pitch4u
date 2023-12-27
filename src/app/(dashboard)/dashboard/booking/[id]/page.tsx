@@ -57,7 +57,7 @@ export default function DetailBookingPage() {
             ) : !Number.isNaN(Number(item[1])) ? (
               Number(item[1]).toLocaleString()
             ) : (
-              format(new Date(), "dd/MM/yyyy")
+              format(new Date(item[1]), "dd/MM/yyyy")
             )}
           </p>
         );
