@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +25,6 @@ import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { BookingHistory } from "@/server/queries/user-queries";
 import { format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
-import { useState } from "react";
 
 type DropdownMenuProps = {
   id: string | number;
@@ -43,7 +41,6 @@ export default function DropdownMenuActions({
 }: DropdownMenuProps) {
   const { mutateAsync: cancelBookingMutate, isLoading: isCanceling } =
     PitchUseMutation.cancelBookingPitch();
-  const [open, setOpen] = useState(false);
   async function cancelBooking() {
     mutatingToast();
     await cancelBookingMutate({ booking_id: id });
