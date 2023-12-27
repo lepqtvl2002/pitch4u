@@ -8,7 +8,6 @@ import { mutatingToast } from "@/lib/quick-toast";
 import {
   bookingStateVariant,
   bookingStatusToString,
-  cn,
   paymentTypeToString,
 } from "@/lib/utils";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
@@ -58,7 +57,7 @@ export default function DetailBookingPage() {
             ) : !Number.isNaN(Number(item[1])) ? (
               Number(item[1]).toLocaleString()
             ) : (
-              format(new Date(item[1]), "dd/MM/yyyy")
+              format(new Date(), "dd/MM/yyyy")
             )}
           </p>
         );
