@@ -7,10 +7,9 @@ import useDebounce from "@/hooks/use-debounce";
 import { toast } from "@/components/ui/use-toast";
 import { UserUseQuery } from "@/server/queries/user-queries";
 import DropdownMenuActions from "./dropdown-menu-action";
+import { addHours } from "date-fns";
 
-type PitchStatus = "success" | "pending" | string;
 export default function BookingTable() {
-  // const [statuses, setStatuses] = React.useState<PitchStatus[]>(["active"]);
   const [search, setSearch] = React.useState<string>();
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
@@ -41,10 +40,6 @@ export default function BookingTable() {
     setSearch(value);
   }, []);
 
-  // const setStatusesHandler = useCallback((values: string[]) => {
-  //   setStatuses([...(values as PitchStatus[])]);
-  // }, []);
-
   if (isError) {
     toast({
       title: "Đã có lỗi xảy ra khi tải dữ liệu",
@@ -61,16 +56,17 @@ export default function BookingTable() {
           {
             id: "actions",
             cell: ({ row }) => {
+              const bookingId = row.original.booking_id;
               return (
                 <DropdownMenuActions
                   refetch={refetch}
-                  id={row.original.booking_id}
-                  url={`/history/${row.original.booking_id}`}
+                  id={bookingId}
+                  booking={row.original}
                   isCancelable={
                     row.original.status === "success" &&
                     new Date(
-                      row.original.booking_pitches.at(0)?.end_time ?? ""
-                    ) > new Date()
+                      row.original.booking_pitches.at(0)?.start_time ?? ""
+                    ) > addHours(new Date(), 1)
                   }
                 />
               );
@@ -83,19 +79,6 @@ export default function BookingTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        // facets={[
-        //   {
-        //     title: "Trạng thái",
-        //     columnName: "status",
-        //     options: pitchStatusOptions,
-        //     onChange: setStatusesHandler,
-        //   },
-        // ]}
-        // search={{
-        //   placeholder: "Tìm kiếm",
-        //   value: search || "",
-        //   onChange: setSearchHandler,
-        // }}
         sort={{
           columnName: sort.columnName,
           direction: sort.direction,
