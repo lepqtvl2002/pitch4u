@@ -79,7 +79,7 @@ export default function DropdownMenuActions({
         </DialogHeader>
         <div className="grid grid-cols-2 gap-2">
           <Label>Tên sân bóng</Label>
-          <span>{booking.pitch.name}</span>
+          <span>{booking.pitch?.name}</span>
           <Label>Ngày giờ đá</Label>
           <span>
             {format(

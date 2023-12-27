@@ -33,7 +33,7 @@ export const columns: ColumnDef<IPitch>[] = [
     },
   },
   {
-    header: " ",
+    header: "Rate",
     accessorKey: "rate",
     cell: (ctx) => {
       const rate = ctx.row.original?.rate;

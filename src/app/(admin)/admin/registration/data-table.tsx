@@ -54,48 +54,49 @@ function RegistrationTable() {
     });
   }
   return (
-    <div>
-      <DataTable
-        columns={[...columns, 
-          {
-            id: "actions",
-            cell: ({ row }) => {
-              const id = row.original.registration_id;
-              const params = new URLSearchParams(row.original as unknown as string[][])
-              const url = `/admin/registration/${id}?${params}`;
-              return (
-                <ActionsDropdownMenu refetch={refetch} id={row.original.registration_id} link={url} />
-              );
-            },
-          },]}
-        data={data?.result.data}
-        isLoading={!isFetched}
-        pageCount={Math.floor((data?.result?.total - 1) / pageSize) + 1}
-        setPagination={setPagination}
-        pageIndex={pageIndex}
-        pageSize={pageSize}
-        facets={[
-          {
-            title: "Trạng thái",
-            columnName: "status",
-            options: registrationStatus,
-            onChange: setStatusesHandler,
+    <DataTable
+      columns={[
+        ...columns,
+        {
+          id: "actions",
+          cell: ({ row }) => {
+            const id = row.original.registration_id;
+            const params = new URLSearchParams(
+              row.original as unknown as string[][]
+            );
+            const url = `/admin/registration/${id}?${params}`;
+            return (
+              <ActionsDropdownMenu
+                refetch={refetch}
+                id={row.original.registration_id}
+                link={url}
+              />
+            );
           },
-        ]}
-        // search={{
-        //   placeholder: "Tìm kiếm",
-        //   value: search || "",
-        //   onChange: setSearchHandler,
-        // }}
-        sort={{
-          columnName: sort.columnName,
-          direction: sort.direction,
-          onChange: (columnName, direction) => {
-            setSort({ columnName, direction });
-          },
-        }}
-      />
-    </div>
+        },
+      ]}
+      data={data?.result.data}
+      isLoading={!isFetched}
+      pageCount={Math.floor((data?.result?.total - 1) / pageSize) + 1}
+      setPagination={setPagination}
+      pageIndex={pageIndex}
+      pageSize={pageSize}
+      facets={[
+        {
+          title: "Trạng thái",
+          columnName: "status",
+          options: registrationStatus,
+          onChange: setStatusesHandler,
+        },
+      ]}
+      sort={{
+        columnName: sort.columnName,
+        direction: sort.direction,
+        onChange: (columnName, direction) => {
+          setSort({ columnName, direction });
+        },
+      }}
+    />
   );
 }
 
