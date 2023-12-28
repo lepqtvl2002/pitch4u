@@ -2,13 +2,14 @@
 
 import { type DataFacetedOptionsType } from "@/components/dashboard/table-facet";
 import { type ColumnDef } from "@tanstack/react-table";
-import RegistrationStatuses from "@/enums/registrationStatuses";
+import RegistrationStatuses, {
+  RegistrationStatus,
+} from "@/enums/registrationStatuses";
 import {
   registrationStatusToString,
-  stringToRegistrationStatus,
 } from "@/lib/convert";
 import IRegistration from "@/types/registration";
-import { cn } from "@/lib/utils";
+import { registrationStatusVariant } from "@/lib/variant";
 
 export const registrationStatus: DataFacetedOptionsType[] = [
   {
@@ -30,14 +31,7 @@ export const registrationStatus: DataFacetedOptionsType[] = [
 
 export const columns: ColumnDef<IRegistration>[] = [
   {
-    header: "ID",
-    cell: (ctx) => {
-      const id = ctx.row.original.registration_id;
-      return <div className={"text-bold"}>{id}</div>;
-    },
-  },
-  {
-    header: "Tên người đăng ký",
+    header: "Người đăng ký",
     cell: (ctx) => {
       const fullname = ctx.row.original.fullname;
       return <div className={"text-bold"}>{fullname}</div>;
@@ -58,14 +52,9 @@ export const columns: ColumnDef<IRegistration>[] = [
       const status = ctx.row.original.status;
       return (
         <p
-          className={cn(
-            "capitalize text-white w-fit px-3 font-semibold rounded-full",
-            status === "pending"
-              ? "bg-yellow-400"
-              : status === "denied"
-              ? "bg-red-500"
-              : "bg-emerald-500"
-          )}
+          className={registrationStatusVariant({
+            variant: status as RegistrationStatus,
+          })}
         >
           {registrationStatusToString(status)}
         </p>

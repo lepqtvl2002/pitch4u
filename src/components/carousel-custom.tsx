@@ -9,17 +9,19 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { ImageWithFallback } from "./image-with-fallback";
-import { isValidUrl } from "@/lib/utils";
+import { cn, isValidUrl } from "@/lib/utils";
 
 export function CarouselImages({
   imageUrls,
   sizeImage = 100,
+  className,
 }: {
   imageUrls: string[] | undefined;
   sizeImage?: number;
+  className?: string;
 }) {
   return (
-    <Carousel className="w-full max-w-xs">
+    <Carousel className={cn("w-full max-w-xs", className)}>
       <CarouselContent>
         {imageUrls?.map((imageUrl, index) => (
           <CarouselItem key={index}>
