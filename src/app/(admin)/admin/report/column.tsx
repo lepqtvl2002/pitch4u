@@ -1,29 +1,36 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { cn } from "@/lib/utils";
+import { reportTypeVariant } from "@/lib/utils";
 import ActionsDropdownMenu from "./actions-dropdown-menu";
 import { IReport } from "@/types/report";
+import { reportTypeToString } from "@/lib/convert";
+import { DataFacetedOptionsType } from "@/components/dashboard/table-facet";
+import ReportTypes from "@/enums/reportTypes";
+
+export const reportTypeOptions: DataFacetedOptionsType[] = [
+  {
+    label: reportTypeToString(ReportTypes.Pitch),
+    value: ReportTypes.Pitch,
+    icon: "post",
+  },
+  {
+    label: reportTypeToString(ReportTypes.User),
+    value: ReportTypes.User,
+    icon: "userSquare",
+  },
+];
 
 export const columns: ColumnDef<IReport>[] = [
   {
-    header: "Loại",
+    header: "Đối tượng bị tố cáo",
     id: "type",
     accessorKey: "type",
     cell: (ctx) => {
       const type = ctx.row.original.type;
       return (
-        <p
-          className={cn(
-            "capitalize text-white w-fit px-3 font-semibold rounded-full",
-            type === "user"
-              ? "bg-yellow-400"
-              : type === "pitch"
-              ? "bg-red-500"
-              : "bg-emerald-500"
-          )}
-        >
-          {type}
+        <p className={reportTypeVariant({ variant: type })}>
+          {reportTypeToString(type)}
         </p>
       );
     },
@@ -43,10 +50,12 @@ export const columns: ColumnDef<IReport>[] = [
     },
   },
   {
-    header: "Số tệp đính kèm",
+    header: "Tệp đính kèm",
     cell: (ctx) => {
       const attaches = ctx.row.original.attaches;
-      return <div className={"text-bold"}>{attaches?.length || "Không có"}</div>;
+      return (
+        <div className={"text-bold"}>{attaches?.length || "Không có"}</div>
+      );
     },
   },
 
@@ -54,16 +63,10 @@ export const columns: ColumnDef<IReport>[] = [
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.report_id;
-      const reporter_id = row.original.reporter_id;
-      const reported_id = row.original?.pitch_id || row.original?.user_id
-      const reason = row.original.reason;
-      const description = row.original.description;
-      const type = row.original.type;
-      const attaches = row.original.attaches;
-      const createdAt = row.original.createdAt;
-      const url = `/admin/report/${id}?reporter_id=${reporter_id}&reported_id=${reported_id}&reason=${reason}&description=${description}&type=${type}&attaches=${attaches?.join(
-        ","
-      )}&createdAt=${createdAt}`;
+      const params = new URLSearchParams(row.original as unknown as string[][]);
+      const attaches = row.original.attaches.join(",");
+      params.set("attaches", attaches);
+      const url = `/admin/report/${id}?${params}`;
       return <ActionsDropdownMenu id={id} link={url} />;
     },
   },

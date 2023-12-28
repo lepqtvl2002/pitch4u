@@ -2,7 +2,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -26,7 +25,7 @@ function ActionsDropdownMenu({
           <Link href={link}>Xem chi tiết</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Xóa</DropdownMenuItem>
+        {/* <DropdownMenuItem>Xóa</DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

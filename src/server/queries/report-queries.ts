@@ -8,10 +8,13 @@ export class ReportUseQuery {
       queryFn: () => $fetch("/v1/reports/reasons").then((res) => res.data),
     });
   };
-  static getReports = (query: Record<string, any>) => {
+  static getReports = (params: Record<string, any>) => {
     return useQuery({
-      queryKey: ["reports", query],
-      queryFn: () => $fetch("/v1/reports", query).then((res) => res.data),
+      queryKey: ["reports", params],
+      queryFn: () =>
+        $fetch("/v1/reports", { method: "GET", params }).then(
+          (res) => res.data
+        ),
     });
   };
 }

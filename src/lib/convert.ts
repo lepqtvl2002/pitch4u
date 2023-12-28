@@ -1,5 +1,6 @@
 import PitchTypes from "@/enums/pitchTypes";
 import RegistrationStatuses from "@/enums/registrationStatuses";
+import ReportTypes from "@/enums/reportTypes";
 
 export const stringToRegistrationStatus = (status: string) => {
   switch (status) {
@@ -66,5 +67,27 @@ export const pitchTypeToString = (type: string) => {
       return "Sân 9";
     default:
       return "Sân 11";
+  }
+};
+
+export const reportTypeToString = (type: string) => {
+  switch (type) {
+    case ReportTypes.Pitch:
+      return "Sân bóng";
+    case "Sân bóng":
+      return "Sân bóng";
+    default:
+      return "Người dùng";
+  }
+};
+
+export const stringToReportType = (string: string) => {
+  switch (string) {
+    case "Sân bóng":
+      return ReportTypes.Pitch;
+    case ReportTypes.Pitch:
+      return ReportTypes.Pitch;
+    default:
+      return ReportTypes.User;
   }
 };
