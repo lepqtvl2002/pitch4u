@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function PrivacyPolicyPage() {
   return (
     <main className="bg-emerald-200">
-      <div className="md:container text-justify">
+      <div className="px-2 md:container text-justify">
         <Navbar />
         <div className="flex">
           <aside className="hidden w-[240px] mr-4 md:flex p-2 pl-6 pt-10 space-y-2 rounded bg-white">

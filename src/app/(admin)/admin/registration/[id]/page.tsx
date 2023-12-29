@@ -6,9 +6,7 @@ import { toast } from "@/components/ui/use-toast";
 import { registrationStatusToString } from "@/lib/convert";
 import { formatDateTimeToddMMyyyyHHmm } from "@/lib/format-datetime";
 import { mutatingToast } from "@/lib/quick-toast";
-import { cn } from "@/lib/utils";
 import { RegistrationUseMutation } from "@/server/actions/registration-actions";
-import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   Popover,
@@ -17,7 +15,6 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { MapPinIcon } from "lucide-react";
-import Link from "next/link";
 import { registrationStatusVariant } from "@/lib/variant";
 import { RegistrationStatus } from "@/enums/registrationStatuses";
 import { CarouselImages } from "@/components/carousel-custom";

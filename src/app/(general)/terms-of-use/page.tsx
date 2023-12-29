@@ -3,7 +3,7 @@ import Navbar from "@/components/landing/navbar";
 
 export default function TermsOfUsePage() {
   return (
-    <main className="md:container text-justify">
+    <main className="px-2 md:container text-justify">
       <Navbar />
       <div className="flex-1 bg-white rounded p-4 md:p-6">
         <h2 className="font-bold text-3xl mb-10">Điều khoản sử dụng</h2>
