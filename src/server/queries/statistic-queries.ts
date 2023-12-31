@@ -69,31 +69,36 @@ type SubPitch = {
 };
 
 export class StatisticUseQuery {
-  static getPitchStats = (query?: Record<string, any>) => {
+  static getPitchStats = (params?: Record<string, any>) => {
     return useQuery({
-      queryKey: ["statisticOwner", query],
+      queryKey: ["statisticOwner", params],
       queryFn: () =>
         $fetch(`/v1/statistic/owner`, {
           method: "GET",
-          params: query,
+          params,
         }).then((res) => res.data as DataStatisticOwner),
       cacheTime: 100,
       keepPreviousData: true,
     });
   };
-  static getSystemStats = (query?: Record<string, any>) => {
+  static getSystemStats = (params?: Record<string, any>) => {
     return useQuery({
-      queryKey: ["statisticSystem", query],
+      queryKey: ["statisticSystem", params],
       queryFn: () =>
         $fetch(`/v1/statistic/system`, {
           method: "GET",
-          params: query,
+          params,
         }).then((res) => res.data as DataStatisticSystem),
       cacheTime: 100,
       keepPreviousData: true,
     });
   };
-  static getBooking = (params?: {limit?: number, page?: number, status?: string}) => {
+  static getBooking = (params?: {
+    limit?: number;
+    page?: number;
+    status?: string;
+    pitch_id?: number;
+  }) => {
     return useQuery({
       queryKey: ["booking", params],
       queryFn: () =>

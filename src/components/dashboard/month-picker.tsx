@@ -25,7 +25,7 @@ const MonthPicker = ({ selectedMonth, setSelectedMonth }: any) => {
   return (
     <Select onValueChange={setSelectedMonth}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder={`Tháng ${selectedMonth + 1}`} />
+        <SelectValue placeholder={`Tháng ${Number(selectedMonth) + 1}`} />
       </SelectTrigger>
       <SelectContent>
         {months.map((month) => (

@@ -261,7 +261,7 @@ import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import useDebounce from "@/hooks/use-debounce";
 
-export function SelectPitch({
+function SelectPitch({
   pitch,
   setPitch,
 }: {

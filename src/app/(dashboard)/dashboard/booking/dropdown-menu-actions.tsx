@@ -51,9 +51,10 @@ export default function DropdownMenuActions({
             Xem chi tiết
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+
         {status === "pending" && (
           <>
+            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Button
                 disabled={isLoading}
@@ -63,6 +64,7 @@ export default function DropdownMenuActions({
                 Chấp nhận yêu cầu đặt sân
               </Button>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Button
                 disabled={isCanceling}

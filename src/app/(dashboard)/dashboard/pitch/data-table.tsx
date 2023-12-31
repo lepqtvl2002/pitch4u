@@ -64,56 +64,54 @@ function PitchTable() {
   }
 
   return (
-    <div>
-      <DataTable
-        columns={[
-          ...columns,
-          {
-            id: "actions",
-            cell: ({ row }) => {
-              return (
-                <DropdownMenuPitch
-                  refetch={refetch}
-                  pitchId={row.original.pitch_id}
-                  url={`/dashboard/pitch/${row.original.pitch_id}`}
-                />
-              );
-            },
+    <DataTable
+      columns={[
+        ...columns,
+        {
+          id: "actions",
+          cell: ({ row }) => {
+            return (
+              <DropdownMenuPitch
+                refetch={refetch}
+                pitchId={row.original.pitch_id}
+                url={`/dashboard/pitch/${row.original.pitch_id}`}
+              />
+            );
           },
-        ]}
-        data={data?.result.data}
-        isLoading={isFetching}
-        pageCount={Math.floor((data?.result.total ?? 0 - 1) / pageSize + 1)}
-        setPagination={setPagination}
-        pageIndex={pageIndex}
-        pageSize={pageSize}
-        facets={[
-          {
-            title: "Trạng thái",
-            columnName: "status",
-            options: pitchStatusOptions,
-            onChange: setStatusesHandler,
-          },
-        ]}
-        search={{
-          placeholder: "Tìm kiếm",
-          value: search || "",
-          onChange: setSearchHandler,
-        }}
-        // sort={{
-        //   columnName: sort.columnName,
-        //   direction: sort.direction,
-        //   onChange: (columnName, direction) => {
-        //     setSort({ columnName, direction });
-        //   },
-        // }}
-        headerPrefix={
-          <Link href="/dashboard/pitch/register">
-            <Button className="">Đăng ký thêm sân +</Button>
-          </Link>
-        }
-      />
-    </div>
+        },
+      ]}
+      data={data?.result.data}
+      isLoading={isFetching}
+      pageCount={Math.floor((data?.result.total ?? 0 - 1) / pageSize + 1)}
+      setPagination={setPagination}
+      pageIndex={pageIndex}
+      pageSize={pageSize}
+      // facets={[
+      //   {
+      //     title: "Trạng thái",
+      //     columnName: "status",
+      //     options: pitchStatusOptions,
+      //     onChange: setStatusesHandler,
+      //   },
+      // ]}
+      search={{
+        placeholder: "Tìm kiếm",
+        value: search || "",
+        onChange: setSearchHandler,
+      }}
+      // sort={{
+      //   columnName: sort.columnName,
+      //   direction: sort.direction,
+      //   onChange: (columnName, direction) => {
+      //     setSort({ columnName, direction });
+      //   },
+      // }}
+      headerPrefix={
+        <Link href="/dashboard/pitch/register">
+          <Button className="">Đăng ký thêm sân +</Button>
+        </Link>
+      }
+    />
   );
 }
 
