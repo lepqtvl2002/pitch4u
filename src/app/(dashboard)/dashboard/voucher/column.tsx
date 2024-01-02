@@ -4,6 +4,7 @@ import { type DataFacetedOptionsType } from "@/components/dashboard/table-facet"
 import {
   activeVariant,
   cn,
+  voucherActivityToString,
   voucherStatusToString,
   voucherTypeToString,
   voucherVariant,
@@ -14,7 +15,7 @@ import VoucherStatuses from "@/enums/voucherStatues";
 import VoucherTypes from "@/enums/voucherTypes";
 import { format } from "date-fns";
 
-export const vouchersTypes: DataFacetedOptionsType[] = [
+export const vouchersTypeOptions: DataFacetedOptionsType[] = [
   {
     label: voucherTypeToString(VoucherTypes.Fixed),
     value: VoucherTypes.Fixed,
@@ -32,8 +33,21 @@ export const voucherStatus: DataFacetedOptionsType[] = [
     icon: "clock",
   },
   {
-    label: voucherStatusToString(VoucherStatuses.Expired),
-    value: VoucherStatuses.Expired,
+    label: voucherStatusToString(VoucherStatuses.Stopped),
+    value: VoucherStatuses.Stopped,
+    icon: "close",
+  },
+];
+
+export const voucherActivity: DataFacetedOptionsType[] = [
+  {
+    label: voucherActivityToString(true),
+    value: "true",
+    icon: "clock",
+  },
+  {
+    label: voucherActivityToString(false),
+    value: "false",
     icon: "close",
   },
 ];
@@ -47,6 +61,8 @@ export const columns: ColumnDef<IVoucher>[] = [
     },
   },
   {
+    id: "type",
+    accessorKey: "type",
     header: "Loại voucher",
     cell: (ctx) => {
       const type = ctx.row.original.type;
@@ -66,6 +82,8 @@ export const columns: ColumnDef<IVoucher>[] = [
     },
   },
   {
+    id: "status",
+    accessorKey: "status",
     header: "Trạng thái",
     cell: (ctx) => {
       const active = ctx.row.original.active;

@@ -240,9 +240,9 @@ export const reportTypeVariant = cva(
   {
     variants: {
       variant: {
-        pitch: "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
-        user:
-          "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
+        pitch:
+          "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        user: "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
       },
     },
   }
@@ -268,7 +268,6 @@ export const pitchTypeVariant = cva(
   }
 );
 
-
 export const voucherTypeToString = (type: VoucherType) => {
   switch (type) {
     case VoucherTypes.Fixed:
@@ -293,6 +292,8 @@ export const voucherStatusToString = (status: string) => {
   switch (status) {
     case VoucherStatuses.Running:
       return "Đang chạy";
+    case VoucherStatuses.Stopped:
+      return "Đã dừng";
     default:
       return "Hết hạn";
   }
@@ -328,10 +329,32 @@ export const stringToVoucherStatus = (status: string) => {
   switch (status) {
     case "Đang chạy":
       return VoucherStatuses.Running;
-    case "RUNNING":
-      return VoucherStatuses.Running;
+    case "Đã dừng":
+      return VoucherStatuses.Stopped;
     default:
       return VoucherStatuses.Expired;
+  }
+};
+
+export const stringToVoucherActivity = (string: string) => {
+  switch (string) {
+    case "Đang chạy":
+      return true;
+    case "true":
+      return true;
+    case "running":
+      return true;
+    default:
+      return true;
+  }
+};
+
+export const voucherActivityToString = (active: boolean) => {
+  switch (active) {
+    case true:
+      return "Đang chạy";
+    default:
+      return "Đã dừng";
   }
 };
 

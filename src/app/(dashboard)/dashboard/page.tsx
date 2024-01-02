@@ -22,6 +22,7 @@ import { RecentOrder } from "@/components/dashboard/recent-orders";
 import CardStatDashboard from "@/components/card-stats-dashboard";
 import StatCard from "@/components/dashboard/stat-card";
 import { SelectPitch } from "@/components/dashboard/pitch-picker";
+import YearPicker from "@/components/dashboard/year-picker";
 
 type All = {
   revenue: number;
@@ -88,8 +89,9 @@ const TabItems = [
 
 export default function DashboardPage() {
   const [month, setMonth] = useState(new Date().getMonth());
+  const [year, setYear] = useState(new Date().getFullYear());
   const [pitchId, setPitchId] = useState<number | undefined>();
-  const params = pitchId ? { pitch_id: pitchId, month } : { month };
+  const params = pitchId ? { pitch_id: pitchId, month, year } : { month, year };
   const { data, isLoading, isError } = StatisticUseQuery.getPitchStats(params);
 
   if (isError) {
@@ -177,9 +179,10 @@ export default function DashboardPage() {
         <TabsContent value="detail" className="space-y-4">
           <div className="flex items-center gap-2 justify-end">
             <MonthPicker selectedMonth={month} setSelectedMonth={setMonth} />
+            <YearPicker selectedYear={year} setSelectedYear={setYear} />
           </div>
           <div className="grid gap-4 lg:grid-cols-4">
-            <div className="grid gap-2">
+            <div className="col-span-4 lg:col-span-1 grid grid-cols-3 gap-2">
               <CardStatDashboard
                 title={`Doanh thu trong tháng ${Number(month) + 1}`}
                 value={data?.result.thisMonthOverview.revenue.toLocaleString()}
@@ -208,7 +211,7 @@ export default function DashboardPage() {
                 } nhân viên dưới quyền quản lý`}
               />
             </div>
-            <Card className="col-span-3">
+            <Card className="col-span-4 lg:col-span-3">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Biểu đồ thống kê doanh thu theo ngày trong tháng{" "}

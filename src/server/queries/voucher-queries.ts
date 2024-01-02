@@ -5,13 +5,13 @@ import IPaginated from "@/types/paginated";
 
 export class VoucherUseQuery {
   // Get voucher list
-  static getVoucherList = (query?: Record<string, any>) => {
+  static getVoucherList = (params?: Record<string, any>) => {
     return useQuery({
-      queryKey: ["vouchers", query],
+      queryKey: ["vouchers", params],
       queryFn: () =>
         $fetch(`/v1/vouchers`, {
           method: "GET",
-          params: query,
+          params,
         }).then(
           (res) =>
             res.data as {
