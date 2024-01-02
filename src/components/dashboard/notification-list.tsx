@@ -33,7 +33,7 @@ export default function NotificationList() {
     <div className="flex flex-col min-h-[400px]">
       <h2 className="text-xl font-bold">Thông báo</h2>
       <Separator className="my-3" />
-      <div className="max-h-[500px] overflow-y-auto">
+      <div className="max-h-[500px] overflow-y-auto no-scrollbar">
         {data?.result.data.map((notification: INotification) => (
           <NotificationItem
             key={notification.notification_id}

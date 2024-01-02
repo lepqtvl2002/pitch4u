@@ -115,6 +115,7 @@ export default function DashboardPage() {
           <div className="max-w-1/2">
             <SelectPitch pitchId={pitchId} setPitchId={setPitchId} />
           </div>
+          <YearPicker selectedYear={year} setSelectedYear={setYear} />
         </div>
         {/* Overview */}
         <TabsContent value="overview" className="space-y-4">
@@ -122,7 +123,11 @@ export default function DashboardPage() {
             <StatCard
               icon="dollar"
               title="Tổng doanh thu"
-              value={data?.result.all.revenue.toLocaleString() || "0"}
+              value={
+                data?.result.all.revenue.toLocaleString(undefined, {
+                  maximumFractionDigits: 0,
+                }) || "0"
+              }
             />
             <StatCard
               icon="history"
@@ -179,10 +184,9 @@ export default function DashboardPage() {
         <TabsContent value="detail" className="space-y-4">
           <div className="flex items-center gap-2 justify-end">
             <MonthPicker selectedMonth={month} setSelectedMonth={setMonth} />
-            <YearPicker selectedYear={year} setSelectedYear={setYear} />
           </div>
           <div className="grid gap-4 lg:grid-cols-4">
-            <div className="col-span-4 lg:col-span-1 grid grid-cols-3 gap-2">
+            <div className="col-span-4 lg:col-span-1 grid grid-cols-3 lg:grid-cols-1 gap-2">
               <CardStatDashboard
                 title={`Doanh thu trong tháng ${Number(month) + 1}`}
                 value={data?.result.thisMonthOverview.revenue.toLocaleString()}
