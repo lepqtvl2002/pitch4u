@@ -93,6 +93,30 @@ export class StatisticUseQuery {
       keepPreviousData: true,
     });
   };
+  static getTopPitchesByRevenue = (params?: {
+    limit?: number;
+    page?: number;
+    sort?: "asc" | "desc";
+    sort_by?: string;
+  }) => {
+    return useQuery({
+      queryKey: ["topPitches", params],
+      queryFn: () =>
+        $fetch(`/v1/statistic/revenue`, {
+          method: "GET",
+          params,
+        }).then(
+          (res) =>
+            res.data as {
+              result: {
+                data: ({ pitch: Pitch } & { revenue: number })[];
+              } & IPaginated;
+            }
+        ),
+      cacheTime: 100,
+      keepPreviousData: true,
+    });
+  };
   static getBooking = (params?: {
     limit?: number;
     page?: number;
