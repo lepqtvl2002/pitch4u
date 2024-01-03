@@ -446,7 +446,24 @@ export const compareAmount = (revenueA?: number, revenueB?: number) => {
 };
 
 export const formatMoney = (amount: number) => {
-  return amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (amount >= 1e9) {
+    return (
+      (amount / 1e9).toLocaleString(undefined, { maximumFractionDigits: 0 }) +
+      "B"
+    );
+  } else if (amount >= 1e6) {
+    return (
+      (amount / 1e6).toLocaleString(undefined, { maximumFractionDigits: 0 }) +
+      "M"
+    );
+  } else if (amount >= 1e3) {
+    return (
+      (amount / 1e3).toLocaleString(undefined, { maximumFractionDigits: 0 }) +
+      "k"
+    );
+  } else {
+    return amount.toString();
+  }
 };
 
 export const paymentTypeToString = (paymentType: string) => {

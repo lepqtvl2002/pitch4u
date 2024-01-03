@@ -2,14 +2,24 @@
 
 import { formatMoney } from "@/lib/utils";
 // @ts-ignore
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export function RevenueOverview({
   data,
 }: {
   data: { month: number; revenue: number }[];
 }) {
-    data = data.sort((a, b) => a.month - b.month)
+  data = data.sort((a, b) => a.month - b.month);
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={data}>
@@ -39,7 +49,9 @@ export function RevenueOverviewByDate({
 }: {
   data: { date: string | Date; revenue: number }[];
 }) {
-    data = data.sort((a, b) => Number(new Date(a.date)) - Number(new Date(b.date)))
+  data = data.sort(
+    (a, b) => Number(new Date(a.date)) - Number(new Date(b.date))
+  );
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={data}>
@@ -60,6 +72,98 @@ export function RevenueOverviewByDate({
         />
         <Bar dataKey="revenue" fill="#adfa1d" radius={[4, 4, 0, 0]} />
       </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+  name,
+  index,
+}: any) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+const renderCustomizedLabelLine = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  fill,
+  percent,
+  name,
+  index,
+}: any) => {
+  const sin = Math.sin(-RADIAN * midAngle);
+  const cos = Math.cos(-RADIAN * midAngle);
+  const sx = cx + (outerRadius + 10) * cos;
+  const sy = cy + (outerRadius + 10) * sin;
+  const mx = cx + (outerRadius + 30) * cos;
+  const my = cy + (outerRadius + 30) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ey = my;
+  const textAnchor = cos >= 0 ? "start" : "end";
+
+  return (
+    <g>
+      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke="black" fill="none" />
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        textAnchor={textAnchor}
+        fill="#333"
+      >{`${name}`}</text>
+    </g>
+  );
+};
+export function RevenueOverviewByPitch({
+  data,
+}: {
+  data: { name: string | Date; value: number }[];
+}) {
+  // data = data.sort((a, b) => b.value - a.value);
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <PieChart width={600} height={600}>
+        <Pie
+          dataKey="value"
+          isAnimationActive={false}
+          data={data}
+          cx="50%"
+          cy="50%"
+          outerRadius={140}
+          fill="#8884d8"
+          labelLine={renderCustomizedLabelLine}
+          label={renderCustomizedLabel}
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+      </PieChart>
     </ResponsiveContainer>
   );
 }
