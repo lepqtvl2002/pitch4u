@@ -2,7 +2,7 @@
 import { DataTable } from "@/components/dashboard/data-table";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns, pitchStatusOptions } from "./column";
+import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { toast } from "@/components/ui/use-toast";
@@ -19,7 +19,7 @@ function PitchTable() {
     columnName: string;
     direction: "asc" | "desc";
   }>({
-    columnName: "createAt",
+    columnName: "createdAt",
     direction: "desc",
   });
 
@@ -99,13 +99,13 @@ function PitchTable() {
         value: search || "",
         onChange: setSearchHandler,
       }}
-      // sort={{
-      //   columnName: sort.columnName,
-      //   direction: sort.direction,
-      //   onChange: (columnName, direction) => {
-      //     setSort({ columnName, direction });
-      //   },
-      // }}
+      sort={{
+        columnName: sort.columnName,
+        direction: sort.direction,
+        onChange: (columnName, direction) => {
+          setSort({ columnName, direction });
+        },
+      }}
       headerPrefix={
         <Link href="/dashboard/pitch/register">
           <Button className="">Đăng ký thêm sân +</Button>

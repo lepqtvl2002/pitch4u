@@ -98,6 +98,8 @@ export class StatisticUseQuery {
     page?: number;
     status?: string;
     pitch_id?: number;
+    sort?: "asc" | "desc";
+    sort_by?: string;
   }) => {
     return useQuery({
       queryKey: ["booking", params],
