@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/carousel";
 import { ImageWithFallback } from "./image-with-fallback";
 import { cn, isValidUrl } from "@/lib/utils";
+import { FALLBACK_IMAGE_URL } from "@/lib/constants";
 
 export function CarouselImages({
   imageUrls,
@@ -31,7 +32,7 @@ export function CarouselImages({
                   width={sizeImage}
                   height={sizeImage}
                   className="w-full h-full"
-                  src={isValidUrl(imageUrl) ? imageUrl : "/fallback-image.png"}
+                  src={isValidUrl(imageUrl) ? imageUrl : FALLBACK_IMAGE_URL}
                   alt={imageUrl}
                 />
               </CardContent>
