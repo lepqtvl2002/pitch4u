@@ -74,13 +74,13 @@ export type BookingHistory = {
 
 export class UserUseQuery {
   // Function to testing
-  static search = (query: Record<string, any>) => {
+  static search = (params: Record<string, any>) => {
     return useQuery({
-      queryKey: ["posts", query],
+      queryKey: ["posts", params],
       queryFn: () =>
         $fetch(`https://jsonplaceholder.typicode.com/posts`, {
           method: "GET",
-          params: query,
+          params,
         }).then((res) => res.data),
       cacheTime: 100,
       keepPreviousData: true,
@@ -102,39 +102,44 @@ export class UserUseQuery {
     });
   };
 
-  static getManyUsers = (query: Record<string, any>) => {
+  static getManyUsers = (params: Record<string, any>) => {
     return useQuery({
-      queryKey: ["users", query],
+      queryKey: ["users", params],
       queryFn: () =>
         $fetch(`/v1/users`, {
           method: "GET",
-          params: query,
+          params,
         }).then((res) => res.data as PaginatedUserList),
       cacheTime: 100,
       keepPreviousData: true,
     });
   };
 
-  static getManyStaffs = (query: { q?: string; pitchId?: string | number }) => {
+  static getManyStaffs = (params: {
+    name?: string;
+    pitch_id?: string | number;
+    sort?: "asc" | "desc";
+    sort_by?: string;
+  }) => {
     return useQuery({
-      queryKey: ["users", query],
+      queryKey: ["users", params],
       queryFn: () =>
         $fetch(`/v1/users/staffs`, {
           method: "GET",
-          params: query,
+          params,
         }).then((res) => res.data as { result: User[] }),
       cacheTime: 100,
       keepPreviousData: true,
     });
   };
 
-  static getBookingHistory = (query: Record<string, any>) => {
+  static getBookingHistory = (params: Record<string, any>) => {
     return useQuery({
-      queryKey: ["myBookingHistory", query],
+      queryKey: ["myBookingHistory", params],
       queryFn: () =>
         $fetch(`/v1/booking/my-bookings`, {
           method: "GET",
-          params: query,
+          params,
         }).then(
           (res) =>
             res.data as { result: { data: BookingHistory[] } & IPaginated }

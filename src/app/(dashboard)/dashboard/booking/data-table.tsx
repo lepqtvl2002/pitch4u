@@ -1,21 +1,18 @@
 "use client";
 import { DataTable } from "@/components/dashboard/data-table";
-import {
-  stringToBookingStatus,
-} from "@/lib/utils";
+import { stringToBookingStatus } from "@/lib/utils";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
 import { bookingStatusOptions, columns } from "./column";
-import useDebounce from "@/hooks/use-debounce";
 import DropdownMenuActions from "./dropdown-menu-actions";
 import { StatisticUseQuery } from "@/server/queries/statistic-queries";
 import { toast } from "@/components/ui/use-toast";
 import { BookingStatus } from "@/enums/bookingStatuses";
+import { SelectPitch } from "@/components/dashboard/pitch-picker";
 
 export default function BookingTable() {
   const [statuses, setStatuses] = React.useState<BookingStatus[]>([]);
-  const [search, setSearch] = React.useState<string>();
-  const debouncedSearch = useDebounce(search);
+  const [pitchId, setPitchId] = React.useState<number | undefined>();
   const [sort, setSort] = React.useState<{
     columnName: string;
     direction: "asc" | "desc";
@@ -34,17 +31,14 @@ export default function BookingTable() {
     page: pageIndex + 1,
     limit: pageSize,
     status: statuses.join(","),
-    // sort: sort.direction,
-    // sort_by: sort.direction,
+    sort: sort.direction,
+    sort_by: sort.columnName,
+    pitch_id: pitchId,
   });
 
   const setStatusesHandler = useCallback((values: string[]) => {
     //Convert string to voucher type
     setStatuses(values.map((value) => stringToBookingStatus(value)));
-  }, []);
-
-  const setSearchHandler = useCallback((value: string) => {
-    setSearch(value);
   }, []);
 
   if (isError) {
@@ -98,18 +92,18 @@ export default function BookingTable() {
           onChange: setStatusesHandler,
         },
       ]}
-      // search={{
-      //   placeholder: "Tìm kiếm",
-      //   value: search || "",
-      //   onChange: setSearchHandler,
-      // }}
-      // sort={{
-      //   columnName: sort.columnName,
-      //   direction: sort.direction,
-      //   onChange: (columnName, direction) => {
-      //     setSort({ columnName, direction });
-      //   },
-      // }}
+      sort={{
+        columnName: sort.columnName,
+        direction: sort.direction,
+        onChange: (columnName, direction) => {
+          setSort({ columnName, direction });
+        },
+      }}
+      headerPrefix={
+        <div className="max-w-1/2">
+          <SelectPitch pitchId={pitchId} setPitchId={setPitchId} />
+        </div>
+      }
     />
   );
 }

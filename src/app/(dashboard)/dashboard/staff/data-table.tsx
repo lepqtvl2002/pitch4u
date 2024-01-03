@@ -7,10 +7,14 @@ import useDebounce from "@/hooks/use-debounce";
 import { UserUseQuery } from "@/server/queries/user-queries";
 import { toast } from "@/components/ui/use-toast";
 import DropdownMenuActions from "./dropdown-menu-actions";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { SelectPitch } from "@/components/dashboard/pitch-picker";
 
 function StaffTable() {
   const [search, setSearch] = React.useState<string>("");
   const debouncedSearch = useDebounce(search);
+  const [pitchId, setPitchId] = React.useState<number | undefined>();
   const [sort, setSort] = React.useState<{
     columnName: string;
     direction: "asc" | "desc";
@@ -26,7 +30,10 @@ function StaffTable() {
     });
 
   const { data, isError, isLoading, refetch } = UserUseQuery.getManyStaffs({
-    q: debouncedSearch,
+    name: debouncedSearch,
+    sort: sort.direction,
+    sort_by: sort.columnName,
+    pitch_id: pitchId,
   });
 
   const setSearchHandler = useCallback((value: string) => {
@@ -66,22 +73,28 @@ function StaffTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        otherButton={{
-          url: "/dashboard/staff/create",
-          title: "Thêm nhân viên +",
+        headerPrefix={
+          <Link href="/dashboard/staff/create">
+            <Button>Thêm nhân viên +</Button>
+          </Link>
+        }
+        headerSuffix={
+          <div className="max-w-1/2">
+            <SelectPitch pitchId={pitchId} setPitchId={setPitchId} />
+          </div>
+        }
+        search={{
+          placeholder: "Tìm kiếm",
+          value: search || "",
+          onChange: setSearchHandler,
         }}
-        // search={{
-        //   placeholder: "Tìm kiếm",
-        //   value: search || "",
-        //   onChange: setSearchHandler,
-        // }}
-        // sort={{
-        //   columnName: sort.columnName,
-        //   direction: sort.direction,
-        //   onChange: (columnName, direction) => {
-        //     setSort({ columnName, direction });
-        //   },
-        // }}
+        sort={{
+          columnName: sort.columnName,
+          direction: sort.direction,
+          onChange: (columnName, direction) => {
+            setSort({ columnName, direction });
+          },
+        }}
       />
     </div>
   );
