@@ -27,6 +27,8 @@ import { toast } from "../ui/use-toast";
 import { useState } from "react";
 import { mutatingToast } from "@/lib/quick-toast";
 import { SelectPitch } from "./pitch-picker";
+import { BirthdayPicker } from "../ui/date-picker";
+import { format } from "date-fns";
 
 const createProfileFormSchema = z.object({
   fullname: z.string().min(2, {
@@ -34,9 +36,6 @@ const createProfileFormSchema = z.object({
   }),
   gender: z.string(),
   phone: z.string().max(12).min(9),
-  birthday: z.string().refine((value) => /\d{4}-\d{2}-\d{2}/.test(value), {
-    message: "Ngày sinh phải có định dạng 'yyyy-mm-dd'. Ví dụ: 2000-01-30",
-  }),
   email: z.string().email(),
   password: z.string().min(8),
 });
@@ -50,12 +49,6 @@ const updateProfileFormSchema = z.object({
     .optional(),
   gender: z.string().optional(),
   phone: z.string().max(12).min(9).optional(),
-  birthday: z
-    .string()
-    .refine((value) => /\d{4}-\d{2}-\d{2}/.test(value), {
-      message: "Ngày sinh phải có định dạng 'yyyy-mm-dd'. Ví dụ: 2000-01-30",
-    })
-    .optional(),
   email: z.string().email().optional(),
   password: z.string().min(8).optional(),
 });
@@ -83,7 +76,6 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
       gender: userProfile?.gender || "male",
       fullname: userProfile?.fullname,
       phone: userProfile?.phone,
-      birthday: userProfile?.birthday,
     },
     // mode: "onChange",
   });
@@ -93,19 +85,20 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
     UserUseMutation.createNewStaff();
   const router = useRouter();
   const [pitchId, setPitchId] = useState<number>();
+  const [date, setDate] = useState<Date>(new Date());
 
   async function onSubmit(data: ProfileFormValues) {
     mutatingToast();
     if (staffId) {
       await updateStaff({
-        data,
+        data: { ...data, birthday: format(date, "yyyy-MM-dd") },
         userId: staffId,
       });
       router.push("/dashboard/staff");
     } else {
       if (pitchId) {
         await createStaff({
-          birthday: data?.birthday || "",
+          birthday: format(date, "yyyy-MM-dd"),
           email: data?.email || "",
           fullname: data?.fullname || "",
           password: data?.password || "",
@@ -227,24 +220,10 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="birthday"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ngày sinh</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  placeholder="Vui lòng nhập theo định dạng yyyy-mm-dd"
-                  defaultValue={field.value}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="space-y-2">
+          <FormLabel>Ngày sinh</FormLabel>
+          <BirthdayPicker date={date} setDate={setDate} />
+        </div>
         {!staffId && (
           <div className="space-y-2">
             <FormLabel>Nơi làm việc</FormLabel>
