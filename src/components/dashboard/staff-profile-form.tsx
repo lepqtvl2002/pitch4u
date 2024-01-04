@@ -26,8 +26,22 @@ import { useRouter } from "next/navigation";
 import { toast } from "../ui/use-toast";
 import { useState } from "react";
 import { mutatingToast } from "@/lib/quick-toast";
+import { SelectPitch } from "./pitch-picker";
 
-const profileFormSchema = z.object({
+const createProfileFormSchema = z.object({
+  fullname: z.string().min(2, {
+    message: "Tên phải chứa tối thiểu 3 ký tự.",
+  }),
+  gender: z.string(),
+  phone: z.string().max(12).min(9),
+  birthday: z.string().refine((value) => /\d{4}-\d{2}-\d{2}/.test(value), {
+    message: "Ngày sinh phải có định dạng 'yyyy-mm-dd'. Ví dụ: 2000-01-30",
+  }),
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+const updateProfileFormSchema = z.object({
   fullname: z
     .string()
     .min(2, {
@@ -44,10 +58,7 @@ const profileFormSchema = z.object({
     .optional(),
   email: z.string().email().optional(),
   password: z.string().min(8).optional(),
-  pitch_ids: z.string().optional(),
 });
-
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 type FormProps = {
   userProfile?: {
@@ -62,6 +73,10 @@ type FormProps = {
 };
 
 export function StaffProfileForm({ userProfile, staffId }: FormProps) {
+  const profileFormSchema = staffId
+    ? updateProfileFormSchema
+    : createProfileFormSchema;
+  type ProfileFormValues = z.infer<typeof profileFormSchema>;
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -77,6 +92,7 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
   const { mutateAsync: createStaff, isLoading } =
     UserUseMutation.createNewStaff();
   const router = useRouter();
+  const [pitchId, setPitchId] = useState<number>();
 
   async function onSubmit(data: ProfileFormValues) {
     mutatingToast();
@@ -87,39 +103,22 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
       });
       router.push("/dashboard/staff");
     } else {
-      if (staffId) {
-        await updateStaff({
-          data,
-          userId: staffId,
+      if (pitchId) {
+        await createStaff({
+          birthday: data?.birthday || "",
+          email: data?.email || "",
+          fullname: data?.fullname || "",
+          password: data?.password || "",
+          phone: data?.phone || "",
+          gender: data?.gender || "male",
+          pitch_ids: [pitchId],
         });
         router.push("/dashboard/staff");
       } else {
-        const missingInfo: string[] = [];
-        if (!data.fullname) missingInfo.push("Tên đầy đủ");
-        if (!data.phone) missingInfo.push("Số điện thoại");
-        if (!data.gender) missingInfo.push("Giới tính");
-        if (!data.birthday) missingInfo.push("Ngày sinh");
-        if (!data.email) missingInfo.push("Email");
-        if (!data.password) missingInfo.push("Mật khẩu");
-        if (!data.pitch_ids) missingInfo.push("Nơi làm việc");
-
-        if (missingInfo.length === 0) {
-          await createStaff({
-            birthday: data?.birthday || "",
-            email: data?.email || "",
-            fullname: data?.fullname || "",
-            password: data?.password || "",
-            phone: data?.phone || "",
-            gender: data?.gender || "male",
-            pitch_ids: [Number(data?.pitch_ids)],
-          });
-          router.push("/dashboard/staff");
-        } else {
-          toast({
-            title: `Vui lòng điền đầy đủ thông tin: `,
-            description: `${missingInfo.join(", ")}`,
-          });
-        }
+        toast({
+          title: `Vui lòng điền đầy đủ thông tin: `,
+          description: `Vui lòng chọn nơi làm việc.`,
+        });
       }
     }
   }
@@ -247,24 +246,10 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
           )}
         />
         {!staffId && (
-          <FormField
-            control={form.control}
-            name="pitch_ids"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nơi làm việc</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="ID sân bóng nơi làm việc."
-                    defaultValue={field.value}
-                    type="text"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-2">
+            <FormLabel>Nơi làm việc</FormLabel>
+            <SelectPitch pitchId={pitchId} setPitchId={setPitchId} />
+          </div>
         )}
         <Button disabled={isLoading || isUpdating} type="submit">
           {staffId ? "Cập nhật thông tin" : "Thêm mới nhân viên"}
