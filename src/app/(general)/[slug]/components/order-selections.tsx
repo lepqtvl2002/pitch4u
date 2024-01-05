@@ -49,16 +49,16 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
     end_time: string;
     payment_type: string;
   }) {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       await mutateAsync(data);
-      setIsLoading(false);
       toast({
         title: "Đã đặt sân thành công",
         description: "Chúc mừng bạn, bạn đã đặt sân thành công.",
         variant: "success",
       });
     } catch (error) {
+      setIsLoading(false);
       toast({
         title: "Đã đặt sân thất bại",
         description: "Đã có lỗi xảy ra, vui lòng thử lại.",

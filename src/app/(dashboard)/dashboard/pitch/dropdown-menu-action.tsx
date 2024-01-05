@@ -40,14 +40,14 @@ export default function DropdownMenuPitch({
         <DropdownMenuItem>
           <Link href={`/dashboard/pitch/${pitchId}/edit`}>Cài đặt sân</Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuItem
           disabled={isLoading}
           onClick={handelSuspendPitch}
           className="bg-red-500 text-white"
         >
           Tạm dừng hoạt động
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

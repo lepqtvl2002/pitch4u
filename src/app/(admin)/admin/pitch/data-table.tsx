@@ -6,7 +6,10 @@ import useDebounce from "@/hooks/use-debounce";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { toast } from "@/components/ui/use-toast";
 import DropdownMenuPitch from "./dropdown-menu-action";
-import { columns, pitchStatusOptions } from "@/app/(dashboard)/dashboard/pitch/column";
+import {
+  columns,
+  pitchStatusOptions,
+} from "@/app/(dashboard)/dashboard/pitch/column";
 
 type PitchStatus = "suspended" | "active";
 function PitchTable() {
@@ -73,6 +76,7 @@ function PitchTable() {
                 <DropdownMenuPitch
                   refetch={refetch}
                   pitchId={row.original.pitch_id}
+                  isSuspended={row.original.suspended}
                   url={`/admin/pitch/${row.original.pitch_id}`}
                 />
               );

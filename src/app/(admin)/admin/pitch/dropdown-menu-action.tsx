@@ -15,17 +15,26 @@ type DropdownMenuPitchProps = {
   pitchId: string | number;
   url: string;
   refetch?: any;
+  isSuspended?: boolean | null;
 };
 export default function DropdownMenuPitch({
   pitchId,
   url,
   refetch,
+  isSuspended,
 }: DropdownMenuPitchProps) {
   const { mutateAsync: suspendPitch, isLoading } =
     PitchUseMutation.suspendPitch();
+  const { mutateAsync: unsuspendPitch, isLoading: isUnsuspecting } =
+    PitchUseMutation.unsuspendPitch();
   async function handelSuspendPitch() {
     mutatingToast();
     await suspendPitch(pitchId);
+    if (refetch) refetch();
+  }
+  async function handelUnsuspendPitch() {
+    mutatingToast();
+    await unsuspendPitch(pitchId);
     if (refetch) refetch();
   }
   return (
@@ -37,14 +46,30 @@ export default function DropdownMenuPitch({
         <DropdownMenuLabel>
           <Link href={url}>Xem chi tiết</Link>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          disabled={isLoading}
-          onClick={handelSuspendPitch}
-          className="bg-red-500 text-white"
-        >
-          Khóa sân này
-        </DropdownMenuItem>
+
+        {isSuspended ? (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={isUnsuspecting}
+              onClick={handelUnsuspendPitch}
+              className="bg-emerald-500 text-white"
+            >
+              Mở khóa sân này
+            </DropdownMenuItem>
+          </>
+        ) : (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={isLoading}
+              onClick={handelSuspendPitch}
+              className="bg-red-500 text-white"
+            >
+              Khóa sân này
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
