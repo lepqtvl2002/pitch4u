@@ -35,31 +35,10 @@ function RegistrationDetail() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   async function handleApprove() {
-    try {
-      setIsLoading(true);
-      const res = await mutateAsync({ registration_id: id as string });
-      setIsLoading(false);
-      if (res.status === 200) {
-        toast({
-          title: "Thành công",
-          description: "Đã chấp nhận hồ sơ đăng ký",
-          variant: "success",
-        });
-        router.replace("/admin/registration");
-      } else {
-        toast({
-          title: "Thất bại",
-          description: "Đã có lỗi xảy ra",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Đã có lỗi xảy ra",
-        description: "Vui lòng thử lại sau.",
-        variant: "destructive",
-      });
-    }
+    setIsLoading(true);
+    await mutateAsync({ registration_id: Number(id as string) });
+    setIsLoading(false);
+    router.replace("/admin/registration");
   }
 
   const handleNavigateToGoogleMap = ({
@@ -163,7 +142,7 @@ function RegistrationDetail() {
               <CarouselImages
                 imageUrls={searchParams.get("proofs")?.split(",")}
                 sizeImage={1000}
-                className="max-w-full px-10"
+                className="max-w-full h-96 px-10"
               />
             </div>
           ) : (
@@ -173,7 +152,7 @@ function RegistrationDetail() {
           )}
         </CardContent>
         {status === "pending" && (
-          <CardFooter>
+          <CardFooter className="space-x-4">
             <Button
               onClick={handleApprove}
               disabled={isLoading}

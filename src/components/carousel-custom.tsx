@@ -22,8 +22,8 @@ export function CarouselImages({
   className?: string;
 }) {
   return (
-    <Carousel className={cn("w-full max-w-xs", className)}>
-      <CarouselContent>
+    <Carousel className={cn("w-full max-w-xs flex items-center", className)}>
+      <CarouselContent className="flex items-center">
         {imageUrls?.map((imageUrl, index) => (
           <CarouselItem key={index}>
             <Card className="p-1">
@@ -31,7 +31,7 @@ export function CarouselImages({
                 <ImageWithFallback
                   width={sizeImage}
                   height={sizeImage}
-                  className="w-full h-full"
+                  className="w-auto h-full"
                   src={isValidUrl(imageUrl) ? imageUrl : FALLBACK_IMAGE_URL}
                   alt={imageUrl}
                 />

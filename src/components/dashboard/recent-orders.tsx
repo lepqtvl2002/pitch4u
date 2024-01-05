@@ -5,7 +5,7 @@ import { cn, formatMoney, paymentTypeToString } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
 
 export function RecentOrder({ pitchId }: { pitchId?: number }) {
-  const params = pitchId ? { pitch_id: pitchId } : {};
+  const params = pitchId ? { pitch_id: pitchId, limit: 5 } : { limit: 5};
   const { data, isLoading, isError } = StatisticUseQuery.getBooking(params);
   if (isLoading)
     return (
@@ -31,7 +31,7 @@ export function RecentOrder({ pitchId }: { pitchId?: number }) {
   }
   return (
     <div className="space-y-6">
-      {data?.result.data.slice(5).map((order) => (
+      {data?.result.data.map((order) => (
         <div key={order.booking_id} className="flex items-center">
           <Avatar className="h-9 w-9">
             <AvatarImage src={order.user.avatar} alt="Avatar" />

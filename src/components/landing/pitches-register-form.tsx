@@ -28,17 +28,16 @@ import Image from "next/image";
 import { ImageUseMutation } from "@/server/actions/image-actions";
 import GoogleMapReact, { ClickEventValue } from "google-map-react";
 import { IPitch } from "@/types/pitch";
-import { IUser } from "@/types/user";
 import { UserProfile } from "@/server/queries/user-queries";
 
 const formSchema = z.object({
   card_id: z.string(),
   fullname: z.string().min(2).max(50),
   email: z.string().min(2).max(50),
-  address: z.string().min(2).max(50),
-  phone: z.string().min(2).max(50),
+  address: z.string().min(2),
+  phone: z.string().min(9).max(12),
   pitch_name: z.string().min(2).max(50),
-  pitch_address: z.string().min(2).max(50),
+  pitch_address: z.string().min(2),
   uploadPhotos: z.any().nullable(),
 });
 type MarkerProps = {
