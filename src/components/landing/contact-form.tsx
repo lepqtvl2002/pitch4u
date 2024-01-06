@@ -1,32 +1,22 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
-import PitchTypes from "@/enums/pitchTypes";
-import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { Textarea } from "../ui/textarea";
+import { ContactUseMutation } from "@/server/actions/contact-actions";
+import { mutatingToast } from "@/lib/quick-toast";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, {
@@ -45,25 +35,12 @@ export function ContactForm() {
     resolver: zodResolver(contactFormSchema),
     // mode: "onChange",
   });
-  const { mutateAsync } = PitchUseMutation.addSubPitch();
+  const { mutateAsync: sendContactInfo, isLoading } =
+    ContactUseMutation.sendContact();
 
   async function onSubmit(data: ProfileFormValues) {
-    try {
-      console.log(data);
-      if (true) {
-        toast({
-          title: "Tạo thành công",
-          description: `Đã thêm thành công sân ${data.name}.`,
-          variant: "success",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Hành động thất bại",
-        variant: "destructive",
-        description: "Đã có lỗi xảy ra, vui lòng thử lại.",
-      });
-    }
+    mutatingToast();
+    await sendContactInfo(data);
   }
 
   return (
