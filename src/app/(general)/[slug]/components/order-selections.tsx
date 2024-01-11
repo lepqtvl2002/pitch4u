@@ -90,9 +90,9 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
         const subPitchList = frame.free.filter((subPitch: any) => {
           return subPitch.type === type;
         });
-        if (subPitchList.at(0)) {
-          setPrices(subPitchList.at(0).price);
-          setSubPitchId(subPitchList.at(0).subpitch_id);
+        if (subPitchList.length) {
+          setPrices(subPitchList[0].price);
+          setSubPitchId(subPitchList[0].subpitch_id);
         } else setPrices(0);
         setSubPitches(subPitchList);
         break;
@@ -210,9 +210,9 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
               <SelectValue
                 placeholder={
                   subPitchId
-                    ? subPitches.at(0)
-                      ? `${subPitches.at(0).name} - ${
-                          subPitches.at(0).price
+                    ? subPitches.length
+                      ? `${subPitches[0].name} - ${
+                          subPitches[0].price
                         }đ/h`
                       : "Không có sân"
                     : "Chọn sân"
