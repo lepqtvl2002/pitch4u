@@ -217,7 +217,7 @@ export const publicNavbarConfig: DashboardConfig = {
       href: "/#find-pitch",
     },
     {
-      title: "Dành chủ sân",
+      title: "Dành cho chủ sân",
       href: "/pitch",
     },
     {
