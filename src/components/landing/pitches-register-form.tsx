@@ -35,7 +35,7 @@ const formSchema = z.object({
   fullname: z.string().min(2).max(50),
   email: z.string().min(2).max(50),
   address: z.string().min(2),
-  phone: z.string().min(9).max(12),
+  phone: z.string().min(9).max(15),
   pitch_name: z.string().min(2).max(50),
   pitch_address: z.string().min(2),
   uploadPhotos: z.any().nullable(),
@@ -197,10 +197,6 @@ export function PitchRegisterForm({
                         </FormItem>
                       )}
                     />
-                  </>
-                )}
-                {step === 2 && (
-                  <>
                     <FormField
                       control={form.control}
                       name="card_id"
@@ -262,71 +258,75 @@ export function PitchRegisterForm({
                     />
                   </>
                 )}
+                {step === 2 && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="pitch_name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              id="pitch_name"
+                              placeholder="Tên sân bóng"
+                              autoCorrect="off"
+                              disabled={loading}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="pitch_address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              id="pitch_address"
+                              type="text"
+                              placeholder="Địa chỉ sân"
+                              autoComplete="address"
+                              disabled={loading}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="relative h-screen pb-10 mb-10">
+                      <FormLabel>Địa chỉ trên Google map</FormLabel>
+                      <FormDescription>
+                        Hãy chọn chính xác địa chỉ sân bóng của bạn trên bản đồ
+                        để người dùng có thể dễ dàng tìm kiếm.
+                      </FormDescription>
+                      <div className="space-x-2">
+                        <FormLabel>Lat:</FormLabel>
+                        <span>{markerPos.lat}</span>
+                        <FormLabel>Long:</FormLabel>
+                        <span>{markerPos.lng}</span>
+                      </div>
+                      <GoogleMapReact
+                        bootstrapURLKeys={{
+                          key: "AIzaSyDFaXNvUSNlqQoqlNBgCgppWcSeYxb5kDM",
+                        }}
+                        defaultCenter={mapDefaultProps.center}
+                        defaultZoom={mapDefaultProps.zoom}
+                        onClick={handleMark}
+                      >
+                        <Marker lat={markerPos.lat} lng={markerPos.lng} />
+                      </GoogleMapReact>
+                    </div>
+                  </>
+                )}
               </div>
               {step === 3 && (
                 <>
-                  <FormField
-                    control={form.control}
-                    name="pitch_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            id="pitch_name"
-                            placeholder="Tên sân bóng"
-                            autoCorrect="off"
-                            disabled={loading}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="pitch_address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            id="pitch_address"
-                            type="text"
-                            placeholder="Địa chỉ sân"
-                            autoComplete="address"
-                            disabled={loading}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="relative h-screen pb-10">
-                    <FormLabel>Địa chỉ trên Google map</FormLabel>
-                    <FormDescription>
-                      Hãy chọn chính xác địa chỉ sân bóng của bạn trên bản đồ để
-                      người dùng có thể dễ dàng tìm kiếm.
-                    </FormDescription>
-                    <div className="space-x-2">
-                      <FormLabel>Lat:</FormLabel>
-                      <span>{markerPos.lat}</span>
-                      <FormLabel>Long:</FormLabel>
-                      <span>{markerPos.lng}</span>
-                    </div>
-                    <GoogleMapReact
-                      bootstrapURLKeys={{
-                        key: "AIzaSyDFaXNvUSNlqQoqlNBgCgppWcSeYxb5kDM",
-                      }}
-                      defaultCenter={mapDefaultProps.center}
-                      defaultZoom={mapDefaultProps.zoom}
-                      onClick={handleMark}
-                    >
-                      <Marker lat={markerPos.lat} lng={markerPos.lng} />
-                    </GoogleMapReact>
-                  </div>
                   {/* Images */}
-                  <div className="grid gap-2 mt-10">
+                  <div className="grid gap-2">
                     <div className="grid gap-2">
                       <FormLabel htmlFor="uploadPhotos">
                         Hình ảnh minh chứng
@@ -392,12 +392,25 @@ export function PitchRegisterForm({
               )}
 
               <div className="grid gap-2">
-                {step < 3 ? (
+                {step === 1 ? (
                   <Button
                     disabled={
-                      loading ||
-                      form.getValues().email === "" ||
-                      form.getValues().fullname === ""
+                      !form.getValues().email ||
+                      !form.getValues().fullname ||
+                      !form.getValues().address ||
+                      !form.getValues().phone ||
+                      !form.getValues().card_id
+                    }
+                    type="button"
+                    onClick={goNextStep}
+                  >
+                    Tiếp tục
+                  </Button>
+                ) : step === 2 ? (
+                  <Button
+                    disabled={
+                      !form.getValues().pitch_name ||
+                      !form.getValues().pitch_address
                     }
                     type="button"
                     onClick={goNextStep}
@@ -408,8 +421,7 @@ export function PitchRegisterForm({
                   <Button
                     disabled={
                       loading ||
-                      !form.getValues().address ||
-                      !form.getValues().phone
+                      Object.values(form.getValues()).some((value) => !value)
                     }
                     type="submit"
                   >
