@@ -32,16 +32,17 @@ function DashboardSidebar({ user, items }: Props) {
   return (
     <motion.aside
       className={cn(
-        "sticky top-0 z-10 hidden h-screen flex-col transition-all duration-500 ease-in-out md:flex"
+        "fixed md:sticky top-0 left-0 md:border-none z-10 h-screen flex-col transition-all duration-500 ease-in-out md:flex",
+        isShrink ? "w-0 md:w-[80px]" : "bg-white border w-[250px]"
       )}
       layout
       animate={{
-        width: isShrink ? "80px" : "250px",
+        // width: isShrink ? "80px" : "250px",
         // animationDelay: "0.2s",
         transitionDelay: isShrink ? "0.2s" : "0s",
       }}
     >
-      <div className="absolute -right-2 left-auto top-0 z-10 my-5">
+      <div className="absolute -right-6 md:-right-2 left-auto top-2 md:top-0 z-10 my-5">
         <Button
           variant={"default"}
           size={"sm"}
@@ -60,7 +61,9 @@ function DashboardSidebar({ user, items }: Props) {
       <div
         className={cn(
           "w-full flex-1 px-4 py-6",
-          isShrink ? "flex flex-col items-center" : "flex flex-col items-start"
+          isShrink
+            ? "hidden md:flex flex-col items-center"
+            : "flex flex-col items-start"
         )}
       >
         <Link

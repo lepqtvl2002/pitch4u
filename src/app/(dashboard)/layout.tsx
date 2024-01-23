@@ -32,7 +32,7 @@ export default async function DashboardLayout({
           }
         />
         <div className="flex-col md:flex border-l">
-          <MainNav className="px-6 h-10 md:h-16 border-b" />
+          <MainNav className="px-2 md:px-6 h-10 md:h-16 border-b" />
           {children}
         </div>
       </div>

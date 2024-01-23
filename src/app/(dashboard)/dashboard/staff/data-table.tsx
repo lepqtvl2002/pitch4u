@@ -10,6 +10,7 @@ import DropdownMenuActions from "./dropdown-menu-actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SelectPitch } from "@/components/dashboard/pitch-picker";
+import { PlusIcon } from "lucide-react";
 
 function StaffTable() {
   const [search, setSearch] = React.useState<string>("");
@@ -49,7 +50,7 @@ function StaffTable() {
   }
 
   return (
-    <div>
+    <div className="w-screen bg-blue-50">
       <DataTable
         columns={[
           ...columns,
@@ -75,7 +76,10 @@ function StaffTable() {
         pageSize={pageSize}
         headerPrefix={
           <Link href="/dashboard/staff/create">
-            <Button>Thêm nhân viên +</Button>
+            <Button className="hidden md:flex">Thêm nhân viên +</Button>
+            <Button size="icon" className="flex md:hidden">
+              <PlusIcon />
+            </Button>
           </Link>
         }
         headerSuffix={

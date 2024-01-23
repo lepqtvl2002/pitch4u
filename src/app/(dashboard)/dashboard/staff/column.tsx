@@ -3,7 +3,6 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { User } from "@/server/queries/user-queries";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
-import DropdownMenuActions from "./dropdown-menu-actions";
 
 export const columns: ColumnDef<User>[] = [
   {

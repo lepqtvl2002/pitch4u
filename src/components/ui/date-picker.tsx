@@ -81,7 +81,7 @@ export function BirthdayPicker({
   }, [date]);
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-wrap gap-4">
       <div className="flex gap-2 w-fit items-center">
         <Label>Năm</Label>
         <Select

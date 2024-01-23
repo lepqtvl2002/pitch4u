@@ -126,17 +126,17 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
             <FormItem>
               <FormLabel>Tên đầy đủ</FormLabel>
               <FormControl>
-                <Input
+                {/* <Input
                   placeholder="Tên của bạn"
                   defaultValue={field.value}
                   {...field}
-                />
+                /> */}
               </FormControl>
-              <FormDescription>
+              {/* <FormDescription>
                 Đây là tên hiển thị công khai của bạn. Nó có thể là tên thật của
                 bạn hoặc một bút danh. Bạn chỉ có thể thay đổi tên này một lần
                 mỗi 30 ngày.
-              </FormDescription>
+              </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
@@ -150,11 +150,11 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
+                    {/* <Input
                       placeholder="Email nhân viên"
                       defaultValue={field.value}
                       {...field}
-                    />
+                    /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -167,12 +167,12 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
                 <FormItem>
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
-                    <Input
+                    {/* <Input
                       placeholder="Mật khẩu tối thiểu 8 ký tự"
                       defaultValue={field.value}
                       type="password"
                       {...field}
-                    />
+                    /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -186,7 +186,7 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Giới tính</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              {/* <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Giới tính của bạn" />
@@ -197,7 +197,7 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
                   <SelectItem value={"female"}>Nữ</SelectItem>
                   <SelectItem value={"other"}>Khác</SelectItem>
                 </SelectContent>
-              </Select>
+              </Select> */}
               <FormMessage />
             </FormItem>
           )}
@@ -209,12 +209,12 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
             <FormItem>
               <FormLabel>Số điện thoại</FormLabel>
               <FormControl>
-                <Input
+                {/* <Input
                   type="text"
                   placeholder="Nhập số điện vủa bạn"
                   defaultValue={field.value}
                   {...field}
-                />
+                /> */}
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -222,12 +222,12 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
         />
         <div className="space-y-2">
           <FormLabel>Ngày sinh</FormLabel>
-          <BirthdayPicker date={date} setDate={setDate} />
+          {/* <BirthdayPicker date={date} setDate={setDate} /> */}
         </div>
         {!staffId && (
           <div className="space-y-2">
             <FormLabel>Nơi làm việc</FormLabel>
-            <SelectPitch pitchId={pitchId} setPitchId={setPitchId} />
+            {/* <SelectPitch pitchId={pitchId} setPitchId={setPitchId} /> */}
           </div>
         )}
         <Button disabled={isLoading || isUpdating} type="submit">
