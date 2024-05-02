@@ -31,6 +31,34 @@ export class AuthenticationUseMutation {
     });
   };
 
+  static loginGoogle = () => {
+    return useMutation({
+      mutationFn: ({ token_email }: { token_email: string }) =>
+        $globalFetch(`/v1/auth/login-email`, {
+          method: "POST",
+          data: { token_email },
+        }).then((res) => res.data),
+      onSuccess: (a) => {
+        toast({
+          title: "Đăng nhập với google thành công",
+          description:
+            a.status === 200
+              ? "Chào mừng bạn trở lại"
+              : "Chào mừng bạn đến với Pitch4U",
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          title: "Đã xảy ra lỗi trong khi thực hiện đăng ký",
+          description: error?.response?.data?.message
+            ? error?.response?.data?.message
+            : "Vui kiểm tra và thử lại",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
   static verifyEmail = () => {
     return useMutation({
       mutationFn: ({ code, token }: { code: string; token: string }) =>
