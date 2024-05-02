@@ -35,6 +35,8 @@ declare module "next-auth" {
     refresh: IToken;
     userRole: UserRole;
     userId: string | number;
+    role: UserRole;
+    user_id: string | number;
   }
 }
 
@@ -55,19 +57,6 @@ export const authOptions: NextAuthOptions = {
     maxAge: 5000,
   },
   callbacks: {
-    async signIn({ account }) {
-      if (account?.provider === "google") {
-        if (account.access_token) {
-          const res = await $globalFetch(`/v1/auth/login-email`, {
-            method: "POST",
-            data: { token_email: account.access_token },
-          });
-          return true;
-        }
-        return false;
-      }
-      return true; // Do different verification for other providers that don't have `email_verified`
-    },
     async redirect({ url, baseUrl }) {
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       else if (url.includes("login?callbackUrl")) {
@@ -96,13 +85,30 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user }: { token: any; user: any }) {
+    async jwt({ token, user, account, profile }) {
+      if (account?.provider === 'google' && profile) {
+        const res = await $globalFetch(`/v1/auth/login-email`, {
+          method: "POST",
+          data: { token_email: account.access_token },
+        });
+
+        const data = res.data;
+
+        token.accessToken = data.tokens.access;
+        token.refreshToken = data.tokens.refresh;
+        token.userRole = data.user?.role;
+        token.userId = data.user?.user_id;
+
+        return token;
+      }
+
       if (user) {
-        token.userId = user?.user_id;
-        token.userRole = user?.role || undefined;
         token.accessToken = user?.access;
         token.refreshToken = user?.refresh;
+        token.userRole = user?.role;
+        token.userId = user?.user_id;
       }
+
       return token;
     },
   },
