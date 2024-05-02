@@ -7,7 +7,7 @@ import {
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { IToken } from "@/types/token";
-import { $fetch } from "@/lib/axios";
+import { $fetch, $globalFetch } from "@/lib/axios";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -55,12 +55,16 @@ export const authOptions: NextAuthOptions = {
     maxAge: 5000,
   },
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ account }) {
       if (account?.provider === "google") {
-        // console.log("Google account", account);
-        // console.log(profile);
-        // return profile?.email_verified && profile?.email?.endsWith("@example.com")
-        return true;
+        if (account.access_token) {
+          const res = await $globalFetch(`/v1/auth/login-email`, {
+            method: "POST",
+            data: { token_email: account.access_token },
+          });
+          return true;
+        }
+        return false;
       }
       return true; // Do different verification for other providers that don't have `email_verified`
     },
@@ -79,7 +83,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.accessToken = token?.accessToken as IToken;
       session.refreshToken = token?.refreshToken as IToken;
-      
+
       if (session?.user) {
         return {
           ...session,
@@ -92,7 +96,7 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user }: { token: any; user: any}) {
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.userId = user?.user_id;
         token.userRole = user?.role || undefined;
@@ -146,7 +150,7 @@ export const authOptions: NextAuthOptions = {
 
           const _user = res?.data?.user;
           const _tokens = res?.data?.tokens;
-          
+
           if (!_user) {
             return null;
           }
