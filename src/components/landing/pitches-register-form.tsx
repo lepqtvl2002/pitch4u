@@ -17,6 +17,14 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "../ui/use-toast";
@@ -29,6 +37,8 @@ import { ImageUseMutation } from "@/server/actions/image-actions";
 import GoogleMapReact, { ClickEventValue } from "google-map-react";
 import { IPitch } from "@/types/pitch";
 import { UserProfile } from "@/server/queries/user-queries";
+import { enumPitchTypesArray } from "@/enums/enumPitchTypes";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
 
 const formSchema = z.object({
   card_id: z.string(),
@@ -60,7 +70,10 @@ export function PitchRegisterForm({
   const { data: session } = useSession();
   const [loading, setLoading] = React.useState(false);
   const [step, setStep] = React.useState(1);
+  const [pitchType, setPitchType] = React.useState("soccer");
   const { mutateAsync } = PitchUseMutation.pitchRegister();
+  const { data: pitchTypes, isLoading: isLoadingPitchTypes } =
+    PitchUseQuery.getPitchTypes();
   const router = useRouter();
   const [markerPos, setMarkerPos] = React.useState({
     lat: 16.0544068,
@@ -108,6 +121,7 @@ export function PitchRegisterForm({
         long: markerPos.lng,
         lat: markerPos.lat,
         proofs: uploadImageUrls.map((e: any) => e?.result),
+        type: pitchType,
       });
 
       localStorage.setItem(
@@ -260,6 +274,31 @@ export function PitchRegisterForm({
                 )}
                 {step === 2 && (
                   <>
+                    <FormLabel>Loại sân</FormLabel>
+                    <Select onValueChange={setPitchType}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder={pitchType} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {isLoadingPitchTypes ? (
+                          <SelectItem value="soccer">Loading</SelectItem>
+                        ) : (
+                          enumPitchTypesArray.map((type) => (
+                            <SelectItem
+                              key={type}
+                              value={type}
+                              disabled={
+                                pitchTypes &&
+                                !(type.toUpperCase() in pitchTypes?.result)
+                              }
+                            >
+                              {type}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+
                     <FormField
                       control={form.control}
                       name="pitch_name"

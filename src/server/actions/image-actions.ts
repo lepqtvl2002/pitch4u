@@ -11,7 +11,7 @@ export class ImageUseMutation {
         const headers = {
           "Content-Type": "multipart/form-data", // Important for server to recognize the request as a file upload
         };
-        const res = await $globalFetch(`/images`, {
+        const res = await $globalFetch(`/v1/upload/image`, {
           method: "POST",
           data: formData,
           headers,
