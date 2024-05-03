@@ -84,7 +84,7 @@ export function UserNav() {
                   : "/dashboard/profile"
               }
             >
-              Profile
+              Tài khoản của bạn
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -93,7 +93,7 @@ export function UserNav() {
           className="flex justify-between"
           onClick={() => signOut()}
         >
-          Log out <LogOutIcon />
+          Đăng xuất <LogOutIcon />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
