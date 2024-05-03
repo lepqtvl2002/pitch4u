@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/use-toast";
 import { registrationStatusToString } from "@/lib/convert";
 import { formatDateTimeToddMMyyyyHHmm } from "@/lib/format-datetime";
 import { mutatingToast } from "@/lib/quick-toast";
@@ -31,13 +30,12 @@ function RegistrationDetail() {
   const { id } = useParams();
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
-  const { mutateAsync } = RegistrationUseMutation.approve();
-  const [isLoading, setIsLoading] = useState(false);
+  const { mutateAsync, isLoading } = RegistrationUseMutation.approve();
   const router = useRouter();
+
   async function handleApprove() {
-    setIsLoading(true);
+    mutatingToast();
     await mutateAsync({ registration_id: Number(id as string) });
-    setIsLoading(false);
     router.replace("/admin/registration");
   }
 
@@ -106,6 +104,10 @@ function RegistrationDetail() {
             <Label className="col-span-1">Tên sân</Label>
             <span className="text-gray-500">
               {searchParams.get("pitch_name")}
+            </span>
+            <Label className="col-span-1">Loại sân</Label>
+            <span className="text-gray-500">
+              {searchParams.get("type")}
             </span>
             <Label className="col-span-1">Địa chỉ sân</Label>
             <span className="text-gray-500">
@@ -186,7 +188,7 @@ function PopoverDeny({ id }: { id: string | number }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">Từ chối đăng ký</Button>
+        <Button variant="destructive">Từ chối đăng ký</Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">

@@ -4,7 +4,7 @@ const nextConfig = {
     serverActions: true,
   },
   images: {
-    domains: ["api.pitch4u.me"],
+    domains: ["api.pitch4u.me", "i.imgur.com"],
   },
 };
 
