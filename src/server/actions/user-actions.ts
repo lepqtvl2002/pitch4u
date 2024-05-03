@@ -12,7 +12,7 @@ export class UserUseMutation {
         }),
       onSuccess: () => {
         toast({
-          title: "Cập nhật mật khẩu thành công",
+          title: "Cập nhật thành công",
           variant: "success",
           description: "Đã cập nhật thông tin thành công.",
         });

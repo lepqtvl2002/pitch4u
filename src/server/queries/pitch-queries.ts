@@ -35,7 +35,9 @@ export class PitchUseQuery {
         $fetch(`/v1/pitches/my-pitches`, {
           method: "GET",
           params: params,
-        }).then((res) => res.data as { result: { data: IPitch[] } & IPaginated }),
+        }).then(
+          (res) => res.data as { result: { data: IPitch[] } & IPaginated }
+        ),
       cacheTime: 100,
       keepPreviousData: true,
     });
@@ -83,6 +85,17 @@ export class PitchUseQuery {
           method: "GET",
           params: query,
         }).then((res) => res.data as { result: IPitch[] }),
+      cacheTime: 100,
+      keepPreviousData: true,
+    });
+  };
+  static getPitchTypes = () => {
+    return useQuery({
+      queryKey: ["pitchTypes"],
+      queryFn: () =>
+        $fetch(`/v1/pitches/type`, {
+          method: "GET",
+        }).then((res) => res.data as { result: Record<string, string> }),
       cacheTime: 100,
       keepPreviousData: true,
     });

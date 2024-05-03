@@ -13,6 +13,7 @@ export interface PitchInfo {
   lat: number;
   long: number;
   proofs?: string[];
+  type: string;
 }
 export class PitchUseMutation {
   // Register pitch

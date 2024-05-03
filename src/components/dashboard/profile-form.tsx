@@ -1,10 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
 import { UserUseMutation } from "@/server/actions/user-actions";
 import { AvatarCustom } from "../ui/avatar-custom";
 import { ImageUseMutation } from "@/server/actions/image-actions";
@@ -66,7 +64,6 @@ type FormProps = {
 };
 
 export function ProfileForm({ userProfile }: FormProps) {
-  console.log(userProfile);
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -81,35 +78,23 @@ export function ProfileForm({ userProfile }: FormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   async function onSubmit(data: ProfileFormValues) {
-    try {
-      setIsLoading(true);
-      const { thumbnail, ...sendValues } = data;
+    setIsLoading(true);
+    const { thumbnail, ...sendValues } = data;
+    if (thumbnail[0]) {
       const { result: avatar } = await uploadImage({ image: thumbnail[0] });
-      const result = await updateProfile(
-        avatar ? { ...sendValues, avatar } : sendValues
-      );
-      if (result) {
-        toast({
-          title: "Thông tin đã được cập nhật",
-          variant: "success",
-        });
-      }
-    } catch (error: any) {
-      toast({
-        title: "Lỗi trong khi thực hiện hành động",
-        variant: "destructive",
-        description: error?.response?.data?.message
-          ? error?.response?.data?.message
-          : "Vui lòng điền đầy đủ thông tin",
-      });
-    } finally {
-      setIsLoading(false);
+      await updateProfile({ ...sendValues, avatar });
+    } else {
+      await updateProfile(sendValues);
     }
+    setIsLoading(false);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col md:flex-row gap-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col md:flex-row gap-4"
+      >
         {/* Logo */}
         <div className="grid gap-2">
           {form.formState.errors.thumbnail && (
