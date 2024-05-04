@@ -1,4 +1,5 @@
 import PitchTypes from "@/enums/pitchTypes";
+import SoccerPitchTypes from "@/enums/soccerPitchTypes";
 import RegistrationStatuses from "@/enums/registrationStatuses";
 import ReportTypes from "@/enums/reportTypes";
 
@@ -32,36 +33,36 @@ export const registrationStatusToString = (status: string) => {
   }
 };
 
-export const stringToPitchType = (type: string) => {
+export const stringToSoccerPitchType = (type: string) => {
   switch (type) {
     case "Sân 5":
-      return PitchTypes.Pitch5;
+      return SoccerPitchTypes.Pitch5;
     case "PITCH5":
-      return PitchTypes.Pitch5;
+      return SoccerPitchTypes.Pitch5;
     case "Sân 7":
-      return PitchTypes.Pitch7;
+      return SoccerPitchTypes.Pitch7;
     case "PITCH7":
-      return PitchTypes.Pitch7;
+      return SoccerPitchTypes.Pitch7;
     case "Sân 9":
-      return PitchTypes.Pitch9;
+      return SoccerPitchTypes.Pitch9;
     case "PITCH9":
-      return PitchTypes.Pitch9;
+      return SoccerPitchTypes.Pitch9;
     default:
-      return PitchTypes.Pitch11;
+      return SoccerPitchTypes.Pitch11;
   }
 };
 
-export const pitchTypeToString = (type: string) => {
+export const soccerPitchTypeToString = (type: string) => {
   switch (type) {
-    case PitchTypes.Pitch5:
+    case SoccerPitchTypes.Pitch5:
       return "Sân 5";
     case "Sân 5":
       return "Sân 5";
-    case PitchTypes.Pitch7:
+    case SoccerPitchTypes.Pitch7:
       return "Sân 7";
     case "Sân 7":
       return "Sân 7";
-    case PitchTypes.Pitch9:
+    case SoccerPitchTypes.Pitch9:
       return "Sân 9";
     case "Sân 9":
       return "Sân 9";
@@ -89,5 +90,44 @@ export const stringToReportType = (string: string) => {
       return ReportTypes.Pitch;
     default:
       return ReportTypes.User;
+  }
+};
+
+export const stringToPitchType = (type: string) => {
+  if (type.includes("đá")) {
+    return PitchTypes.Soccer;
+  }
+  if (type.includes("tennis")) {
+    return PitchTypes.Tennis;
+  }
+  if (type.includes("bóng chuyền")) {
+    return PitchTypes.Volleyball;
+  }
+  if (type.includes("rổ")) {
+    return PitchTypes.Basketball;
+  }
+  if (type.includes("cầu lông")) {
+    return PitchTypes.Badminton;
+  }
+  return PitchTypes.Other;
+};
+
+export const pitchTypeToString = (type: string | null) => {
+  if (!type) {
+    return "Loại sân chưa xác định";
+  }
+  switch (type) {
+    case PitchTypes.Soccer:
+      return "Sân bóng đá";
+    case PitchTypes.Tennis:
+      return "Sân tennis";
+    case PitchTypes.Volleyball:
+      return "Sân bóng chuyền";
+    case PitchTypes.Basketball:
+      return "Sân bóng rổ";
+    case PitchTypes.Badminton:
+      return "Sân cầu lông";
+    default:
+      return "Loại sân chưa xác định";
   }
 };
