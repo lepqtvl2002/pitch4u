@@ -12,6 +12,10 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
+  const navItems =
+    session?.user?.userRole?.name === "admin"
+      ? dashboardConfigOperator.sidebarNav
+      : dashboardConfig.sidebarNav;
 
   if (!session?.user) {
     return notFound();
@@ -23,16 +27,11 @@ export default async function DashboardLayout({
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="relative grid flex-1 md:grid-cols-[auto_1fr]">
-        <DashboardSidebar
-          user={session?.user}
-          items={
-            session.user?.userRole?.name === "admin"
-              ? dashboardConfigOperator.sidebarNav
-              : dashboardConfig.sidebarNav
-          }
-        />
+        <div className="hidden md:block">
+          <DashboardSidebar user={session?.user} items={navItems} />
+        </div>
         <div className="flex-col md:flex border-l">
-          <MainNav className="px-6 h-10 md:h-16 border-b" />
+          <MainNav className="px-6 h-12 md:h-16 border-b" navItems={navItems} />
           {children}
         </div>
       </div>

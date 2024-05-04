@@ -2,10 +2,9 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import { Search } from "@/components/dashboard/search";
 import { UserNav } from "@/components/dashboard/user-nav";
 import { ModeToggle } from "@/components/theme-button";
-import { Bell, MessageCircle } from "lucide-react";
+import { Bell, MessageCircle, PanelLeftOpenIcon } from "lucide-react";
 import { NotificationBadge } from "@/components/notification-badge";
 import { NotificationUseQuery } from "@/server/queries/notification-queries";
 import {
@@ -14,22 +13,53 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import NotificationList from "./notification-list";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { DashboardNav } from "./dashboard-nav";
+import { SidebarNavItem } from "@/types";
 
 export function MainNav({
   className,
   area = "dashboard",
+  navItems,
   ...props
-}: React.HTMLAttributes<HTMLElement> & { area?: "admin" | "dashboard" }) {
+}: React.HTMLAttributes<HTMLElement> & {
+  area?: "admin" | "dashboard";
+  navItems?: SidebarNavItem[];
+}) {
   const { data } = NotificationUseQuery.getNumberOfUnread();
 
   return (
     <nav
       className={cn(
-        "w-full flex items-center justify-between space-x-4 lg:space-x-6",
+        "w-full flex items-center md:justify-end justify-between space-x-4 lg:space-x-6",
         className
       )}
       {...props}
     >
+      <Sheet>
+        <SheetTrigger className="md:hidden">
+          <PanelLeftOpenIcon />
+        </SheetTrigger>
+        <SheetContent side={"left"}>
+          <SheetHeader>
+            <SheetTitle>PITCH4U</SheetTitle>
+            <SheetDescription>Menu</SheetDescription>
+          </SheetHeader>
+          <DashboardNav
+            isShrink={false}
+            setShrink={() => {}}
+            items={navItems ?? []}
+          />
+        </SheetContent>
+      </Sheet>
+
       {/* <Search /> */}
       <div className="ml-auto flex items-center space-x-4">
         <Link
@@ -42,12 +72,14 @@ export function MainNav({
         <Popover>
           <PopoverTrigger>
             <button className={"relative hover:bg-gray-200 rounded-full p-2"}>
-              {data?.result ? <NotificationBadge number={data?.result} /> : null}
+              {data?.result ? (
+                <NotificationBadge number={data?.result} />
+              ) : null}
               <Bell />
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-[360px]">
-            <NotificationList/>
+            <NotificationList />
           </PopoverContent>
         </Popover>
 
