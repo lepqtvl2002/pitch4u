@@ -3,7 +3,7 @@ import Review, { ReviewType } from "@/components/landing/review";
 import { notFound } from "next/navigation";
 import { Stars } from "@/components/ui/vote-stars";
 import { $fetch } from "@/lib/axios";
-import { pitchTypesArray } from "@/enums/pitchTypes";
+import { soccerPitchTypesArray } from "@/enums/soccerPitchTypes";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/server/auth";
@@ -18,7 +18,7 @@ const PitchDetail = async ({ params }: { params: { slug: string } }) => {
   });
   const pitch = {
     ...res.data.result,
-    types: pitchTypesArray,
+    types: soccerPitchTypesArray,
     imageUrls: res.data.result.images,
     isLiked: res.data.result?.likes?.find(
       (e: { user_id: number }) => e.user_id === session?.user.userId

@@ -3,7 +3,7 @@ import { $fetch } from "@/lib/axios";
 import { Data as DataStatisticOwner } from "@/app/(dashboard)/dashboard/page";
 import { Data as DataStatisticSystem } from "@/app/(admin)/admin/page";
 import IPaginated from "@/types/paginated";
-import { PitchType } from "@/enums/pitchTypes";
+import { PitchType } from "@/enums/soccerPitchTypes";
 import { BookingStatus } from "@/enums/bookingStatuses";
 
 export type Booking = {

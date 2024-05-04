@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
-import PitchTypes from "@/enums/pitchTypes";
+import SoccerPitchTypes from "@/enums/soccerPitchTypes";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { useRouter } from "next/navigation";
 import { Icons } from "../icons";
@@ -36,7 +36,7 @@ const profileFormSchema = z.object({
   price: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
     message: "Vui lòng nhập số.",
   }),
-  type: z.nativeEnum(PitchTypes),
+  type: z.nativeEnum(SoccerPitchTypes),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -113,16 +113,16 @@ export function SubPitchForm({ pitch_id, subPitchProfile }: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={PitchTypes.Pitch5}>
+                  <SelectItem value={SoccerPitchTypes.Pitch5}>
                     Sân dành cho 5 người
                   </SelectItem>
-                  <SelectItem value={PitchTypes.Pitch7}>
+                  <SelectItem value={SoccerPitchTypes.Pitch7}>
                     Sân dành cho 7 người
                   </SelectItem>
-                  <SelectItem value={PitchTypes.Pitch9}>
+                  <SelectItem value={SoccerPitchTypes.Pitch9}>
                     Sân dành cho 9 người
                   </SelectItem>
-                  <SelectItem value={PitchTypes.Pitch11}>
+                  <SelectItem value={SoccerPitchTypes.Pitch11}>
                     Sân dành cho 11 người
                   </SelectItem>
                 </SelectContent>

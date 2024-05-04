@@ -10,7 +10,7 @@ import {
 import { type ColumnDef } from "@tanstack/react-table";
 import { Booking } from "@/server/queries/statistic-queries";
 import { format } from "date-fns";
-import { pitchTypeToString } from "@/lib/convert";
+import { soccerPitchTypeToString } from "@/lib/convert";
 import BookingStatuses from "@/enums/bookingStatuses";
 
 export const bookingStatusOptions: DataFacetedOptionsType[] = [
@@ -45,7 +45,7 @@ export const columns: ColumnDef<Booking>[] = [
       const pitchType = ctx.row.original.booking_pitches[0].sub_pitch?.type;
       return (
         <div className={pitchTypeVariant({ variant: pitchType })}>
-          {pitchTypeToString(pitchType)}
+          {soccerPitchTypeToString(pitchType)}
         </div>
       );
     },

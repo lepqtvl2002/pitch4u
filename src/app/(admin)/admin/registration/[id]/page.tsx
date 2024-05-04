@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { registrationStatusToString } from "@/lib/convert";
+import { pitchTypeToString, registrationStatusToString } from "@/lib/convert";
 import { formatDateTimeToddMMyyyyHHmm } from "@/lib/format-datetime";
 import { mutatingToast } from "@/lib/quick-toast";
 import { RegistrationUseMutation } from "@/server/actions/registration-actions";
@@ -107,7 +107,7 @@ function RegistrationDetail() {
             </span>
             <Label className="col-span-1">Loại sân</Label>
             <span className="text-gray-500">
-              {searchParams.get("type")}
+              {pitchTypeToString(searchParams.get("type"))}
             </span>
             <Label className="col-span-1">Địa chỉ sân</Label>
             <span className="text-gray-500">

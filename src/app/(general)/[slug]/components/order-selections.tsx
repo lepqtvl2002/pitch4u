@@ -19,7 +19,7 @@ import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { toast } from "@/components/ui/use-toast";
 import { format, isSameDay } from "date-fns";
 import { useSession } from "next-auth/react";
-import { pitchTypeToString } from "@/lib/convert";
+import { soccerPitchTypeToString } from "@/lib/convert";
 import { cn, decimalToTimeString } from "@/lib/utils";
 import { ReportForm } from "./report-form";
 
@@ -195,7 +195,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
                 setType(typePitch);
               }}
             >
-              {pitchTypeToString(typePitch)}
+              {soccerPitchTypeToString(typePitch)}
             </Button>
           ))}
         </div>

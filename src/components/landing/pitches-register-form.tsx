@@ -37,8 +37,9 @@ import { ImageUseMutation } from "@/server/actions/image-actions";
 import GoogleMapReact, { ClickEventValue } from "google-map-react";
 import { IPitch } from "@/types/pitch";
 import { UserProfile } from "@/server/queries/user-queries";
-import { enumPitchTypesArray } from "@/enums/enumPitchTypes";
+import { pitchTypesArray } from "@/enums/pitchTypes";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
+import { pitchTypeToString } from "@/lib/convert";
 
 const formSchema = z.object({
   card_id: z.string(),
@@ -277,13 +278,13 @@ export function PitchRegisterForm({
                     <FormLabel>Loại sân</FormLabel>
                     <Select onValueChange={setPitchType}>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder={pitchType} />
+                        <SelectValue placeholder="Chọn loại sân" />
                       </SelectTrigger>
                       <SelectContent>
                         {isLoadingPitchTypes ? (
                           <SelectItem value="soccer">Loading</SelectItem>
                         ) : (
-                          enumPitchTypesArray.map((type) => (
+                          pitchTypesArray.map((type) => (
                             <SelectItem
                               key={type}
                               value={type}
@@ -292,7 +293,7 @@ export function PitchRegisterForm({
                                 !(type.toUpperCase() in pitchTypes?.result)
                               }
                             >
-                              {type}
+                              {pitchTypeToString(type)}
                             </SelectItem>
                           ))
                         )}
