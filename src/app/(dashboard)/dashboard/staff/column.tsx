@@ -15,7 +15,7 @@ export const columns: ColumnDef<User>[] = [
       return (
         <div className={"flex items-center gap-2 text-bold"}>
           <AvatarCustom avatarUrl={avatarUrl as string} name={name} />
-          {name}
+          <span className="max-w-[100px] truncate md:max-w-none">{name}</span>
         </div>
       );
     },
@@ -24,7 +24,11 @@ export const columns: ColumnDef<User>[] = [
     header: "Email",
     cell: (ctx) => {
       const email = ctx.row.original.email;
-      return <div className={"text-bold"}>{email}</div>;
+      return (
+        <div className={"max-w-[100px] truncate md:max-w-none text-gray-500"}>
+          {email}
+        </div>
+      );
     },
   },
   {

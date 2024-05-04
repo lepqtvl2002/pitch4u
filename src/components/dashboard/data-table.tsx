@@ -43,6 +43,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../ui/pagination";
+import { useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -114,6 +115,8 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  const router = useRouter();
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between">
@@ -130,29 +133,24 @@ export function DataTable<TData, TValue>({
               />
             ))}
         </section>
-        <section id="table-search" className="flex h-fit items-center gap-2">
-          {otherButton &&
-            (otherButton.url ? (
-              <Link href={otherButton?.url}>
-                <Button
-                  onClick={otherButton?.onClick}
-                  className={
-                    otherButton.className ? `${otherButton.className}` : "w-max"
-                  }
-                >
-                  {otherButton.title}
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                onClick={otherButton?.onClick}
-                className={
-                  otherButton.className ? `${otherButton.className}` : "w-max"
-                }
-              >
-                {otherButton.title}
-              </Button>
-            ))}
+        <section
+          id="table-search"
+          className="flex flex-wrap h-fit items-center gap-2"
+        >
+          {otherButton && (
+            <Button
+              onClick={
+                otherButton?.url
+                  ? () => router.push(otherButton?.url ?? "#")
+                  : otherButton?.onClick
+              }
+              className={
+                otherButton.className ? `${otherButton.className}` : "w-max"
+              }
+            >
+              {otherButton.title}
+            </Button>
+          )}
           {search && (
             <Input
               placeholder={search.placeholder}
@@ -298,7 +296,10 @@ export function DataTable<TData, TValue>({
             </PaginationItem>
             <PaginationItem
               className={
-                table.getState().pagination.pageIndex > 5 || !table.getPageCount() ? "flex" : "hidden"
+                table.getState().pagination.pageIndex > 5 ||
+                !table.getPageCount()
+                  ? "flex"
+                  : "hidden"
               }
             >
               <PaginationEllipsis />
