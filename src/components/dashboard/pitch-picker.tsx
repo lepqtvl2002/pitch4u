@@ -9,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { IPitch } from "@/types/pitch";
+import { Button } from "../ui/button";
 
 export function SelectPitch({
   pitchId,
@@ -50,5 +52,58 @@ export function SelectPitch({
         </div>
       </SelectContent>
     </Select>
+  );
+}
+
+export function SelectMultiplePitches({
+  pitches,
+  setPitches,
+  prevPitchIDs,
+}: {
+  pitches?: IPitch[];
+  setPitches: any;
+  prevPitchIDs?: number[];
+}) {
+  const [value, setValue] = React.useState("");
+  const { data, isLoading } = PitchUseQuery.getMyPitches({
+    name: value,
+  });
+  React.useEffect(() => {
+    if (prevPitchIDs) {
+      setPitches(
+        data?.result.data.filter((pitch) =>
+          prevPitchIDs.includes(pitch.pitch_id)
+        )
+      );
+    }
+  }, [data?.result.data]);
+
+  return (
+    <div className="grid gap-2">
+      <Input
+        placeholder="Tìm sân"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      {isLoading ? (
+        <>Loading...</>
+      ) : (
+        <div className="flex gap-2">
+          {data?.result.data.map((pitchItem) => (
+            <Button
+              variant="outline"
+              className="w-fit"
+              key={pitchItem.pitch_id}
+              disabled={pitches?.includes(pitchItem)}
+              onClick={() => {
+                setPitches((prev: IPitch[]) => [...prev, pitchItem]);
+              }}
+            >
+              {pitchItem.name}
+            </Button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

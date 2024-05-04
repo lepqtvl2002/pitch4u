@@ -23,12 +23,12 @@ import {
 } from "@/components/ui/select";
 import { UserUseMutation } from "@/server/actions/user-actions";
 import { useRouter } from "next/navigation";
-import { toast } from "../ui/use-toast";
 import { useState } from "react";
 import { mutatingToast } from "@/lib/quick-toast";
-import { SelectPitch } from "./pitch-picker";
+import { SelectMultiplePitches, SelectPitch } from "./pitch-picker";
 import { BirthdayPicker } from "../ui/date-picker";
 import { format } from "date-fns";
+import { IPitch } from "@/types/pitch";
 
 const createProfileFormSchema = z.object({
   fullname: z.string().min(2, {
@@ -60,12 +60,13 @@ type FormProps = {
     gender: string;
     birthday: string;
     email: string;
-    pitch_ids: string;
+    pitch_ids: number[];
   };
   staffId?: string | number;
 };
 
 export function StaffProfileForm({ userProfile, staffId }: FormProps) {
+  console.log(userProfile);
   const profileFormSchema = staffId
     ? updateProfileFormSchema
     : createProfileFormSchema;
@@ -84,7 +85,7 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
   const { mutateAsync: createStaff, isLoading } =
     UserUseMutation.createNewStaff();
   const router = useRouter();
-  const [pitchId, setPitchId] = useState<number>();
+  const [pitches, setPitches] = useState<IPitch[]>([]);
   const [date, setDate] = useState<Date>(new Date());
 
   async function onSubmit(data: ProfileFormValues) {
@@ -96,23 +97,16 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
       });
       router.push("/dashboard/staff");
     } else {
-      if (pitchId) {
-        await createStaff({
-          birthday: format(date, "yyyy-MM-dd"),
-          email: data?.email || "",
-          fullname: data?.fullname || "",
-          password: data?.password || "",
-          phone: data?.phone || "",
-          gender: data?.gender || "male",
-          pitch_ids: [pitchId],
-        });
-        router.push("/dashboard/staff");
-      } else {
-        toast({
-          title: `Vui lòng điền đầy đủ thông tin: `,
-          description: `Vui lòng chọn nơi làm việc.`,
-        });
-      }
+      await createStaff({
+        birthday: format(date, "yyyy-MM-dd"),
+        email: data?.email || "",
+        fullname: data?.fullname || "",
+        password: data?.password || "",
+        phone: data?.phone || "",
+        gender: data?.gender || "male",
+        pitch_ids: pitches.map((pitch) => pitch.pitch_id),
+      });
+      router.push("/dashboard/staff");
     }
   }
 
@@ -224,12 +218,31 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
           <FormLabel>Ngày sinh</FormLabel>
           <BirthdayPicker date={date} setDate={setDate} />
         </div>
-        {!staffId && (
           <div className="space-y-2">
             <FormLabel>Nơi làm việc</FormLabel>
-            <SelectPitch pitchId={pitchId} setPitchId={setPitchId} />
+            <div className="flex gap-2">
+              {pitches?.map((pitch) => (
+                <div
+                  className="px-4 py-2 w-fit rounded border hover:cursor-pointer hover:bg-gray-100"
+                  key={pitch.pitch_id}
+                  onClick={() =>
+                    setPitches((prev) =>
+                      prev.filter(
+                        (prevPitch) => prevPitch.pitch_id !== pitch.pitch_id
+                      )
+                    )
+                  }
+                >
+                  {pitch.name}
+                </div>
+              ))}
+            </div>
+            <SelectMultiplePitches
+              pitches={pitches}
+              setPitches={setPitches}
+              prevPitchIDs={userProfile?.pitch_ids}
+            />
           </div>
-        )}
         <Button disabled={isLoading || isUpdating} type="submit">
           {staffId ? "Cập nhật thông tin" : "Thêm mới nhân viên"}
         </Button>
