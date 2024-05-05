@@ -57,7 +57,7 @@ export const columns: ColumnDef<IVoucher>[] = [
     header: "CODE",
     cell: (ctx) => {
       const code = ctx.row.original.code;
-      return <div className={"text-bold"}>{code}</div>;
+      return <div className="text-bold max-w-[100px] break-words">{code}</div>;
     },
   },
   {
@@ -68,7 +68,7 @@ export const columns: ColumnDef<IVoucher>[] = [
       const type = ctx.row.original.type;
       const discount = ctx.row.original.discount;
       return (
-        <div className="flex justify-between">
+        <div className="flex flex-col md:flex-row justify-between">
           <div className={voucherVariant({ variant: type })}>
             {voucherTypeToString(type)}
           </div>
