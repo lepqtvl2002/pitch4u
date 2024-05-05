@@ -25,7 +25,7 @@ export const columns: ColumnDef<IPitch>[] = [
       const logo = ctx.row.original?.logo;
       const name = ctx.row.original?.name;
       return (
-        <div className={"flex gap-2 items-center text-bold"}>
+        <div className={"flex gap-2 items-center text-bold line-clamp-3"}>
           <AvatarCustom avatarUrl={logo as string} name="" />
           {name}
         </div>
@@ -66,7 +66,7 @@ export const columns: ColumnDef<IPitch>[] = [
     header: "Địa chỉ",
     cell: (ctx) => {
       const address = ctx.row.original.address;
-      return <div className={"text-bold"}>{address}</div>;
+      return <div className="text-bold line-clamp-3">{address}</div>;
     },
   },
 ];
