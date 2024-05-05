@@ -9,6 +9,7 @@ import { toast } from "@/components/ui/use-toast";
 import DropdownMenuPitch from "./dropdown-menu-action";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 
 type PitchStatus = "suspended" | "active";
 function PitchTable() {
@@ -108,7 +109,10 @@ function PitchTable() {
       }}
       headerPrefix={
         <Link href="/dashboard/pitch/register">
-          <Button className="">Đăng ký thêm sân +</Button>
+          <Button variant="secondary" size="lg">
+            <span className="hidden md:block">Đăng ký thêm sân</span>
+            <PlusIcon />
+          </Button>
         </Link>
       }
     />
