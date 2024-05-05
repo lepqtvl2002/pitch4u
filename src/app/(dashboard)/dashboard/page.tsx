@@ -108,7 +108,7 @@ export default function DashboardPage() {
   return (
     <div className="flex-1 space-y-4 px-4 py-2">
       <Tabs defaultValue="overview" className="space-y-4">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <TabsList>
             {TabItems.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value}>
@@ -123,7 +123,7 @@ export default function DashboardPage() {
         </div>
         {/* Overview */}
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
             <StatCard
               icon="dollar"
               title="Tổng doanh thu"
@@ -170,7 +170,7 @@ export default function DashboardPage() {
                 )}
               </CardContent>
             </Card>
-            <Card className="col-span-3">
+            <Card className="col-span-4 md:col-span-3">
               <CardHeader>
                 <CardTitle>Những lượt đặt sân gần nhất</CardTitle>
                 <CardDescription>
@@ -189,8 +189,8 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2 justify-end">
             <MonthPicker selectedMonth={month} setSelectedMonth={setMonth} />
           </div>
-          <div className="grid gap-4 lg:grid-cols-4">
-            <div className="col-span-4 lg:col-span-1 grid grid-cols-3 lg:grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-2 lg:gap-x-4 lg:grid-cols-4">
+            <div className="grid gap-2">
               <CardStatDashboard
                 title={`Doanh thu trong tháng ${Number(month) + 1}`}
                 value={data?.result.thisMonthOverview.revenue.toLocaleString()}
@@ -219,14 +219,14 @@ export default function DashboardPage() {
                 } nhân viên dưới quyền quản lý`}
               />
             </div>
-            <Card className="col-span-4 lg:col-span-3">
+            <Card className="col-span-1 lg:col-span-3">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Biểu đồ thống kê doanh thu theo ngày trong tháng{" "}
                   {Number(month) + 1}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pl-2">
+              <CardContent className="md:pl-2">
                 {isLoading ? (
                   <div className="flex gap-2">
                     <Skeleton className="w-1/5 h-60" />
@@ -256,11 +256,7 @@ export default function DashboardPage() {
               <CardContent className="pl-2 h-96">
                 {isLoading ? (
                   <div className="flex gap-2">
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
+                    Loading...
                   </div>
                 ) : (
                   <RevenueOverviewByPitch

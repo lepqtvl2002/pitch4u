@@ -54,11 +54,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       (response) => response,
       async (error: any) => {
         const originalRequest = error.config;
-        if (
-          status === "unauthenticated" &&
-          error.response.status === 401 &&
-          !originalRequest._retry
-        ) {
+        if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
           toast({
             title: "Phiên đăng nhập hết hạn",
@@ -81,7 +77,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           });
 
           return Promise.reject(error);
-        } else if (error.response?.status === 401 && !originalRequest._retry) {
+        } else {
           try {
             const tokens = await refreshAccessToken(data?.refreshToken?.token);
             if (tokens) {
