@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/sheet";
 import { DashboardNav } from "./dashboard-nav";
 import { SidebarNavItem } from "@/types";
+import { Button } from "../ui/button";
 
 export function MainNav({
   className,
@@ -71,12 +72,12 @@ export function MainNav({
         </Link>
         <Popover>
           <PopoverTrigger>
-            <button className={"relative hover:bg-gray-200 rounded-full p-2"}>
+            <Button variant="ghost" className={"relative hover:bg-gray-200 rounded-full p-2"}>
               {data?.result ? (
                 <NotificationBadge number={data?.result} />
               ) : null}
               <Bell />
-            </button>
+            </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[360px]">
             <NotificationList />

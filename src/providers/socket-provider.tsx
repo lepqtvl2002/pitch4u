@@ -42,7 +42,7 @@ export default function SocketProvider({
       extraHeaders: {
         Authorization: `Bearer ${data?.accessToken?.token}`,
       },
-      autoConnect: false,
+      autoConnect: true,
     });
     setSocket(newSocket);
     if (newSocket) newSocket.connect();

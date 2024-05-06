@@ -56,6 +56,39 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         const originalRequest = error.config;
         if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
+          try {
+            const tokens = await refreshAccessToken(data?.refreshToken?.token);
+            if (tokens) {
+              await update({
+                accessToken: tokens?.access,
+                refreshToken: tokens?.refresh,
+              });
+              console.log("updated tokens");
+            }
+          } catch (error) {
+            toast({
+              title: "Phiên đăng nhập hết hạn",
+              description: "Vui lòng đăng nhập lại",
+              variant: "destructive",
+              action: (
+                <ToastAction
+                  onClick={() => {
+                    const callbackUrl = new URL(window.location.href);
+                    signOut({
+                      redirect: true,
+                      callbackUrl: `/login?callbackUrl=${callbackUrl}`,
+                    });
+                  }}
+                  altText={"relogin"}
+                >
+                  Đăng nhập
+                </ToastAction>
+              ),
+            });
+          }
+
+          return Promise.reject(error);
+        } else {
           toast({
             title: "Phiên đăng nhập hết hạn",
             description: "Vui lòng đăng nhập lại",
@@ -75,26 +108,6 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
               </ToastAction>
             ),
           });
-
-          return Promise.reject(error);
-        } else {
-          try {
-            const tokens = await refreshAccessToken(data?.refreshToken?.token);
-            if (tokens) {
-              await update({
-                accessToken: tokens?.access,
-                refreshToken: tokens?.refresh,
-              });
-            } else {
-              toast({
-                title: "Đã có lỗi xảy ra khi tải dữ liệu",
-                description: "Vui lòng thử lại, can not refresh token",
-                variant: "destructive",
-              });
-            }
-          } catch (error) {
-            console.log(error);
-          }
         }
       }
     );

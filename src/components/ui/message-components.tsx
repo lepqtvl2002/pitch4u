@@ -4,7 +4,13 @@ import { useSession } from "next-auth/react";
 import { Input } from "./input";
 import { Button } from "./button";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import { Loader2Icon, MoreHorizontal, PanelLeftCloseIcon, SearchIcon, Send } from "lucide-react";
+import {
+  Loader2Icon,
+  MoreHorizontal,
+  PanelLeftCloseIcon,
+  SearchIcon,
+  Send,
+} from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { SocketContext } from "@/providers/socket-provider";
@@ -16,16 +22,37 @@ import { Skeleton } from "./skeleton";
 import { mutatingToast } from "@/lib/quick-toast";
 
 // MessageList.js
-export function MessageList({ messages }: { messages: Message[] }) {
+export function MessageList({
+  messages,
+  sendingMessages,
+}: {
+  messages: { user_id: number; text: string }[];
+  sendingMessages?: { text: string }[];
+}) {
   const { data: session } = useSession();
 
   return (
     <div className="flex flex-col-reverse w-full space-y-0.5 max-h-full">
+      {sendingMessages?.map((message, index) => {
+        return (
+          <div key={index} className={cn("w-full flex justify-end")}>
+            <div
+              className={cn(
+                "flex items-start py-2 px-4 rounded-3xl bg-green-200/30 animate-pulse"
+              )}
+            >
+              <p className={cn("max-w-sm xl:max-w-lg break-all")}>
+                {message.text}
+              </p>
+            </div>
+          </div>
+        );
+      })}
       {messages?.map((message, index: number) => {
         const isYou = message.user_id == Number(session?.user.userId);
         return (
           <div
-            key={message.message_id}
+            key={index}
             className={cn(
               "w-full flex relative",
               isYou ? "justify-end" : "justify-start"
@@ -70,7 +97,7 @@ export function MessageInput({
           if (e.key === "Enter") sendMessage();
         }}
       />
-      <Button onClick={sendMessage}>
+      <Button disabled={message.trim().length === 0} onClick={sendMessage}>
         <Send />
       </Button>
     </div>
@@ -104,6 +131,9 @@ export function ChatDetail({
   area: "dashboard" | "admin";
 }) {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [sendingMessages, setSendingMessages] = useState<{ text: string }[]>(
+    []
+  );
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
   const [text, setText] = useState("");
@@ -125,6 +155,7 @@ export function ChatDetail({
       setMaximumNumberOfMessages(total);
     };
     function onNewMessage(msg: Message) {
+      setSendingMessages((prev) => prev.filter((e) => e.text !== msg.text));
       setMessages([msg, ...messages]);
     }
     loadChats();
@@ -141,12 +172,13 @@ export function ChatDetail({
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-  }, [messages, route, socket]);
+  }, [messages, sendingMessages, route, socket]);
 
   const onReadMessage = () => {};
 
   const handleSendMessage = () => {
-    sendMessage({ chatId: id as string, text });
+    setSendingMessages([{ text }, ...sendingMessages]);
+    sendMessage({ chatId: id as string, text: text.trim() });
     setText("");
   };
 
@@ -184,6 +216,7 @@ export function ChatDetail({
             {messages.length ? (
               <MessageList
                 messages={messages?.filter((e) => e.chat_id == Number(id))}
+                sendingMessages={sendingMessages}
               />
             ) : (
               <Loader2Icon className="animate-spin m-auto" />
@@ -225,24 +258,21 @@ export function ContainerChats({
 
   const { mutateAsync: joinChatMutate } = UserUseMutation.joinChat();
 
-  function onReadMessage(msg: any) {
-    loadChats();
-  } // nguoi khac doc tin nhan
-  function onLoadChats(chats: any) {
-    chats.sort((a: any, b: any) => {
-      const timeA = new Date(a.last_message?.createdAt);
-      const timeB = new Date(b.last_message?.createdAt);
-      return (timeB as any) - (timeA as any);
-    });
-    setConversations(chats);
-
-    chats.forEach((c: any) => joinChat(c.chat_id));
-  } // list cac cuoc tro chuyen
-
   useEffect(() => {
+    function onLoadChats(chats: any) {
+      chats.sort((a: any, b: any) => {
+        const timeA = new Date(a.last_message?.createdAt);
+        const timeB = new Date(b.last_message?.createdAt);
+        return (timeB as any) - (timeA as any);
+      });
+      console.log(chats);
+      setConversations(chats);
+
+      chats.forEach((c: any) => joinChat(c.chat_id));
+    } // list cac cuoc tro chuyen
+
     if (socket) {
       loadChats();
-      socket.on("read_message", onReadMessage);
       socket.on("load_chats", onLoadChats);
     } else {
       connectSocket();
@@ -278,27 +308,34 @@ export function ContainerChats({
           }
         >
           {conversations.length && !debounceValue.length ? (
-            conversations.map((chat, idx) => {
-              const user =
-                chat.members.find((e) => e.email !== session?.user.email) ??
-                chat.members[0];
+            conversations
+              .filter((chat) =>
+                chat.members.find((e) => e.email !== session?.user.email)
+              )
+              .map((chat) => {
+                const user = chat.members.find(
+                  (e) => e.email !== session?.user.email
+                );
 
-              return (
-                <Link
-                  key={String(idx)}
-                  href={`/${area}/message/${chat.chat_id}?avatar=${user.avatar}&fullname=${user.fullname}`}
-                >
-                  <MessageCard
-                    avatarUrl={user.avatar}
-                    name={user.fullname || "Unknown"}
-                    lastMessage={chat?.last_message?.text}
-                  />
-                </Link>
-              );
-            })
+                return (
+                  <Link
+                    key={user?.user_id.toString()}
+                    href={`/${area}/message/${
+                      chat.chat_id
+                    }?avatar=${user?.avatar?.toString()}&fullname=${user?.fullname.toString()}`}
+                  >
+                    <MessageCard
+                      avatarUrl={user?.avatar || "/fallback-avatar.png"}
+                      name={user?.fullname || "Unknown"}
+                      lastMessage={chat?.last_message?.text}
+                    />
+                  </Link>
+                );
+              })
           ) : isLoading ? (
             <Skeleton className="w-10 h-10 rounded-full" />
           ) : (
+            debounceValue.length > 0 &&
             data?.result.data?.map((user) => {
               let chat: ChatObject | undefined = undefined;
               conversations.forEach((conversation) => {
@@ -311,44 +348,38 @@ export function ContainerChats({
                   return;
                 }
               });
-              if (!chat) {
-                return (
-                  <div
-                    key={user.user_id}
-                    onClick={async () => {
-                      mutatingToast();
-                      const newChat = await joinChatMutate(user.user_id);
-                      joinChat(newChat.result.chat_id);
-                      router.push(
-                        `/${area}/message/${newChat.result.chat_id}?avatar=${user.avatar}&fullname=${user.fullname}`
-                      );
-                    }}
-                  >
-                    <MessageCard
-                      key={user.user_id}
-                      avatarUrl={user.avatar}
-                      name={user.fullname || "Unknown"}
-                      lastMessage={""}
-                    />
-                  </div>
-                );
-              } else {
-                return (
-                  <Link
-                    key={(chat as ChatObject)?.chat_id}
-                    href={`/${area}/message/${
-                      (chat as ChatObject).chat_id
-                    }?avatar=${user.avatar}&fullname=${user.fullname}`}
-                  >
-                    <MessageCard
-                      key={user.user_id}
-                      avatarUrl={user.avatar}
-                      name={user.fullname || "Unknown"}
-                      lastMessage={(chat as ChatObject)?.last_message?.text}
-                    />
-                  </Link>
-                );
-              }
+              return !chat ? (
+                <div
+                  key={user.user_id}
+                  onClick={async () => {
+                    mutatingToast();
+                    const newChat = await joinChatMutate(user.user_id);
+                    joinChat(newChat.result.chat_id);
+                    router.push(
+                      `/${area}/message/${newChat.result.chat_id}?avatar=${user.avatar}&fullname=${user.fullname}`
+                    );
+                  }}
+                >
+                  <MessageCard
+                    avatarUrl={user.avatar}
+                    name={user.fullname || "Unknown"}
+                    lastMessage={""}
+                  />
+                </div>
+              ) : (
+                <Link
+                  key={user.user_id}
+                  href={`/${area}/message/${
+                    (chat as ChatObject).chat_id
+                  }?avatar=${user.avatar}&fullname=${user.fullname}`}
+                >
+                  <MessageCard
+                    avatarUrl={user.avatar}
+                    name={user.fullname || "Unknown"}
+                    lastMessage={(chat as ChatObject)?.last_message?.text}
+                  />
+                </Link>
+              );
             })
           )}
         </div>
