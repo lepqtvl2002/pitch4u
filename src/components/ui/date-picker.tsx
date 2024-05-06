@@ -81,7 +81,7 @@ export function BirthdayPicker({
   }, [date]);
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-wrap gap-4">
       <div className="flex gap-2 w-fit items-center">
         <Label>Năm</Label>
         <Select
@@ -137,11 +137,10 @@ export function BirthdayPicker({
             <Button
               variant={"outline"}
               className={cn(
-                "w-[280px] justify-start text-left font-normal",
+                "justify-start text-left font-normal",
                 !date && "text-muted-foreground"
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
               {date ? format(date, "dd") : <span>Chọn ngày</span>}
             </Button>
           </PopoverTrigger>
