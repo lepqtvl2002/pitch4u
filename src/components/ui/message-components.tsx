@@ -265,7 +265,6 @@ export function ContainerChats({
         const timeB = new Date(b.last_message?.createdAt);
         return (timeB as any) - (timeA as any);
       });
-      console.log(chats);
       setConversations(chats);
 
       chats.forEach((c: any) => joinChat(c.chat_id));
