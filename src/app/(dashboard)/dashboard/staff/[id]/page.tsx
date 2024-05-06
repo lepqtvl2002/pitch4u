@@ -15,7 +15,7 @@ export default function DetailStaffPage({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex-1 lg:max-w-2xl space-y-6 p-10 pb-16">
+    <div className="flex-1 lg:max-w-2xl space-y-6 px-2 md:px-10 py-10 pb-16">
       <div>
         <h3 className="text-lg font-medium">Thông tin nhân viên</h3>
         <p className="text-sm text-muted-foreground">

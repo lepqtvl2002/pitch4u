@@ -29,6 +29,7 @@ import { SelectMultiplePitches, SelectPitch } from "./pitch-picker";
 import { BirthdayPicker } from "../ui/date-picker";
 import { format } from "date-fns";
 import { IPitch } from "@/types/pitch";
+import { XCircleIcon } from "lucide-react";
 
 const createProfileFormSchema = z.object({
   fullname: z.string().min(2, {
@@ -218,31 +219,33 @@ export function StaffProfileForm({ userProfile, staffId }: FormProps) {
           <FormLabel>Ngày sinh</FormLabel>
           <BirthdayPicker date={date} setDate={setDate} />
         </div>
-          <div className="space-y-2">
-            <FormLabel>Nơi làm việc</FormLabel>
-            <div className="flex gap-2">
-              {pitches?.map((pitch) => (
-                <div
-                  className="px-4 py-2 w-fit rounded border hover:cursor-pointer hover:bg-gray-100"
-                  key={pitch.pitch_id}
-                  onClick={() =>
-                    setPitches((prev) =>
-                      prev.filter(
-                        (prevPitch) => prevPitch.pitch_id !== pitch.pitch_id
-                      )
+        <div className="space-y-2">
+          <FormLabel>Nơi làm việc</FormLabel>
+          <div className="flex gap-2">
+            {pitches?.map((pitch) => (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                key={pitch.pitch_id}
+                onClick={() =>
+                  setPitches((prev) =>
+                    prev.filter(
+                      (prevPitch) => prevPitch.pitch_id !== pitch.pitch_id
                     )
-                  }
-                >
-                  {pitch.name}
-                </div>
-              ))}
-            </div>
-            <SelectMultiplePitches
-              pitches={pitches}
-              setPitches={setPitches}
-              prevPitchIDs={userProfile?.pitch_ids}
-            />
+                  )
+                }
+              >
+                {pitch.name}<XCircleIcon color="gray" size={20} className="ml-2"/>
+              </Button>
+            ))}
           </div>
+          <SelectMultiplePitches
+            pitches={pitches}
+            setPitches={setPitches}
+            prevPitchIDs={userProfile?.pitch_ids}
+          />
+        </div>
         <Button disabled={isLoading || isUpdating} type="submit">
           {staffId ? "Cập nhật thông tin" : "Thêm mới nhân viên"}
         </Button>

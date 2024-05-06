@@ -8,6 +8,8 @@ import { useParams } from "next/navigation";
 import PitchDetailStatCards from "./stat-cards";
 import { toast } from "@/components/ui/use-toast";
 import DropdownMenuSubPitch from "./dropdown-menu-action";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 function PitchDetailTable() {
   const params = useParams();
@@ -42,7 +44,7 @@ function PitchDetailTable() {
     });
   }
   return (
-    <div className="flex flex-col space-y-10">
+    <div className="flex flex-col space-y-4 md:space-y-10">
       {isFetching ? (
         <div>Loading...</div>
       ) : (
@@ -68,8 +70,8 @@ function PitchDetailTable() {
                   priceIDs.push(e.price_id);
                 });
               });
-              const openAt = data?.result?.config.open_at;
-              const closeAt = data?.result?.config.close_at;
+              const openAt = data?.result?.config?.open_at;
+              const closeAt = data?.result?.config?.close_at;
               const parentPitchName = data?.result?.name;
 
               subPitchParams.set("open_at", openAt);
@@ -94,10 +96,11 @@ function PitchDetailTable() {
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}
-        otherButton={{
-          url: `/dashboard/pitch/${params.pitchId}/create`,
-          title: "Thêm sân +",
-        }}
+        headerPrefix={
+          <Link href={`/dashboard/pitch/${params.pitchId}/create`}>
+            <Button>Thêm sân con +</Button>
+          </Link>
+        }
         search={{
           placeholder: "Tìm kiếm",
           value: search || "",

@@ -97,10 +97,9 @@ function PitchTimeline() {
   if (isLoading) return <div>Loading...</div>;
   if (error)
     return (
-      <span className="text-red-500">
-        {
-          "Không thể tải được Timeline đặt sân, vui lòng kiểm tra lại phần config phía trên!"
-        }
+      <span className="text-red-500 italic font-medium">
+        Không thể tải được Timeline đặt sân, vui lòng kiểm tra lại phần config
+        phía trên!
       </span>
     );
   return (

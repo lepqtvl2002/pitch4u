@@ -3,11 +3,11 @@ import PitchTimeline from "./timeline";
 
 function PitchDetailPage() {
   return (
-    <div className={"h-screen overflow-y-auto no-scrollbar container py-4 md:py-10 mb-10"}>
+    <div className="h-screen overflow-y-auto no-scrollbar p-2 md:container md:py-10 mb-10">
       <div className="mx-auto">
         <PitchDetailTable />
       </div>
-      <PitchTimeline/>
+      <PitchTimeline />
     </div>
   );
 }
