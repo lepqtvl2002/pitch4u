@@ -1,10 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -46,8 +45,7 @@ type FormProps = {
   subPitchProfile?: any;
 };
 
-export function SubPitchForm({ pitch_id, subPitchProfile }: FormProps) {
-  console.log(subPitchProfile);
+export function SubPitchForm({ pitch_id }: FormProps) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     // mode: "onChange",

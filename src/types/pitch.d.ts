@@ -1,5 +1,7 @@
 import { Booking } from "@/server/queries/statistic-queries";
 import { ISubPitch } from "./subPitch";
+import { ReviewType } from "@/components/landing/review";
+import { ILike } from "./like";
 
 export interface IPitch {
   pitch_id: number;
@@ -18,6 +20,7 @@ export interface IPitch {
   max_price: number;
   min_price: number;
   rate: string;
+  images: string[];
   config?: {
     pitch_config_id: number | string;
     pitch_id: number | string;
@@ -31,15 +34,17 @@ export interface IPitch {
     deletedAt: Date | null;
   };
   sub_pitches?: ISubPitch[];
+  reviews: ReviewType[];
+  likes?: ILike[];
 }
 
 export type BookingPitch = {
-  day: number;
-  time_frames: timeFrame[];
+  day: Date;
+  time_frames: TimeFrame[];
 };
 
 type TimeFrame = {
   frame: number[][];
   busy: ISubPitch[] & Booking;
   free: ISubPitch[];
-};
+};;

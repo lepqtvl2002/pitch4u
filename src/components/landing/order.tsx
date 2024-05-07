@@ -1,8 +1,9 @@
 import ImageGallery from "@/app/(general)/[slug]/components/image-show";
 import OrderSelections from "@/app/(general)/[slug]/components/order-selections";
+import { IPitch } from "@/types/pitch";
 import React from "react";
 
-const PitchOrder = ({pitch}: { pitch: any }) => {
+const PitchOrder = ({pitch}: { pitch: IPitch }) => {
     return (
         <div className="flex flex-col md:flex-row bg-white md:rounded p-2 md:p-4 md:space-x-8">
             <div className="w-full md:w-1/2">

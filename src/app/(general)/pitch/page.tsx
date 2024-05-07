@@ -36,7 +36,7 @@ export default function PitchPage() {
             onClick={() => router.push("/pitch/register")}
             className="bg-emerald-500 hover:bg-emerald-300"
           >
-            <PlusIcon /> Đăng ký sân bóng
+            <PlusIcon /> Đăng ký sân mới
           </Button>
           {(session?.user.userRole.name === "admin" ||
             session?.user.userRole.name === "staff") && (
