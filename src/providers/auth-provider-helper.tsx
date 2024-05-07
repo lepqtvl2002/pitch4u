@@ -14,24 +14,34 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const refreshAccessToken = useCallback(
     async (refreshToken?: string | null) => {
       try {
-        const { data } = await $globalFetch.post<IRefreshReturn>(
-          "/v1/auth/refresh-tokens",
-          {
+        console.log("refreshing token");
+        const { data } = await $globalFetch("/v1/auth/refresh-tokens", {
+          method: "POST",
+          data: {
             refresh_token: refreshToken,
           },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "x-refresh-token": refreshToken,
-            },
-          }
-        );
+        });
+        console.log("refreshed token", data);
         return data;
       } catch (error) {
         toast({
-          title: "Lỗi kết nối",
-          description: "Vui lòng kiểm tra kết nối mạng của bạn",
+          title: "Phiên đăng nhập hết hạn",
+          description: "Vui lòng đăng nhập lại",
           variant: "destructive",
+          action: (
+            <ToastAction
+              onClick={() => {
+                const callbackUrl = new URL(window.location.href);
+                signOut({
+                  redirect: true,
+                  callbackUrl: `/login?callbackUrl=${callbackUrl}`,
+                });
+              }}
+              altText={"relogin"}
+            >
+              Đăng nhập
+            </ToastAction>
+          ),
         });
       }
     },
@@ -56,57 +66,21 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         const originalRequest = error.config;
         if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
-          try {
-            const tokens = await refreshAccessToken(data?.refreshToken?.token);
-            if (tokens) {
-              await update({
-                accessToken: tokens?.access,
-                refreshToken: tokens?.refresh,
-              });
-              console.log("updated tokens");
-            }
-          } catch (error) {
-            toast({
-              title: "Phiên đăng nhập hết hạn",
-              description: "Vui lòng đăng nhập lại",
-              variant: "destructive",
-              action: (
-                <ToastAction
-                  onClick={() => {
-                    const callbackUrl = new URL(window.location.href);
-                    signOut({
-                      redirect: true,
-                      callbackUrl: `/login?callbackUrl=${callbackUrl}`,
-                    });
-                  }}
-                  altText={"relogin"}
-                >
-                  Đăng nhập
-                </ToastAction>
-              ),
+          const tokens = await refreshAccessToken(data?.refreshToken?.token);
+          if (tokens) {
+            await update({
+              accessToken: tokens?.access,
+              refreshToken: tokens?.refresh,
             });
+            console.log("updated tokens", tokens);
           }
 
           return Promise.reject(error);
         } else {
           toast({
-            title: "Phiên đăng nhập hết hạn",
-            description: "Vui lòng đăng nhập lại",
-            variant: "destructive",
-            action: (
-              <ToastAction
-                onClick={() => {
-                  const callbackUrl = new URL(window.location.href);
-                  signOut({
-                    redirect: true,
-                    callbackUrl: `/login?callbackUrl=${callbackUrl}`,
-                  });
-                }}
-                altText={"relogin"}
-              >
-                Đăng nhập
-              </ToastAction>
-            ),
+            title: "Lỗi khi call API",
+            description: "Đang thử lại...",
+            variant: "default",
           });
         }
       }

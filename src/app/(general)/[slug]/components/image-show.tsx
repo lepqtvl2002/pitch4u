@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { IPitch } from "@/types/pitch";
 
-export default function ImageGallery({ pitch }: { pitch: any }) {
-  const [bigImage, setBigImage] = useState(pitch.imageUrls[0]); // Initialize bigImage with the first image URL
+export default function ImageGallery({ pitch }: { pitch: IPitch }) {
+  const [bigImage, setBigImage] = useState(pitch?.images[0]); // Initialize bigImage with the first image URL
 
   const handleMiniImageClick = (imageUrl: string) => {
     // Update the bigImage when a mini image is clicked
@@ -26,7 +27,7 @@ export default function ImageGallery({ pitch }: { pitch: any }) {
         />
       </div>
       <div className="flex space-x-2 md:space-x-4 w-full py-1 px-1 h-24 md:h-40 overflow-auto no-scrollbar md:show-scrollbar mt-2 md:mt-4 items-center border border-main md:rounded">
-        {pitch.imageUrls.map((imageUrl: string, index: number) => (
+        {pitch.images.map((imageUrl: string, index: number) => (
           <Image
             key={imageUrl + index}
             src={imageUrl}

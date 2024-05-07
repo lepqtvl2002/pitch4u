@@ -274,7 +274,7 @@ export const personalNavConfig: DashboardConfig = {
       icon: "user",
     },
     {
-      title: "Sân bóng yêu thích",
+      title: "Sân yêu thích",
       href: "/personal/favorite",
       icon: "favorite",
     },
@@ -291,7 +291,7 @@ export const personalNavConfig: DashboardConfig = {
       icon: "user",
     },
     {
-      title: "Sân bóng yêu thích",
+      title: "Sân yêu thích",
       href: "/personal/favorite",
       icon: "favorite",
     },

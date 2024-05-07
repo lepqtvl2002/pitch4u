@@ -16,30 +16,36 @@ import {
 } from "@/components/ui/select";
 import { DatePickerBookingPitch } from "@/components/ui/date-picker";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { toast } from "@/components/ui/use-toast";
 import { format, isSameDay } from "date-fns";
 import { useSession } from "next-auth/react";
 import { soccerPitchTypeToString } from "@/lib/convert";
 import { cn, decimalToTimeString } from "@/lib/utils";
 import { ReportForm } from "./report-form";
+import { IPitch } from "@/types/pitch";
+import { soccerPitchTypesArray } from "@/enums/soccerPitchTypes";
+import { mutatingToast } from "@/lib/quick-toast";
 
-export default function OrderSelections({ pitch }: { pitch: any }) {
+const types = soccerPitchTypesArray;
+
+export default function OrderSelections({ pitch }: { pitch: IPitch }) {
   const { data: session } = useSession();
   const [price, setPrices] = React.useState(0);
-  const [type, setType] = React.useState(pitch.types[0]);
+  const [type, setType] = React.useState(types[0]);
   const [date, setDate] = React.useState<Date>(new Date());
   const [subPitches, setSubPitches] = React.useState<any>([]);
   const [subPitchId, setSubPitchId] = React.useState("");
   const [timeFrames, setTimeFrames] = React.useState<any>([]);
   const [timeFrame, setTimeFrame] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(false);
   const [isToday, setIsToday] = React.useState(true);
-  const [isLiked, setIsLiked] = React.useState(pitch?.isLiked);
+  const isLikedPitch = pitch?.likes?.some(
+    (e: { user_id: number }) => e.user_id === session?.user.userId
+  );
+  const [isLiked, setIsLiked] = React.useState(isLikedPitch);
 
   const { data, isFetching, isError } = PitchUseQuery.getBookingStatus({
     pitch_id: pitch.pitch_id,
   });
-  const { mutateAsync } = PitchUseMutation.bookingPitch();
+  const { mutateAsync, isLoading } = PitchUseMutation.bookingPitch();
   const { mutateAsync: likePitchMutate } = PitchUseMutation.likePitch();
 
   async function bookingPitch(data: {
@@ -49,22 +55,15 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
     end_time: string;
     payment_type: string;
   }) {
-    setIsLoading(true);
-    try {
-      await mutateAsync(data);
-      toast({
-        title: "Đã đặt sân thành công",
-        description: "Chúc mừng bạn, bạn đã đặt sân thành công.",
-        variant: "success",
-      });
-    } catch (error) {
-      setIsLoading(false);
-      toast({
-        title: "Đã đặt sân thất bại",
-        description: "Đã có lỗi xảy ra, vui lòng thử lại.",
-        variant: "destructive",
-      });
-    }
+    mutatingToast();
+    await mutateAsync(data);
+  }
+
+  async function handleLikePitch() {
+    mutatingToast();
+    const data = await likePitchMutate(pitch.pitch_id);
+    if (data?.result == 1) setIsLiked(false);
+    else setIsLiked(true);
   }
 
   useEffect(() => {
@@ -104,7 +103,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
     // Get time frame
     if (data?.result)
       for (const entry of data.result) {
-        if (entry.day === date.getDate()) {
+        if (isSameDay(date, new Date(entry.day))) {
           setTimeFrames(entry.time_frames);
           break;
         }
@@ -112,14 +111,6 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
 
     setIsToday(isSameDay(date, new Date()));
   }, [data?.result, date]);
-
-  async function handleLikePitch() {
-    setIsLoading(true);
-    const data = await likePitchMutate(pitch?.pitch_id as string);
-    if (data?.result == 1) setIsLiked(false);
-    else setIsLiked(true);
-    setIsLoading(false);
-  }
 
   if (isFetching) return <div>Loading...</div>;
   if (isError) return <div>Error!!!</div>;
@@ -131,14 +122,14 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
       <h2 className="font-bold text-xl md:text-4xl">{pitch.name}</h2>
       <h3 className="text-sm md:text-lg">{pitch.address}</h3>
       <div className={"flex space-x-2 items-center"}>
-        {pitch?.rate > 0 ? (
+        {Number(pitch?.rate) > 0 ? (
           <>
             <Link href={"#voting"} className={"flex gap-2 items-center"}>
               <Label className={"text-lg"}>
                 {Number(pitch?.rate).toFixed(1)}/
                 <span className="text-sm">5</span>
               </Label>
-              <Stars rating={pitch?.rate || 5} />
+              <Stars rating={Number(pitch?.rate) || 5} />
             </Link>
             <Label>|</Label>
           </>
@@ -187,7 +178,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
         </div>
         <div className={"space-x-2 space-y-2 items-center"}>
           <Label className={"text-gray-500 w-1/4"}>Loại Sân</Label>
-          {pitch.types.map((typePitch: string) => (
+          {types.map((typePitch) => (
             <Button
               variant={typePitch === type ? "default" : "outline"}
               key={typePitch}
@@ -211,9 +202,7 @@ export default function OrderSelections({ pitch }: { pitch: any }) {
                 placeholder={
                   subPitchId
                     ? subPitches.length
-                      ? `${subPitches[0].name} - ${
-                          subPitches[0].price
-                        }đ/h`
+                      ? `${subPitches[0].name} - ${subPitches[0].price}đ/h`
                       : "Không có sân"
                     : "Chọn sân"
                 }

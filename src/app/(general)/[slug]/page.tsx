@@ -3,10 +3,10 @@ import Review, { ReviewType } from "@/components/landing/review";
 import { notFound } from "next/navigation";
 import { Stars } from "@/components/ui/vote-stars";
 import { $fetch } from "@/lib/axios";
-import { soccerPitchTypesArray } from "@/enums/soccerPitchTypes";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/server/auth";
+import { IPitch } from "@/types/pitch";
 
 const PitchDetail = async ({ params }: { params: { slug: string } }) => {
   const slug = params.slug;
@@ -17,15 +17,10 @@ const PitchDetail = async ({ params }: { params: { slug: string } }) => {
     },
   });
   const pitch = {
-    ...res.data.result,
-    types: soccerPitchTypesArray,
-    imageUrls: res.data.result.images,
-    isLiked: res.data.result?.likes?.find(
-      (e: { user_id: number }) => e.user_id === session?.user.userId
-    ),
+    ...res.data.result as IPitch,
   };
 
-  if (res.status !== 200) return notFound();
+  if (res.status === 400) return notFound();
   return (
     <div className={"w-full flex flex-col"}>
       <PitchOrder pitch={pitch} />
@@ -35,7 +30,7 @@ const PitchDetail = async ({ params }: { params: { slug: string } }) => {
         }
       >
         <h2 className={"md:text-3xl font-bold"}>Đánh giá, bình luận</h2>
-        <section id={"voting"}>
+        <section className={"voting"}>
           <div className={"border border-main md:rounded p-4"}>
             {pitch?.rate ? (
               <>
@@ -46,7 +41,7 @@ const PitchDetail = async ({ params }: { params: { slug: string } }) => {
                   Trên 5
                 </p>
                 <Stars
-                  rating={pitch?.rate}
+                  rating={Number(pitch?.rate)}
                   className={"text-yellow-400 text-xl"}
                 />
                 <Link href={"#comment"}>
