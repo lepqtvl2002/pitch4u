@@ -5,7 +5,6 @@ import { useCallback, useEffect } from "react";
 import { $fetch, $globalFetch } from "@/lib/axios";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
-import { IRefreshReturn } from "@/types/token";
 
 function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const { update, data, status } = useSession();
@@ -14,14 +13,12 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const refreshAccessToken = useCallback(
     async (refreshToken?: string | null) => {
       try {
-        console.log("refreshing token");
         const { data } = await $globalFetch("/v1/auth/refresh-tokens", {
           method: "POST",
           data: {
             refresh_token: refreshToken,
           },
         });
-        console.log("refreshed token", data);
         return data;
       } catch (error) {
         toast({
@@ -72,7 +69,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
               accessToken: tokens?.access,
               refreshToken: tokens?.refresh,
             });
-            console.log("updated tokens", tokens);
+            console.log("updated tokens", tokens.access.token);
           }
 
           return Promise.reject(error);

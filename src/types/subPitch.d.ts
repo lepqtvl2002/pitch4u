@@ -5,7 +5,7 @@ export type ISubPitch = {
   pitch_id: string | number;
   name: string;
   price: number;
-  type: "PITCH5" | "PITCH7" | "PITCH11";
+  type: string;
   active: boolean;
   createdAt: Date;
   updatedAt: Date | null;
@@ -18,9 +18,8 @@ export type ISubPitch = {
     booking_id: number;
     status: BookingStatus;
   };
-  special_prices?: {
-    time_frames: number[][];
-    price_id: number;
+  price_by_hour?: {
+    time_frame: number[];
     price: number;
   }[];
 };
