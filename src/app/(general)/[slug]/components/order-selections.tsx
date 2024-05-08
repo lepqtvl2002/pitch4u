@@ -21,20 +21,22 @@ import { useSession } from "next-auth/react";
 import { soccerPitchTypeToString } from "@/lib/convert";
 import { cn, decimalToTimeString } from "@/lib/utils";
 import { ReportForm } from "./report-form";
-import { IPitch } from "@/types/pitch";
+import { IPitch, ITimeFrame } from "@/types/pitch";
 import { soccerPitchTypesArray } from "@/enums/soccerPitchTypes";
 import { mutatingToast } from "@/lib/quick-toast";
+import { ISubPitch } from "@/types/subPitch";
+import { stringToTimeFrame, timeFrameToString } from "@/lib/format-datetime";
 
 const types = soccerPitchTypesArray;
 
 export default function OrderSelections({ pitch }: { pitch: IPitch }) {
   const { data: session } = useSession();
-  const [price, setPrices] = React.useState(0);
+  const [price, setPrice] = React.useState(0);
   const [type, setType] = React.useState(types[0]);
   const [date, setDate] = React.useState<Date>(new Date());
-  const [subPitches, setSubPitches] = React.useState<any>([]);
+  const [subPitches, setSubPitches] = React.useState<ISubPitch[]>([]);
   const [subPitchId, setSubPitchId] = React.useState("");
-  const [timeFrames, setTimeFrames] = React.useState<any>([]);
+  const [timeFrames, setTimeFrames] = React.useState<ITimeFrame[]>([]);
   const [timeFrame, setTimeFrame] = React.useState("");
   const [isToday, setIsToday] = React.useState(true);
   const isLikedPitch = pitch?.likes?.some(
@@ -68,31 +70,31 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
 
   useEffect(() => {
     // Get price
-    if (subPitchId)
+    if (subPitchId) {
+      const currentTimeFrame = stringToTimeFrame(timeFrame);
       for (const subPitch of subPitches) {
-        if (subPitch?.subpitch_id === subPitchId) {
-          setPrices(subPitch?.price);
+        if (subPitch.subpitch_id == subPitchId) {
+          const currentPrice = subPitch.price_by_hour?.find(
+            (price) => price.time_frame[0] == currentTimeFrame[0]
+          );
+          setPrice(currentPrice?.price ?? 0);
           break;
         }
       }
-  }, [subPitchId, subPitches]);
+    }
+  }, [subPitchId, subPitches, timeFrame]);
 
   useEffect(() => {
     // Get sub pitches
     for (const frame of timeFrames) {
-      if (
-        frame &&
-        frame.frame
-          .map((time: any) => decimalToTimeString(Number(time)))
-          .join(" - ") === timeFrame
-      ) {
+      if (frame && timeFrameToString(frame.frame) === timeFrame) {
         const subPitchList = frame.free.filter((subPitch: any) => {
           return subPitch.type === type;
         });
         if (subPitchList.length) {
-          setPrices(subPitchList[0].price);
-          setSubPitchId(subPitchList[0].subpitch_id);
-        } else setPrices(0);
+          setPrice(subPitchList[0].price);
+          setSubPitchId(subPitchList[0].subpitch_id.toString());
+        } else setPrice(0);
         setSubPitches(subPitchList);
         break;
       }
@@ -155,10 +157,8 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup className="max-h-60 overflow-auto">
-                {timeFrames.map((timeFrame: any) => {
-                  const value = timeFrame.frame
-                    .map((time: any) => decimalToTimeString(Number(time)))
-                    .join(" - ");
+                {timeFrames.map((timeFrame) => {
+                  const value = timeFrameToString(timeFrame.frame);
                   const canBookThisTime = isToday
                     ? timeFrame.frame[0] > new Date().getHours()
                     : true;
@@ -210,13 +210,13 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup className="max-h-52 overflow-auto">
-                {subPitches.map((subPitch: any) => {
+                {subPitches.map((subPitch) => {
                   return (
                     <SelectItem
                       key={subPitch.subpitch_id}
-                      value={subPitch.subpitch_id}
+                      value={subPitch.subpitch_id.toString()}
                     >
-                      {subPitch.name} - {subPitch.price}đ/h
+                      {subPitch.name}
                     </SelectItem>
                   );
                 })}

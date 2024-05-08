@@ -40,11 +40,11 @@ export interface IPitch {
 
 export type BookingPitch = {
   day: Date;
-  time_frames: TimeFrame[];
+  time_frames: ITimeFrame[];
 };
 
-type TimeFrame = {
-  frame: number[][];
+export interface ITimeFrame {
+  frame: number[];
   busy: ISubPitch[] & Booking;
   free: ISubPitch[];
-};;
+}
