@@ -62,13 +62,9 @@ function PitchDetailTable() {
               const specialPrices = row.original.price_by_hour;
               const timeFrames: number[] = [];
               const prices: number[] = [];
-              const priceIDs: number[] = [];
-              specialPrices?.forEach((e) => {
-                e.time_frame.forEach((time) => {
-                  timeFrames.push(time);
-                  prices.push(e.price);
-                  priceIDs.push(e.price);
-                });
+              specialPrices?.forEach((frame) => {
+                timeFrames.push(frame.time_frame[0]);
+                prices.push(frame.price);
               });
               const openAt = data?.result?.config?.open_at;
               const closeAt = data?.result?.config?.close_at;
@@ -79,7 +75,6 @@ function PitchDetailTable() {
               subPitchParams.set("parent_name", parentPitchName);
               subPitchParams.set("time_frames_special", timeFrames.join(","));
               subPitchParams.set("special_prices", prices.join(","));
-              subPitchParams.set("price_ids", priceIDs.join(","));
               return (
                 <DropdownMenuSubPitch
                   subPitchId={row.original.subpitch_id}

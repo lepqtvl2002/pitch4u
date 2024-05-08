@@ -61,7 +61,11 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       (response) => response,
       async (error: any) => {
         const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (
+          error.response.status === 401 &&
+          !originalRequest._retry &&
+          status === "authenticated"
+        ) {
           originalRequest._retry = true;
           const tokens = await refreshAccessToken(data?.refreshToken?.token);
           if (tokens) {
@@ -72,12 +76,15 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
             console.log("updated tokens", tokens.access.token);
             return Promise.reject(error);
           } else {
-            toast({
-              title: "Không thể refresh token",
-              description: "Đang thử lại...",
-              variant: "default",
-            });
+            console.log("refresh token failed");
           }
+        } else if (error.response.status === 429 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          const retryAfter = error.response.headers["retry-after"] || 60;
+          await new Promise((resolve) =>
+            setTimeout(resolve, retryAfter * 1000)
+          );
+          return $fetch(originalRequest);
         } else {
           toast({
             title: "Lỗi khi call API",

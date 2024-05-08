@@ -1,8 +1,8 @@
 enum SoccerPitchTypes {
-  Pitch5 = "PITCH5",
-  Pitch7 = "PITCH7",
-  Pitch9 = "PITCH9",
-  Pitch11 = "PITCH11",
+  Pitch5 = "pitch5",
+  Pitch7 = "pitch7",
+  Pitch9 = "pitch9",
+  Pitch11 = "pitch11",
 }
 export const soccerPitchTypesArray = Object.values(SoccerPitchTypes);
 export default SoccerPitchTypes;

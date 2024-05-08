@@ -75,7 +75,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
           const currentPrice = subPitch.price_by_hour?.find(
             (price) => price.time_frame[0] == currentTimeFrame[0]
           );
-          setPrice(currentPrice?.price ?? 0);
+          setPrice(currentPrice?.price ?? subPitch.price);
           break;
         }
       }
@@ -86,7 +86,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
     // Get sub pitches
     for (const frame of timeFrames) {
       if (frame && timeFrameToString(frame.frame) === timeFrame) {
-        const subPitchList = frame.free.filter((subPitch: any) => {
+        const subPitchList = frame.free.filter((subPitch) => {
           return subPitch.type === type;
         });
         if (subPitchList.length) {

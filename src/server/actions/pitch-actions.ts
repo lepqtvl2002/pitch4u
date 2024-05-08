@@ -278,11 +278,13 @@ export class PitchUseMutation {
   static setSpecialPrice = () => {
     return useMutation({
       mutationFn: (data: {
-        price: number;
-        time_frames: number[][];
         subpitch_id: number;
+        time_frames: {
+          time_frame: number[];
+          price: number;
+        }[];
       }) =>
-        $fetch(`/v1/pitches/subpitches/special-price`, {
+        $fetch(`/v1/pitches/subpitches/update-config-price`, {
           method: "POST",
           data,
         }).then((res) => res.data),

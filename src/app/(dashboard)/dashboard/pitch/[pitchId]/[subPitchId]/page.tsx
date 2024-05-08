@@ -45,23 +45,15 @@ function SubPitchDetailPage() {
       ? searchParams.get("time_frames_special")?.split(",")
       : []
   );
-  const [priceIDs, setPriceIDs] = useState(
-    searchParams.get("price_ids")?.includes(",")
-      ? searchParams.get("price_ids")?.split(",")
-      : []
-  );
-
-  console.log(priceIDs);
 
   useEffect(() => {
     sortByHours();
   }, []);
 
   function sortByHours() {
-    if (timeFramesSpecial && specialPriceList && priceIDs) {
+    if (timeFramesSpecial && specialPriceList) {
       const newTimeFrames = [...timeFramesSpecial];
       const newSpecialPriceList = [...specialPriceList];
-      const newPriceIDs = [...priceIDs];
 
       const l = timeFramesSpecial.length;
       for (let i = 0; i < l - 1; i++) {
@@ -73,15 +65,11 @@ function SubPitchDetailPage() {
             tmp = newSpecialPriceList[i];
             newSpecialPriceList[i] = newSpecialPriceList[j];
             newSpecialPriceList[j] = tmp;
-            tmp = newPriceIDs[i];
-            newPriceIDs[i] = newPriceIDs[j];
-            newPriceIDs[j] = tmp;
           }
         }
       }
       setTimeFramesSpecial(newTimeFrames);
       setSpecialPriceList(newSpecialPriceList);
-      setPriceIDs(newPriceIDs);
     }
   }
 
@@ -103,7 +91,9 @@ function SubPitchDetailPage() {
             <CardContent>
               <div className="flex items-center gap-2 mb-4">
                 <Label>Giá trung bình</Label>
-                <p className="text-lg">{Number(searchParams.get("price")).toLocaleString()}</p>
+                <p className="text-lg">
+                  {Number(searchParams.get("price")).toLocaleString()}
+                </p>
               </div>
               <div className="flex flex-col items-stretch">
                 <Label>Giá các khung giờ đặc biệt</Label>
@@ -112,7 +102,9 @@ function SubPitchDetailPage() {
                     <span className="text-sm" key={i}>
                       {decimalToTimeString(Number(frame))} -{" "}
                       {decimalToTimeString(Number(frame) + 1)} :{" "}
-                      <span className="text-lg">{Number(specialPriceList?.[i]).toLocaleString()}</span>
+                      <span className="text-lg">
+                        {Number(specialPriceList?.[i]).toLocaleString()}
+                      </span>
                     </span>
                   ))}
                 </p>
@@ -198,21 +190,10 @@ function SubPitchDetailPage() {
                                           (e, index) => index !== indexFrame
                                         )
                                       );
-                                      setPriceIDs(
-                                        priceIDs?.filter(
-                                          (e, index) => index !== indexFrame
-                                        )
-                                      );
                                     }
                                   }
                                 }}
-                                onOk={({
-                                  price,
-                                  price_id,
-                                }: {
-                                  price: string;
-                                  price_id: string;
-                                }) => {
+                                onOk={({ price }) => {
                                   const indexFrame =
                                     timeFramesSpecial?.findIndex(
                                       (e) => e == item.toString()
@@ -229,9 +210,6 @@ function SubPitchDetailPage() {
                                           ...specialPriceList,
                                           price,
                                         ]);
-                                      }
-                                      if (priceIDs) {
-                                        setPriceIDs([...priceIDs, price_id]);
                                       }
                                     } else {
                                       if (
@@ -250,16 +228,10 @@ function SubPitchDetailPage() {
                                             index === indexFrame ? price : e
                                           )
                                         );
-                                        setPriceIDs(
-                                          priceIDs?.map((e, index) =>
-                                            index === indexFrame ? price_id : e
-                                          )
-                                        );
                                       }
                                     }
                                   }
                                 }}
-                                priceId={Number(priceIDs?.[indexSpecialHour])}
                                 initialPrice={Number(searchParams.get("price"))}
                                 currentPrice={
                                   indexSpecialHour > -1
@@ -315,7 +287,7 @@ function PopoverPrice({
   currentPrice: number;
   timeFrame: number[];
   onDelete: any;
-  onOk: ({ price, price_id }: { price: string; price_id: string }) => void;
+  onOk: ({ price }: { price: string }) => void;
 }) {
   const [price, setPrice] = useState(currentPrice.toString());
   const { mutateAsync: setPriceMutate, isLoading } =
@@ -330,15 +302,16 @@ function PopoverPrice({
       mutatingToast();
       if (priceId) {
         await updatePriceMutate({ price: Number(price) || initialPrice });
-        onOk({ price, price_id: priceId.toString() });
+        onOk({ price });
       } else {
         const data = await setPriceMutate({
-          price: Number(price) || initialPrice,
-          time_frames: [timeFrame],
           subpitch_id: subPitchId,
+          time_frames: [
+            { time_frame: timeFrame, price: Number(price) || initialPrice },
+          ],
         });
         console.log(data);
-        onOk({ price, price_id: data?.result.price_id });
+        onOk({ price });
       }
     }
   }
@@ -376,7 +349,7 @@ function PopoverPrice({
                 className="col-span-2 h-8"
               />
             </div>
-            <Button disabled={isLoading} onClick={handleSetPrice}>
+            <Button disabled={isLoading || Number(price) !== currentPrice} onClick={handleSetPrice}>
               Lưu thay đổi
             </Button>
             {priceId ? (
