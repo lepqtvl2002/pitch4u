@@ -70,9 +70,14 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
               refreshToken: tokens?.refresh,
             });
             console.log("updated tokens", tokens.access.token);
+            return Promise.reject(error);
+          } else {
+            toast({
+              title: "Không thể refresh token",
+              description: "Đang thử lại...",
+              variant: "default",
+            });
           }
-
-          return Promise.reject(error);
         } else {
           toast({
             title: "Lỗi khi call API",

@@ -62,10 +62,8 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
   }
 
   async function handleLikePitch() {
-    mutatingToast();
-    const data = await likePitchMutate(pitch.pitch_id);
-    if (data?.result == 1) setIsLiked(false);
-    else setIsLiked(true);
+    setIsLiked(prev => !prev);
+    await likePitchMutate(pitch.pitch_id);
   }
 
   useEffect(() => {
