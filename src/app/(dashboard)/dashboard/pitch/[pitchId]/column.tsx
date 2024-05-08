@@ -26,7 +26,7 @@ export const columns: ColumnDef<ISubPitch>[] = [
     cell: (ctx) => {
       const type = ctx.row.original.type;
       return (
-        <div className={pitchTypeVariant({ variant: type })}>
+        <div className={pitchTypeVariant({ variant: null })}>
           {soccerPitchTypeToString(type)}
         </div>
       );

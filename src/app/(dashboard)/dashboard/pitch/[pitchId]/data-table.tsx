@@ -59,15 +59,15 @@ function PitchDetailTable() {
               const subPitchParams = new URLSearchParams(
                 row.original as unknown as string[][]
               );
-              const specialPrices = row.original.special_prices;
+              const specialPrices = row.original.price_by_hour;
               const timeFrames: number[] = [];
               const prices: number[] = [];
               const priceIDs: number[] = [];
               specialPrices?.forEach((e) => {
-                e.time_frames.forEach((pair) => {
-                  timeFrames.push(pair[0]);
+                e.time_frame.forEach((time) => {
+                  timeFrames.push(time);
                   prices.push(e.price);
-                  priceIDs.push(e.price_id);
+                  priceIDs.push(e.price);
                 });
               });
               const openAt = data?.result?.config?.open_at;
