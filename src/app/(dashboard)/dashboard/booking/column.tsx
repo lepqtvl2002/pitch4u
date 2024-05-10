@@ -44,7 +44,7 @@ export const columns: ColumnDef<Booking>[] = [
     cell: (ctx) => {
       const pitchType = ctx.row.original.booking_pitches[0].sub_pitch?.type;
       return (
-        <div className={pitchTypeVariant({ variant: pitchType })}>
+        <div className={pitchTypeVariant({ variant: null })}>
           {soccerPitchTypeToString(pitchType)}
         </div>
       );
