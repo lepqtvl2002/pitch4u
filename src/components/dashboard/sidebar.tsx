@@ -6,20 +6,18 @@ import { useState } from "react";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { DashboardNav } from "@/components/dashboard/dashboard-nav";
-import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { UserNav } from "@/components/dashboard/user-nav";
 import { SidebarNavItem } from "@/types";
 import { SIDEBAR_SHIRK_KEY } from "@/lib/constants";
+import UserRoles, { UserRole } from "@/enums/roles";
 
 type Props = {
   user?: {
     name?: string | null;
     email?: string | null;
     image?: string | null;
-    userRole: {
-      name: string;
-    };
+    userRole: UserRole;
   };
   items: SidebarNavItem[];
 };
@@ -89,7 +87,7 @@ function DashboardSidebar({ user, items }: Props) {
             )}
           </AnimatePresence>
         </Link>
-        {user?.userRole.name === "admin" && (
+        {user?.userRole === UserRoles.Admin && (
           <Link className="w-full mb-4" href="/dashboard/pitch/register">
             <Button
               variant="outline"

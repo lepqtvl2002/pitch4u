@@ -5,6 +5,7 @@ import { cva } from "class-variance-authority";
 import BookingStatuses from "@/enums/bookingStatuses";
 import VoucherStatuses from "@/enums/voucherStatues";
 import VoucherTypes, { VoucherType } from "@/enums/voucherTypes";
+import UserRoles from "@/enums/roles";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -175,16 +176,17 @@ export const userRoleVariant = cva(
   {
     variants: {
       variant: {
-        admin:
+        [UserRoles.Admin]:
           "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
-        user: "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
-        staff: "bg-muted text-muted-foreground",
-        super_admin:
+        [UserRoles.User]:
+          "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
+        [UserRoles.Staff]: "bg-muted text-muted-foreground",
+        [UserRoles.SuperAdmin]:
           "bg-red-300/50 text-red-600 dark:text-red-400 dark:bg-red-600/50",
       },
     },
     defaultVariants: {
-      variant: "user",
+      variant: UserRoles.User,
     },
   }
 );

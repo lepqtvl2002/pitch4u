@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import UserRoles from "@/enums/roles";
 import { roleSlugToString } from "@/lib/utils";
 import { LayoutDashboardIcon, PlusIcon, StepBackIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -21,10 +22,10 @@ export default function PitchPage() {
           <h4>
             Bạn đang tham gia hệ thống với vai trò là{" "}
             <span className="font-semibold text-emerald-500">
-              {roleSlugToString(session?.user.userRole.name ?? "user")}
+              {roleSlugToString(session?.user.userRole ?? UserRoles.User)}
             </span>
           </h4>
-          {session?.user.userRole.name !== "admin" && (
+          {session?.user.userRole !== UserRoles.Admin && (
             <span className="text-muted-foreground italic">
               Nếu bạn muốn tham gia với vai trò của chủ sân, hãy thực hiện đăng
               ký sân ở bên dưới
@@ -38,8 +39,8 @@ export default function PitchPage() {
           >
             <PlusIcon /> Đăng ký sân mới
           </Button>
-          {(session?.user.userRole.name === "admin" ||
-            session?.user.userRole.name === "staff") && (
+          {(session?.user.userRole === UserRoles.Admin ||
+            session?.user.userRole === UserRoles.Staff) && (
             <Button className="gap-2" onClick={() => router.push("/dashboard")}>
               <LayoutDashboardIcon /> Đi tới bảng điều khiển
             </Button>

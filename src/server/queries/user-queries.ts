@@ -3,6 +3,9 @@ import { $fetch } from "@/lib/axios";
 import IPaginated from "@/types/paginated";
 import { ISubPitch } from "@/types/subPitch";
 import { IPitch } from "@/types/pitch";
+import { PaymentType } from "@/enums/paymentTypes";
+import { UserRole } from "@/enums/roles";
+import { BookingStatus } from "@/enums/bookingStatuses";
 
 export type User = {
   user_id: number;
@@ -13,7 +16,7 @@ export type User = {
   is_suspended?: boolean;
   role?: {
     role_id: number;
-    name: "admin" | "user" | "staff" | "super_admin";
+    name: UserRole;
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
@@ -47,11 +50,11 @@ export type PaginatedUserList = {
 export type BookingHistory = {
   booking_id: number;
   user_id: number;
-  payment_type: "pay_later" | "vnpay";
-  status: "success" | "pending" | "canceled";
+  payment_type: PaymentType;
+  status: BookingStatus;
   discount: number;
   total: number;
-  voucher_id: number;
+  voucher_id: number | null;
   tournament_id: number | null;
   pitch_id: number;
   createdAt: string;

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Stars } from "@/components/ui/vote-stars";
 import Link from "next/link";
-import { Heart, MessageCircle, Phone } from "lucide-react";
+import { Heart, MessageCircle, Phone, XCircleIcon } from "lucide-react";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import {
   Select,
@@ -16,18 +16,23 @@ import {
 } from "@/components/ui/select";
 import { DatePickerBookingPitch } from "@/components/ui/date-picker";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { format, isSameDay } from "date-fns";
+import { format, isSameDay, set } from "date-fns";
 import { useSession } from "next-auth/react";
 import { soccerPitchTypeToString } from "@/lib/convert";
-import { cn, decimalToTimeString } from "@/lib/utils";
+import { cn, decimalToTimeString, formatMoney } from "@/lib/utils";
 import { ReportForm } from "./report-form";
 import { IPitch, ITimeFrame } from "@/types/pitch";
 import { soccerPitchTypesArray } from "@/enums/soccerPitchTypes";
 import { mutatingToast } from "@/lib/quick-toast";
 import { ISubPitch } from "@/types/subPitch";
 import { stringToTimeFrame, timeFrameToString } from "@/lib/format-datetime";
+import PaymentTypes, { PaymentType } from "@/enums/paymentTypes";
 
 const types = soccerPitchTypesArray;
+
+interface GroupedType {
+  [key: string]: any[];
+}
 
 export default function OrderSelections({ pitch }: { pitch: IPitch }) {
   const { data: session } = useSession();
@@ -35,7 +40,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
   const [type, setType] = React.useState(types[0]);
   const [date, setDate] = React.useState<Date>(new Date());
   const [subPitches, setSubPitches] = React.useState<ISubPitch[]>([]);
-  const [subPitchId, setSubPitchId] = React.useState("");
+  const [currentSubPitch, setCurrentSubPitch] = React.useState<ISubPitch>();
   const [timeFrames, setTimeFrames] = React.useState<ITimeFrame[]>([]);
   const [timeFrame, setTimeFrame] = React.useState("");
   const [isToday, setIsToday] = React.useState(true);
@@ -43,44 +48,93 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
     (e: { user_id: number }) => e.user_id === session?.user.userId
   );
   const [isLiked, setIsLiked] = React.useState(isLikedPitch);
+  const [bookingTimes, setBookingTimes] = React.useState<
+    {
+      date: Date;
+      timeFrameString: string;
+      subPitchName: string;
+      subPitchId: number | string;
+      price: number;
+    }[]
+  >([]);
 
-  const { data, isFetching, isError } = PitchUseQuery.getBookingStatus({
-    pitch_id: pitch.pitch_id,
-  });
+  const { data, isFetching, isError, refetch } = PitchUseQuery.getBookingStatus(
+    {
+      pitch_id: pitch.pitch_id,
+    }
+  );
   const { mutateAsync, isLoading } = PitchUseMutation.bookingPitch();
   const { mutateAsync: likePitchMutate } = PitchUseMutation.likePitch();
 
-  async function bookingPitch(data: {
-    subpitch_id: string | number;
-    voucher_id?: string | number;
-    start_time: string;
-    end_time: string;
-    payment_type: string;
-  }) {
-    mutatingToast();
-    await mutateAsync(data);
+  async function handleBookingPitch() {
+    const grouped = bookingTimes.reduce((result: GroupedType, currentItem) => {
+      (result[currentItem.subPitchId] =
+        result[currentItem.subPitchId] || []).push(currentItem);
+      return result;
+    }, {});
+
+    for (const groupKey in grouped) {
+      mutatingToast();
+      const data = {
+        subpitch_id: grouped[groupKey][0].subPitchId,
+        payment_type: PaymentTypes.PayLater,
+        frame_times: grouped[groupKey].map((time) => {
+          const frame = time.timeFrameString.split(" - ");
+          return {
+            start_time: `${format(time.date, "yyyy-MM-dd")} ${frame[0]}`,
+            end_time: `${format(time.date, "yyyy-MM-dd")} ${frame[1]}`,
+          };
+        }),
+      };
+      await mutateAsync(data, {
+        onSuccess(data, variables, context) {
+          console.log(data, variables, context);
+          refetch();
+        },
+      });
+    }
   }
 
   async function handleLikePitch() {
-    setIsLiked(prev => !prev);
+    setIsLiked((prev) => !prev);
     await likePitchMutate(pitch.pitch_id);
   }
 
   useEffect(() => {
     // Get price
-    if (subPitchId) {
+    if (currentSubPitch) {
       const currentTimeFrame = stringToTimeFrame(timeFrame);
       for (const subPitch of subPitches) {
-        if (subPitch.subpitch_id == subPitchId) {
+        if (subPitch.subpitch_id == currentSubPitch.subpitch_id) {
           const currentPrice = subPitch.price_by_hour?.find(
             (price) => price.time_frame[0] == currentTimeFrame[0]
           );
           setPrice(currentPrice?.price ?? subPitch.price);
+          // Add booking time
+          if (
+            bookingTimes.every(
+              (time) =>
+                time.date !== date ||
+                time.timeFrameString !== timeFrame ||
+                time.subPitchId !== subPitch.subpitch_id
+            )
+          ) {
+            setBookingTimes([
+              ...bookingTimes,
+              {
+                date,
+                timeFrameString: timeFrame,
+                subPitchId: subPitch.subpitch_id,
+                subPitchName: subPitch.name,
+                price: currentPrice?.price ?? subPitch.price,
+              },
+            ]);
+          }
           break;
         }
       }
     }
-  }, [subPitchId, subPitches, timeFrame]);
+  }, [currentSubPitch, subPitches, timeFrame]);
 
   useEffect(() => {
     // Get sub pitches
@@ -89,10 +143,6 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
         const subPitchList = frame.free.filter((subPitch) => {
           return subPitch.type === type;
         });
-        if (subPitchList.length) {
-          setPrice(subPitchList[0].price);
-          setSubPitchId(subPitchList[0].subpitch_id.toString());
-        } else setPrice(0);
         setSubPitches(subPitchList);
         break;
       }
@@ -192,15 +242,15 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
           <Label className={"text-gray-500 w-1/4"}>Chọn sân</Label>
           <Select
             onValueChange={(value) => {
-              setSubPitchId(value);
+              setCurrentSubPitch(JSON.parse(value));
             }}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue
                 placeholder={
-                  subPitchId
+                  currentSubPitch
                     ? subPitches.length
-                      ? `${subPitches[0].name} - ${subPitches[0].price}đ/h`
+                      ? subPitches[0].name
                       : "Không có sân"
                     : "Chọn sân"
                 }
@@ -212,7 +262,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
                   return (
                     <SelectItem
                       key={subPitch.subpitch_id}
-                      value={subPitch.subpitch_id.toString()}
+                      value={JSON.stringify(subPitch)}
                     >
                       {subPitch.name}
                     </SelectItem>
@@ -223,16 +273,32 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
           </Select>
         </div>
       </div>
-      {price ? (
-        <div
-          className={
-            "text-primary text-3xl space-x-2 p-4 text-end md:text-start"
-          }
-        >
-          <Label>Giá</Label>
-          <span>{price}</span>
-        </div>
-      ) : null}
+      {bookingTimes.map((time, index) => {
+        return (
+          <Button
+            key={index}
+            variant="secondary"
+            className="justify-between gap-2"
+            onClick={() => {
+              setBookingTimes(bookingTimes.filter((_, i) => i !== index));
+            }}
+          >
+            <b>{time.subPitchName}</b>
+            <span>{format(time.date, "dd/MM/yyyy")}</span>
+            <span className="italic">{time.timeFrameString}</span>
+            <span className="text-lg">{formatMoney(time.price)}</span>
+            <XCircleIcon color="gray" size={20} className="ml-2" />
+          </Button>
+        );
+      })}
+      <div
+        className={"text-primary text-3xl space-x-2 p-4 text-end md:text-start"}
+      >
+        <Label>Tổng Giá</Label>
+        <span>
+          {bookingTimes.reduce((prev, cur) => prev + Number(cur.price), 0)}
+        </span>
+      </div>
       <div
         className={
           "fixed bottom-0 right-0 left-0 md:relative flex md:flex-col lg:flex-row md:gap-2 md:pt-20 bg-white z-10"
@@ -284,16 +350,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             !session && "hidden"
           )}
           disabled={!price || isLoading}
-          onClick={async () => {
-            const frame = timeFrame.split(" - ");
-            const data = {
-              subpitch_id: subPitchId,
-              payment_type: "pay_later",
-              start_time: `${format(date, "yyyy-MM-dd")} ${frame[0]}`,
-              end_time: `${format(date, "yyyy-MM-dd")} ${frame[1]}`,
-            };
-            await bookingPitch(data);
-          }}
+          onClick={handleBookingPitch}
         >
           Đặt sân ngay
         </Button>

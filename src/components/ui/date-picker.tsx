@@ -1,5 +1,5 @@
 import * as React from "react";
-import { endOfMonth, format, subDays } from "date-fns";
+import { addDays, endOfMonth, format, subDays } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -36,7 +36,7 @@ export function DatePickerBookingPitch({
   date: Date;
   setDate: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  const maxDate = endOfMonth(new Date());
+  const maxDate = addDays(new Date(), 30);
   const yesterday = subDays(new Date(), 1);
   return (
     <Popover>
@@ -49,7 +49,7 @@ export function DatePickerBookingPitch({
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "dd/MM/yyyy") : <span>Pick a date</span>}
+          {date ? format(date, "dd/MM/yyyy") : <span>Chọn ngày</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
