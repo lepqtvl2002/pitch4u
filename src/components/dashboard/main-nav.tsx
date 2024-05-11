@@ -50,7 +50,9 @@ export function MainNav({
         </SheetTrigger>
         <SheetContent side={"left"}>
           <SheetHeader>
-            <SheetTitle>PITCH4U</SheetTitle>
+            <SheetTitle>
+              <Link href={"/"}>PITCH4U</Link>
+            </SheetTitle>
             <SheetDescription>Menu</SheetDescription>
           </SheetHeader>
           <DashboardNav

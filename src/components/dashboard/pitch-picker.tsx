@@ -27,7 +27,7 @@ export function SelectPitch({
   return (
     <Select onValueChange={setPitchId}>
       <SelectTrigger>
-        <SelectValue className="w-fit" placeholder={`Tất cả các sân`} />
+        <SelectValue className="w-fit" placeholder="Tất cả" />
       </SelectTrigger>
       <SelectContent>
         <div className="grid gap-0.5">
