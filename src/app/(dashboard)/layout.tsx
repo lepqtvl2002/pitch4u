@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/server/auth";
 import { notFound } from "next/navigation";
 import { dashboardConfig, dashboardConfigOperator } from "@/config/site";
+import UserRoles from "@/enums/roles";
 
 export default async function DashboardLayout({
   children,
@@ -13,7 +14,7 @@ export default async function DashboardLayout({
 }) {
   const session = await getServerSession(authOptions);
   const navItems =
-    session?.user?.userRole?.name === "admin"
+    session?.user?.userRole === UserRoles.Admin
       ? dashboardConfigOperator.sidebarNav
       : dashboardConfig.sidebarNav;
 
@@ -21,7 +22,7 @@ export default async function DashboardLayout({
     return notFound();
   }
 
-  if (session?.user.userRole.name === "staff") {
+  if (session?.user.userRole === UserRoles.Staff) {
     window.location.href = "/dashboard/pitch";
   }
   return (

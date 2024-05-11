@@ -8,6 +8,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { IToken } from "@/types/token";
 import { $fetch, $globalFetch } from "@/lib/axios";
+import { UserRole } from "@/enums/roles";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -15,9 +16,6 @@ import { $fetch, $globalFetch } from "@/lib/axios";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
-export type UserRole = {
-  name: "admin" | "user" | "staff" | "super_admin";
-};
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & User;
@@ -35,7 +33,9 @@ declare module "next-auth" {
     refresh: IToken;
     userRole: UserRole;
     userId: string | number;
-    role: UserRole;
+    role: {
+      name: UserRole;
+    };
     user_id: string | number;
   }
 }
@@ -86,7 +86,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async jwt({ token, user, account, profile }) {
-      if (account?.provider === 'google' && profile) {
+      if (account?.provider === "google" && profile) {
         const res = await $globalFetch(`/v1/auth/login-email`, {
           method: "POST",
           data: { token_email: account.access_token },
@@ -96,7 +96,7 @@ export const authOptions: NextAuthOptions = {
 
         token.accessToken = data.tokens.access;
         token.refreshToken = data.tokens.refresh;
-        token.userRole = data.user?.role;
+        token.userRole = data.user?.role.name;
         token.userId = data.user?.user_id;
 
         return token;
@@ -105,7 +105,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.accessToken = user?.access;
         token.refreshToken = user?.refresh;
-        token.userRole = user?.role;
+        token.userRole = user?.role.name;
         token.userId = user?.user_id;
       }
 

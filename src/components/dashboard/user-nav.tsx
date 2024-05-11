@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
 import { LogOutIcon } from "lucide-react";
+import UserRoles from "@/enums/roles";
 
 export function UserNav() {
   const { data: session, status } = useSession();
@@ -79,7 +80,7 @@ export function UserNav() {
             <Link
               className="w-full"
               href={
-                session?.user?.userRole?.name === "super_admin"
+                session?.user?.userRole === UserRoles.Admin
                   ? "/admin/profile"
                   : "/dashboard/profile"
               }

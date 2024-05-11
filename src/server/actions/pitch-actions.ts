@@ -1,8 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { $fetch } from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
+import { PaymentType } from "@/enums/paymentTypes";
 
-export interface PitchInfo {
+export type PitchInfo = {
   card_id: string;
   fullname: string;
   email: string;
@@ -14,7 +15,7 @@ export interface PitchInfo {
   long: number;
   proofs?: string[];
   type: string;
-}
+};
 export class PitchUseMutation {
   // Register pitch
   static pitchRegister = () => {
@@ -48,7 +49,15 @@ export class PitchUseMutation {
   // Booking pitch
   static bookingPitch = () => {
     return useMutation({
-      mutationFn: (data: Record<string, any>) =>
+      mutationFn: (data: {
+        subpitch_id: number | string;
+        frame_times: {
+          start_time: string;
+          end_time: string;
+        }[];
+        payment_type: PaymentType;
+        voucher_id?: number | string;
+      }) =>
         $fetch(`/v1/booking`, {
           method: "POST",
           data,

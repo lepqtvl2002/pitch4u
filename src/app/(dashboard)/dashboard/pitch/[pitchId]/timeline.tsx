@@ -24,6 +24,7 @@ import { toast } from "@/components/ui/use-toast";
 import { mutatingToast } from "@/lib/quick-toast";
 import Link from "next/link";
 import BookingStatuses from "@/enums/bookingStatuses";
+import PaymentTypes, { PaymentType } from "@/enums/paymentTypes";
 
 type TimeFramesProps = {
   frame: number[];
@@ -70,15 +71,31 @@ function PitchTimeline() {
     }
   }, [timeFrames]);
 
-  async function bookingPitch(data: {
+  async function bookingPitch({
+    subpitch_id,
+    start_time,
+    end_time,
+    payment_type,
+    voucher_id,
+  }: {
     subpitch_id: string | number;
     start_time: string;
     end_time: string;
-    payment_type: string;
+    payment_type: PaymentType;
     voucher_id?: number | string;
   }) {
     mutatingToast();
-    await mutateAsync(data);
+    await mutateAsync({
+      subpitch_id,
+      voucher_id,
+      payment_type,
+      frame_times: [
+        {
+          start_time,
+          end_time,
+        },
+      ],
+    });
     refetch();
   }
 
@@ -299,7 +316,7 @@ function PitchTimeline() {
                               onClick={async () => {
                                 await bookingPitch({
                                   subpitch_id: subPitch.subpitch_id,
-                                  payment_type: "pay_later",
+                                  payment_type: PaymentTypes.PayLater,
                                   start_time: `${format(
                                     date,
                                     "yyyy-MM-dd"
