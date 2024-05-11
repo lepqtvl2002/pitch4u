@@ -1,4 +1,5 @@
-import MessagePage from "@/app/(dashboard)/dashboard/message/page";
+import { ChatOverview } from "@/components/ui/message-components";
+
 export default function MessagePageAdmin() {
-  return <MessagePage />;
+  return <ChatOverview />;
 }
