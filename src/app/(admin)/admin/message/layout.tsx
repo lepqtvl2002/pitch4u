@@ -1,10 +1,16 @@
 "use client";
-import { ContainerChats } from "@/components/ui/message-components";
+
+import { SidebarChats } from "@/components/ui/message-components";
 
 export default function LayoutMessagePageAdmin({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <ContainerChats area="admin">{children}</ContainerChats>;
+  return (
+    <div className="flex h-screen md:h-full">
+      <SidebarChats area="dashboard" />
+      {children}
+    </div>
+  );
 }

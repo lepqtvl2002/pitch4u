@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { ChatObject, Message } from "@/types/message";
 import { useSession } from "next-auth/react";
@@ -5,6 +6,7 @@ import { Input } from "./input";
 import { Button } from "./button";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import {
+  ArrowLeftIcon,
   Loader2Icon,
   MoreHorizontal,
   PanelLeftCloseIcon,
@@ -190,6 +192,14 @@ export function ChatDetail({
         }
       >
         <div className={"flex items-center space-x-2"}>
+          <Button
+            className="md:hidden"
+            variant="ghost"
+            size="icon"
+            onClick={() => route.back()}
+          >
+            <ArrowLeftIcon />
+          </Button>
           <Avatar className="h-10 w-10s">
             <AvatarImage
               src={searchParams.get("avatar") as string}
@@ -223,7 +233,7 @@ export function ChatDetail({
             )}
           </div>
         </div>
-        <div className={"absolute bottom-0 left-0 right-0"}>
+        <div className={"fixed md:absolute bottom-0 left-0 right-0"}>
           <MessageInput
             message={text}
             setMessage={setText}
@@ -235,12 +245,12 @@ export function ChatDetail({
   );
 }
 
-export function ContainerChats({
+export function SidebarChats({
   area = "dashboard",
-  children,
+  className,
 }: {
+  className?: string;
   area: "dashboard" | "admin";
-  children: React.ReactNode;
 }) {
   const [isOpenSearch, setIsOpenSearch] = useState(true);
   const [searchValue, setSearchValue] = useState("");
@@ -248,6 +258,7 @@ export function ContainerChats({
   const [conversations, setConversations] = useState<ChatObject[]>([]);
   const { data: session } = useSession();
   const router = useRouter();
+  const { id } = useParams();
 
   const { socket, loadChats, joinChat, connectSocket } =
     useContext(SocketContext);
@@ -279,111 +290,134 @@ export function ContainerChats({
   }, [socket]);
 
   return (
-    <div className={"flex h-full"}>
-      <div
-        className={cn(
-          "relative flex flex-col border-r border-r-gray-300 overflow-hidden",
-          isOpenSearch ? "w-auto" : "w-20"
-        )}
-      >
-        <div className={"flex justify-center p-2 border-b border-b-gray-300"}>
-          <Input
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            className={cn("flex-1", isOpenSearch ? "block" : "hidden")}
-            placeholder={"Tìm kiếm"}
-            type={"text"}
-          />
-          <Button
-            onClick={() => setIsOpenSearch((pre) => !pre)}
-            variant={"ghost"}
-          >
-            {isOpenSearch ? <PanelLeftCloseIcon /> : <SearchIcon />}
-          </Button>
-        </div>
-        <div
-          className={
-            "absolute top-16 bottom-0 left-0 right-0 flex flex-col space-y-3 p-2 overflow-y-auto"
-          }
+    <div
+      className={cn(
+        "relative flex flex-col border-r border-r-gray-300 overflow-hidden",
+        isOpenSearch ? "w-screen md:w-auto" : "w-screen md:w-20",
+        className,
+        id && "hidden md:block"
+      )}
+    >
+      <div className={"flex justify-center p-2 border-b border-b-gray-300"}>
+        <Input
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          className={cn("flex-1", isOpenSearch ? "block" : "hidden")}
+          placeholder={"Tìm kiếm"}
+          type={"text"}
+        />
+        <Button
+          onClick={() => setIsOpenSearch((pre) => !pre)}
+          variant={"ghost"}
+          className="hidden md:block"
         >
-          {conversations.length && !debounceValue.length ? (
-            conversations
-              .filter((chat) =>
-                chat.members.find((e) => e.email !== session?.user.email)
-              )
-              .map((chat) => {
-                const user = chat.members.find(
-                  (e) => e.email !== session?.user.email
-                );
+          {isOpenSearch ? <PanelLeftCloseIcon /> : <SearchIcon />}
+        </Button>
+      </div>
+      <div
+        className={
+          "absolute top-16 bottom-0 left-0 right-0 flex flex-col space-y-3 p-2 overflow-y-auto"
+        }
+      >
+        {conversations.length && !debounceValue.length ? (
+          conversations
+            .filter((chat) =>
+              chat.members.find((e) => e.email !== session?.user.email)
+            )
+            .map((chat) => {
+              const user = chat.members.find(
+                (e) => e.email !== session?.user.email
+              );
 
-                return (
-                  <Link
-                    key={user?.user_id.toString()}
-                    href={`/${area}/message/${
-                      chat.chat_id
-                    }?avatar=${user?.avatar?.toString()}&fullname=${user?.fullname.toString()}`}
-                  >
-                    <MessageCard
-                      avatarUrl={user?.avatar || "/fallback-avatar.png"}
-                      name={user?.fullname || "Unknown"}
-                      lastMessage={chat?.last_message?.text}
-                    />
-                  </Link>
-                );
-              })
-          ) : isLoading ? (
-            <Skeleton className="w-10 h-10 rounded-full" />
-          ) : (
-            debounceValue.length > 0 &&
-            data?.result.data?.map((user) => {
-              let chat: ChatObject | undefined = undefined;
-              conversations.forEach((conversation) => {
-                if (
-                  conversation.members.findIndex(
-                    (member) => member.user_id == user.user_id
-                  ) !== -1
-                ) {
-                  chat = conversation;
-                  return;
-                }
-              });
-              return !chat ? (
-                <div
-                  key={user.user_id}
-                  onClick={async () => {
-                    mutatingToast();
-                    const newChat = await joinChatMutate(user.user_id);
-                    joinChat(newChat.result.chat_id);
-                    router.push(
-                      `/${area}/message/${newChat.result.chat_id}?avatar=${user.avatar}&fullname=${user.fullname}`
-                    );
-                  }}
-                >
-                  <MessageCard
-                    avatarUrl={user.avatar}
-                    name={user.fullname || "Unknown"}
-                    lastMessage={""}
-                  />
-                </div>
-              ) : (
+              return (
                 <Link
-                  key={user.user_id}
+                  key={user?.user_id.toString()}
                   href={`/${area}/message/${
-                    (chat as ChatObject).chat_id
-                  }?avatar=${user.avatar}&fullname=${user.fullname}`}
+                    chat.chat_id
+                  }?avatar=${user?.avatar?.toString()}&fullname=${user?.fullname.toString()}`}
                 >
                   <MessageCard
-                    avatarUrl={user.avatar}
-                    name={user.fullname || "Unknown"}
-                    lastMessage={(chat as ChatObject)?.last_message?.text}
+                    avatarUrl={user?.avatar || "/fallback-avatar.png"}
+                    name={user?.fullname || "Unknown"}
+                    lastMessage={chat?.last_message?.text}
                   />
                 </Link>
               );
             })
-          )}
-        </div>
+        ) : isLoading ? (
+          <Skeleton className="w-10 h-10 rounded-full" />
+        ) : (
+          debounceValue.length > 0 &&
+          data?.result.data?.map((user) => {
+            let chat: ChatObject | undefined = undefined;
+            conversations.forEach((conversation) => {
+              if (
+                conversation.members.findIndex(
+                  (member) => member.user_id == user.user_id
+                ) !== -1
+              ) {
+                chat = conversation;
+                return;
+              }
+            });
+            return !chat ? (
+              <div
+                key={user.user_id}
+                onClick={async () => {
+                  mutatingToast();
+                  const newChat = await joinChatMutate(user.user_id);
+                  joinChat(newChat.result.chat_id);
+                  router.push(
+                    `/${area}/message/${newChat.result.chat_id}?avatar=${user.avatar}&fullname=${user.fullname}`
+                  );
+                }}
+              >
+                <MessageCard
+                  avatarUrl={user.avatar}
+                  name={user.fullname || "Unknown"}
+                  lastMessage={""}
+                />
+              </div>
+            ) : (
+              <Link
+                key={user.user_id}
+                href={`/${area}/message/${
+                  (chat as ChatObject).chat_id
+                }?avatar=${user.avatar}&fullname=${user.fullname}`}
+              >
+                <MessageCard
+                  avatarUrl={user.avatar}
+                  name={user.fullname || "Unknown"}
+                  lastMessage={(chat as ChatObject)?.last_message?.text}
+                />
+              </Link>
+            );
+          })
+        )}
       </div>
-      {children}
+    </div>
+  );
+}
+
+export function ChatOverview() {
+  return (
+    <div className={"hidden md:flex flex-col flex-1 h-full relative"}>
+      <div
+        className={
+          "flex justify-between items-center p-2 border-b border-b-gray-300 shadow"
+        }
+      >
+        <div className={"flex items-center space-x-2"}>
+          <Skeleton className="w-10 h-10 rounded-full" />
+        </div>
+
+        <Button variant={"ghost"}>
+          <MoreHorizontal />
+        </Button>
+      </div>
+      <div className="w-full h-full text-center pt-20">
+        <span className="m-auto">Qua trái và tìm kiếm cuộc trò chuyện nào</span>
+      </div>
     </div>
   );
 }
