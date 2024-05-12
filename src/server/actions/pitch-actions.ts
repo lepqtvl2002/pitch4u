@@ -178,6 +178,37 @@ export class PitchUseMutation {
     });
   };
 
+  // Update sub pitch
+  static updateSubPitch = () => {
+    return useMutation({
+      mutationFn: ({
+        subPitchId,
+        data,
+      }: {
+        subPitchId: string | number;
+        data: {
+          name?: string;
+          type?: string;
+          price?: number;
+        };
+      }) =>
+        $fetch(`/v1/pitches/subpitches/${subPitchId}`, {
+          method: "PATCH",
+          data,
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({ title: "Cập nhật thành công", variant: "success" });
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Đã xảy ra lỗi trong khi thay đổi thông tin sân này",
+          description: `${err?.message || "Có lỗi xảy ra, vui lòng thử lại."}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
   // Delete sub pitch
   static removeSubPitch = (subPitchId: string | number) => {
     return useMutation({
@@ -287,7 +318,7 @@ export class PitchUseMutation {
   static setSpecialPrice = () => {
     return useMutation({
       mutationFn: (data: {
-        subpitch_id: number;
+        subpitch_id: number | string;
         time_frames: {
           time_frame: number[];
           price: number;

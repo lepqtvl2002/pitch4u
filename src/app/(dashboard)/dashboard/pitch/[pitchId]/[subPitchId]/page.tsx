@@ -18,72 +18,57 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { formatDateToddMMyyyy } from "@/lib/format-datetime";
+import { timeFrameToString } from "@/lib/format-datetime";
 import { mutatingToast } from "@/lib/quick-toast";
-import { cn, createRangeArray, decimalToTimeString } from "@/lib/utils";
+import { cn, decimalToTimeString, formatMoney } from "@/lib/utils";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { format } from "date-fns";
 import { FileEdit } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 function SubPitchDetailPage() {
   const [date, setDate] = React.useState<Date>(new Date());
+  const { subPitchId } = useParams();
   const searchParams = useSearchParams();
-  const timeFrames = createRangeArray(
-    Number(searchParams.get("open_at")),
-    Number(searchParams.get("close_at"))
-  );
-  const [specialPriceList, setSpecialPriceList] = useState(
-    searchParams.get("special_prices")?.includes(",")
-      ? searchParams.get("special_prices")?.split(",")
-      : []
-  );
-  const [timeFramesSpecial, setTimeFramesSpecial] = useState(
-    searchParams.get("time_frames_special")?.includes(",")
-      ? searchParams.get("time_frames_special")?.split(",")
-      : []
-  );
+  const [name, setName] = useState(searchParams.get("name") as string);
+  const [price, setPrice] = useState(searchParams.get("price") as string);
+
+  const { data, refetch, isLoading, isError } =
+    PitchUseQuery.getSubPitchPriceConfig({
+      subpitchId: subPitchId as string,
+    });
+
+  const { result: priceConfig } = data || {};
+
+  const timeFrames = searchParams.getAll("time_frames").map((e) => Number(e));
 
   useEffect(() => {
-    sortByHours();
-  }, []);
-
-  function sortByHours() {
-    if (timeFramesSpecial && specialPriceList) {
-      const newTimeFrames = [...timeFramesSpecial];
-      const newSpecialPriceList = [...specialPriceList];
-
-      const l = timeFramesSpecial.length;
-      for (let i = 0; i < l - 1; i++) {
-        for (let j = i + 1; j < l; j++) {
-          if (Number(newTimeFrames[i]) > Number(newTimeFrames[j])) {
-            let tmp = newTimeFrames[i];
-            newTimeFrames[i] = newTimeFrames[j];
-            newTimeFrames[j] = tmp;
-            tmp = newSpecialPriceList[i];
-            newSpecialPriceList[i] = newSpecialPriceList[j];
-            newSpecialPriceList[j] = tmp;
-          }
-        }
-      }
-      setTimeFramesSpecial(newTimeFrames);
-      setSpecialPriceList(newSpecialPriceList);
+    if (priceConfig) {
+      priceConfig.sort((a, b) => a.time_frame[0] - b.time_frame[0]);
     }
-  }
+  }, [priceConfig]);
 
   return (
-    <div className="md:p-2 h-full">
+    <div className="p-2 h-full">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-2 h-full">
         <div className="col-span-1 flex flex-col space-y-2 w-full">
           {/* Information */}
           <Card className="relative h-fit">
-            <Button variant="ghost" className="absolute top-2 right-2">
-              <FileEdit />
-            </Button>
+            <PopoverEditSubPitch
+              className="absolute top-2 right-2"
+              subPitchId={subPitchId as string}
+              currentPrice={Number(searchParams.get("price"))}
+              currentName={searchParams.get("name") as string}
+              onOK={({ name, price }) => {
+                setName(name);
+                setPrice(price);
+              }}
+            />
             <CardHeader>
-              <CardTitle>{searchParams.get("name")}</CardTitle>
+              <CardTitle>{name}</CardTitle>
               <CardDescription>
                 Thuộc cụm sân {searchParams.get("parent_name")}
               </CardDescription>
@@ -91,19 +76,16 @@ function SubPitchDetailPage() {
             <CardContent>
               <div className="flex items-center gap-2 mb-4">
                 <Label>Giá trung bình</Label>
-                <p className="text-lg">
-                  {Number(searchParams.get("price")).toLocaleString()}
-                </p>
+                <p className="text-lg">{formatMoney(Number(price))}</p>
               </div>
               <div className="flex flex-col items-stretch">
                 <Label>Giá các khung giờ đặc biệt</Label>
                 <p className="flex flex-col">
-                  {timeFramesSpecial?.map((frame, i) => (
+                  {priceConfig?.map((frame, i) => (
                     <span className="text-sm" key={i}>
-                      {decimalToTimeString(Number(frame))} -{" "}
-                      {decimalToTimeString(Number(frame) + 1)} :{" "}
-                      <span className="text-lg">
-                        {Number(specialPriceList?.[i]).toLocaleString()}
+                      {timeFrameToString(frame.time_frame)}
+                      <span className="text-lg ml-2">
+                        {Number(frame.price).toLocaleString()}
                       </span>
                     </span>
                   ))}
@@ -145,12 +127,12 @@ function SubPitchDetailPage() {
               </CardTitle>
             </CardHeader>
             <Separator />
-            <CardContent className="absolute top-24 bottom-20 w-full overflow-auto">
+            <CardContent className="relative md:absolute md:top-24 md:bottom-20 w-full overflow-auto">
               <div>
                 <div className="grid gap-4 mt-2">
                   {timeFrames?.map((item, index) => {
-                    const indexSpecialHour = timeFramesSpecial?.findIndex(
-                      (e) => e == item.toString()
+                    const indexSpecialHour = priceConfig?.findIndex(
+                      (e) => e.time_frame[0] == item
                     );
                     if (indexSpecialHour !== undefined)
                       return (
@@ -168,82 +150,27 @@ function SubPitchDetailPage() {
                             </span>
                             <span>
                               {indexSpecialHour > -1
-                                ? specialPriceList?.[indexSpecialHour]
-                                : searchParams.get("price")}
+                                ? priceConfig?.[indexSpecialHour].price
+                                : price}
                             </span>
                             <div>
                               <PopoverPrice
                                 onDelete={() => {
-                                  const indexFrame =
-                                    timeFramesSpecial?.findIndex(
-                                      (e) => e == item.toString()
-                                    );
-                                  if (indexFrame !== undefined) {
-                                    if (timeFramesSpecial && specialPriceList) {
-                                      setTimeFramesSpecial(
-                                        timeFramesSpecial.filter(
-                                          (e, index) => index !== indexFrame
-                                        )
-                                      );
-                                      setSpecialPriceList(
-                                        specialPriceList.filter(
-                                          (e, index) => index !== indexFrame
-                                        )
-                                      );
-                                    }
-                                  }
+                                  refetch();
                                 }}
-                                onOk={({ price }) => {
-                                  const indexFrame =
-                                    timeFramesSpecial?.findIndex(
-                                      (e) => e == item.toString()
-                                    );
-                                  if (indexFrame !== undefined) {
-                                    if (indexFrame === -1) {
-                                      if (timeFramesSpecial)
-                                        setTimeFramesSpecial([
-                                          ...timeFramesSpecial,
-                                          item.toString(),
-                                        ]);
-                                      if (specialPriceList) {
-                                        setSpecialPriceList([
-                                          ...specialPriceList,
-                                          price,
-                                        ]);
-                                      }
-                                    } else {
-                                      if (
-                                        timeFramesSpecial &&
-                                        specialPriceList
-                                      ) {
-                                        setTimeFramesSpecial(
-                                          timeFramesSpecial.map((e, index) =>
-                                            index === indexFrame
-                                              ? item.toString()
-                                              : e
-                                          )
-                                        );
-                                        setSpecialPriceList(
-                                          specialPriceList.map((e, index) =>
-                                            index === indexFrame ? price : e
-                                          )
-                                        );
-                                      }
-                                    }
-                                  }
+                                onOk={() => {
+                                  refetch();
                                 }}
-                                initialPrice={Number(searchParams.get("price"))}
+                                initialPrice={Number(price)}
                                 currentPrice={
                                   indexSpecialHour > -1
                                     ? Number(
-                                        specialPriceList?.[indexSpecialHour]
+                                        priceConfig?.[indexSpecialHour].price
                                       )
-                                    : Number(searchParams.get("price"))
+                                    : Number(price)
                                 }
                                 timeFrame={[item, item + 1]}
-                                subPitchId={Number(
-                                  searchParams.get("subpitch_id")
-                                )}
+                                subPitchId={subPitchId as string}
                               />
                             </div>
                           </div>
@@ -253,7 +180,7 @@ function SubPitchDetailPage() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="absolute bottom-0 w-full flex justify-around items-center pt-4 border-t">
+            <CardFooter className="relative md:absolute bottom-0 w-full flex justify-around items-center pt-4 border-t">
               <div className="flex items-center justify-center space-x-2">
                 <div className="w-8 h-8 border rounded-full bg-emerald-400"></div>
                 <span>Giờ đặc biệt</span>
@@ -282,7 +209,7 @@ function PopoverPrice({
   priceId,
 }: {
   priceId?: number;
-  subPitchId: number;
+  subPitchId: number | string;
   initialPrice: number;
   currentPrice: number;
   timeFrame: number[];
@@ -349,7 +276,10 @@ function PopoverPrice({
                 className="col-span-2 h-8"
               />
             </div>
-            <Button disabled={isLoading || Number(price) == currentPrice} onClick={handleSetPrice}>
+            <Button
+              disabled={isLoading || Number(price) == currentPrice}
+              onClick={handleSetPrice}
+            >
               Lưu thay đổi
             </Button>
             {priceId ? (
@@ -362,6 +292,80 @@ function PopoverPrice({
               </Button>
             ) : null}
           </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function PopoverEditSubPitch({
+  subPitchId,
+  currentPrice,
+  currentName,
+  className,
+  onOK,
+}: {
+  subPitchId: number | string;
+  currentPrice: number;
+  currentName: string;
+  className?: string;
+  onOK: ({ name, price }: { name: string; price: string }) => void;
+}) {
+  const [price, setPrice] = useState(currentPrice.toString());
+  const [name, setName] = useState(currentName);
+
+  const { mutateAsync: updateSubPitchMutate, isLoading } =
+    PitchUseMutation.updateSubPitch();
+
+  async function handleUpdate() {
+    mutatingToast();
+    await updateSubPitchMutate({
+      subPitchId: subPitchId,
+      data: {
+        name,
+        price: Number(price),
+      },
+    });
+    onOK({
+      name,
+      price,
+    });
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button className={className} variant="ghost">
+          <FileEdit />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="grid gap-4">
+          <div className="grid grid-cols-3 items-center gap-4">
+            <Label htmlFor="price">Tên</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="col-span-2 h-8"
+            />
+            <Label htmlFor="price">Giá</Label>
+            <Input
+              id="price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="col-span-2 h-8"
+            />
+          </div>
+          <Button
+            disabled={
+              isLoading ||
+              (Number(price) == currentPrice && name == currentName)
+            }
+            onClick={handleUpdate}
+          >
+            Lưu thay đổi
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

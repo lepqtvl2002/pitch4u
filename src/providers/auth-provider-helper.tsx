@@ -8,7 +8,7 @@ import { toast } from "@/components/ui/use-toast";
 import { IRefreshReturn } from "@/types/token";
 
 function AuthProviderHelper({ children }: React.PropsWithChildren) {
-  const { update, data, status } = useSession();
+  const { update, data } = useSession();
   const router = useRouter();
 
   const refreshAccessToken = useCallback(
@@ -45,7 +45,6 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       async (error: any) => {
         const originalRequest = error.config;
         if (error.response.status === 401 && !originalRequest._retry) {
-          originalRequest._retry = true;
           console.log("old fresh token", data?.refreshToken?.token);
           const tokens = await refreshAccessToken(data?.refreshToken?.token);
           if (tokens) {

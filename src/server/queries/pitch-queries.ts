@@ -3,6 +3,16 @@ import { $fetch, $globalFetch } from "@/lib/axios";
 import { BookingPitch, IPitch } from "@/types/pitch";
 import IPaginated from "@/types/paginated";
 
+type SubPitchConfigPriceType = {
+  price_by_hour_id: number;
+  time_frame: number[];
+  price: number;
+  subpitch_id: number;
+  createdAt: String;
+  updatedAt: String | null;
+  deletedAt: String | null;
+};
+
 export class PitchUseQuery {
   static search = (query: Record<string, any>) => {
     return useQuery({
@@ -96,6 +106,21 @@ export class PitchUseQuery {
         $fetch(`/v1/pitches/type`, {
           method: "GET",
         }).then((res) => res.data as { result: Record<string, string> }),
+      cacheTime: 100,
+      keepPreviousData: true,
+    });
+  };
+  static getSubPitchPriceConfig = ({
+    subpitchId,
+  }: {
+    subpitchId: string | number;
+  }) => {
+    return useQuery({
+      queryKey: ["subPitchConfigPrice", subpitchId],
+      queryFn: () =>
+        $fetch(`/v1/pitches/subpitches/config-price/${subpitchId}`, {
+          method: "GET",
+        }).then((res) => res.data as { result: SubPitchConfigPriceType[] }),
       cacheTime: 100,
       keepPreviousData: true,
     });
