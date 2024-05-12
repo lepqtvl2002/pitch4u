@@ -56,17 +56,27 @@ export default function BookingTable() {
           id: "actions",
           cell: ({ row }) => {
             const id = row.original.booking_id;
-            const userAvatar = row.original.user.avatar;
-            const userName = row.original.user.fullname;
-            const userPhone = row.original.user.phone;
-            const userEmail = row.original.user.email;
             const params = new URLSearchParams(
               row.original as unknown as Record<string, string>
             );
-            params.set("user_avatar", userAvatar);
-            params.set("user_name", userName);
-            params.set("user_phone", userPhone);
-            params.set("user_email", userEmail);
+            const user = row.original.user;
+            params.set("user_avatar", user.avatar);
+            params.set("user_name", user.fullname);
+            params.set("user_phone", user.phone);
+            params.set("user_email", user.email);
+
+            const subPitches = row.original.booking_pitches;
+            subPitches.forEach(
+              ({ sub_pitch: subPitch, start_time, end_time }, index) => {
+                params.append(
+                  `subpitch_ids`,
+                  subPitch.subpitch_id.toString()
+                );
+                params.append(`subpitch_names`, subPitch.name.toString());
+                params.append(`subpitch_start_time`, start_time);
+                params.append(`subpitch_end_time`, end_time);
+              }
+            );
             return (
               <DropdownMenuActions
                 refetchTable={refetch}

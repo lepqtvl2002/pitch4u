@@ -38,37 +38,45 @@ export default function DetailBookingPage() {
 
   function renderInfo() {
     return Object.entries(bookingInfo).map((item, index) => {
-      if (!stringToLabel(item[0]) || item[0]?.includes("user")) {
+      if (
+        !stringToLabel(item[0]) ||
+        item[0]?.includes("user") ||
+        item[0]?.includes("subpitch")
+      ) {
         return;
       } else
         return (
           <p key={index} className="flex justify-between">
-            <Label>{stringToLabel(item[0])} :</Label>{" "}
-            {item[0] === "status" ? (
-              <span
-                className={bookingStateVariant({
-                  variant: item[1] as BookingStatus,
-                })}
-              >
-                {bookingStatusToString(item[1])}
-              </span>
-            ) : item[0] === "payment_type" ? (
-              paymentTypeToString(item[1])
-            ) : !Number.isNaN(Number(item[1])) ? (
-              Number(item[1]).toLocaleString()
-            ) : (
-              format(new Date(item[1]), "dd/MM/yyyy")
-            )}
+            <Label className="mr-2">{stringToLabel(item[0])} :</Label>
+            {renderValueByTitle(item)}
           </p>
         );
     });
+  }
+
+  function renderValueByTitle(item: [string, string]) {
+    return item[0] === "status" ? (
+      <span
+        className={bookingStateVariant({
+          variant: item[1] as BookingStatus,
+        })}
+      >
+        {bookingStatusToString(item[1])}
+      </span>
+    ) : item[0] === "payment_type" ? (
+      paymentTypeToString(item[1])
+    ) : !Number.isNaN(Number(item[1])) ? (
+      Number(item[1]).toLocaleString()
+    ) : (
+      item[1]
+    );
   }
 
   function renderUserInfo() {
     return (
       <div className="flex gap-2 md:gap-8">
         <AvatarCustom
-          className="w-40 h-40"
+          className="w-20 h-20 md:w-40 md:h-40"
           avatarUrl={searchParams.get("user_avatar") as string}
           name={searchParams.get("user_name") as string}
         />
@@ -90,8 +98,42 @@ export default function DetailBookingPage() {
       </div>
     );
   }
+
+  function renderBookingPitchesInfo() {
+    const subpitchIds = searchParams.getAll("subpitch_ids");
+    const subpitchNames = searchParams.getAll("subpitch_names");
+    const startTimes = searchParams.getAll("subpitch_start_time");
+    const endTimes = searchParams.getAll("subpitch_end_time");
+    return (
+      <div>
+        <p className="text-lg mt-2 font-medium mb-4">
+          Thông tin sân và thời gian đặt
+        </p>
+        <div className="flex flex-col gap-4">
+          {subpitchIds.map((subpitchId, index) => (
+            <div key={subpitchId} className="flex flex-col md:flex-row justify-between">
+              <p>
+                <Label>Sân:</Label> {subpitchNames[index]}
+              </p>
+              <p>
+                <Label className="mr-2">Ngày:</Label>
+                {startTimes[index].split(" ")[0]}
+              </p>
+              <p>
+                <Label className="mr-2">Thời gian:</Label>
+                {`${startTimes[index].split(" ")[1]} - ${
+                  endTimes[index].split(" ")[1]
+                }`}
+              </p>
+              <Separator className="md:hidden" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
   return (
-    <div className="flex-1 md:w-2/3 xl:w-1/2 space-y-6 p-10 pb-16">
+    <div className="flex-1 lg:w-2/3 xl:w-1/2 space-y-6 p-2 md:p-10 pb-16">
       <div>
         <h3 className="text-lg font-medium">Thông tin đặt sân</h3>
         <p className="text-sm text-muted-foreground">
@@ -99,11 +141,16 @@ export default function DetailBookingPage() {
         </p>
       </div>
       <Separator />
-      <div className="grid gap-4 border rounded-xl p-4">
+      <div className="grid gap-4 border rounded-xl p-2 md:p-4">
         {renderUserInfo()}
         <div>
           <p className="text-xl font-medium mb-4">Nội dung đặt sân</p>
-          <div className="flex flex-col gap-5 px-10">{renderInfo()}</div>
+          <div className="flex flex-col gap-2 md:gap-5 px-2 md:px-10">
+            {renderInfo()}
+          </div>
+          <div className="flex flex-col gap-2 md:gap-5 px-2 md:px-10">
+            {renderBookingPitchesInfo()}
+          </div>
         </div>
       </div>
       {searchParams.get("status") === "pending" && (
