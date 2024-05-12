@@ -20,6 +20,7 @@ export const pitchStatusOptions: DataFacetedOptionsType[] = [
 ];
 export const columns: ColumnDef<IPitch>[] = [
   {
+    id: "name",
     header: " ",
     cell: (ctx) => {
       const logo = ctx.row.original?.logo;

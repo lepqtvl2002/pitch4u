@@ -10,6 +10,7 @@ import { toast } from "@/components/ui/use-toast";
 import DropdownMenuSubPitch from "./dropdown-menu-action";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 
 function PitchDetailTable() {
   const params = useParams();
@@ -93,7 +94,10 @@ function PitchDetailTable() {
         pageSize={pageSize}
         headerPrefix={
           <Link href={`/dashboard/pitch/${params.pitchId}/create`}>
-            <Button>Thêm sân con +</Button>
+            <Button variant="secondary">
+              <span className="mr-2 hidden md:inline-block">Thêm sân con</span>
+              <PlusIcon />
+            </Button>
           </Link>
         }
         search={{

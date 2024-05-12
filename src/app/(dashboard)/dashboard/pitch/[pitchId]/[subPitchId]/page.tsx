@@ -349,7 +349,7 @@ function PopoverPrice({
                 className="col-span-2 h-8"
               />
             </div>
-            <Button disabled={isLoading || Number(price) !== currentPrice} onClick={handleSetPrice}>
+            <Button disabled={isLoading || Number(price) == currentPrice} onClick={handleSetPrice}>
               Lưu thay đổi
             </Button>
             {priceId ? (
