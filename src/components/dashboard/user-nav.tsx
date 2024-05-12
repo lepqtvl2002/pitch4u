@@ -80,7 +80,7 @@ export function UserNav() {
             <Link
               className="w-full"
               href={
-                session?.user?.userRole === UserRoles.Admin
+                session?.user?.userRole === UserRoles.SuperAdmin
                   ? "/admin/profile"
                   : "/dashboard/profile"
               }
