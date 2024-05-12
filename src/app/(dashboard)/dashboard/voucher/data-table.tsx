@@ -16,6 +16,7 @@ import VoucherStatuses, { VoucherStatus } from "@/enums/voucherStatues";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import VoucherStatCards from "./stat-cards";
+import { PlusIcon } from "lucide-react";
 
 function VoucherTable() {
   const [types, setTypes] = React.useState<VoucherType[]>([]);
@@ -123,7 +124,10 @@ function VoucherTable() {
           ]}
           headerPrefix={
             <Link href="/dashboard/voucher/create">
-              <Button>Tạo thêm voucher +</Button>
+              <Button variant="secondary">
+                <span className="hidden md:inline-block">Thêm voucher</span>
+                <PlusIcon />
+              </Button>
             </Link>
           }
           sort={{
