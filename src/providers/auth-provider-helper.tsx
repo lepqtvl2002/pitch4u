@@ -5,6 +5,7 @@ import { useCallback, useEffect } from "react";
 import { $fetch, $globalFetch } from "@/lib/axios";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
+import { IRefreshReturn } from "@/types/token";
 
 function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const { update, data, status } = useSession();
@@ -19,7 +20,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
             refresh_token: refreshToken,
           },
         });
-        return data;
+        return data as IRefreshReturn;
       } catch (error) {
         toast({
           title: "Phiên đăng nhập hết hạn",
@@ -61,22 +62,17 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       (response) => response,
       async (error: any) => {
         const originalRequest = error.config;
-        if (
-          error.response.status === 401 &&
-          !originalRequest._retry &&
-          status === "authenticated"
-        ) {
+        if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
+          console.log("old fresh token", data?.refreshToken?.token);
           const tokens = await refreshAccessToken(data?.refreshToken?.token);
           if (tokens) {
             await update({
               accessToken: tokens?.access,
               refreshToken: tokens?.refresh,
             });
-            console.log("updated tokens", tokens.access.token);
+            console.log("new fresh tokens", tokens?.refresh?.token);
             return Promise.reject(error);
-          } else {
-            console.log("refresh token failed");
           }
         } else if (error.response.status === 429 && !originalRequest._retry) {
           originalRequest._retry = true;
@@ -99,7 +95,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       $fetch.interceptors.response.eject(responseInterceptor);
       $fetch.interceptors.request.eject(requestInterceptor);
     };
-  }, [data, refreshAccessToken, router, status, update]);
+  }, [data, update, refreshAccessToken]);
 
   return <>{children}</>;
 }
