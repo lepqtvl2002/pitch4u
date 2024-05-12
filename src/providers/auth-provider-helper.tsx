@@ -22,25 +22,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         });
         return data as IRefreshReturn;
       } catch (error) {
-        toast({
-          title: "Phiên đăng nhập hết hạn",
-          description: "Vui lòng đăng nhập lại",
-          variant: "destructive",
-          action: (
-            <ToastAction
-              onClick={() => {
-                const callbackUrl = new URL(window.location.href);
-                signOut({
-                  redirect: true,
-                  callbackUrl: `/login?callbackUrl=${callbackUrl}`,
-                });
-              }}
-              altText={"relogin"}
-            >
-              Đăng nhập
-            </ToastAction>
-          ),
-        });
+        console.log("Cannot refresh token", error);
       }
     },
     []
@@ -73,6 +55,26 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
             });
             console.log("new fresh tokens", tokens?.refresh?.token);
             return Promise.reject(error);
+          } else {
+            toast({
+              title: "Phiên đăng nhập hết hạn",
+              description: "Vui lòng đăng nhập lại",
+              variant: "destructive",
+              action: (
+                <ToastAction
+                  onClick={() => {
+                    const callbackUrl = new URL(window.location.href);
+                    signOut({
+                      redirect: true,
+                      callbackUrl: `/login?callbackUrl=${callbackUrl}`,
+                    });
+                  }}
+                  altText={"relogin"}
+                >
+                  Đăng nhập
+                </ToastAction>
+              ),
+            });
           }
         } else if (error.response.status === 429 && !originalRequest._retry) {
           originalRequest._retry = true;

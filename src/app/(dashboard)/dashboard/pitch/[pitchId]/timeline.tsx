@@ -48,9 +48,9 @@ function PitchTimeline() {
     PitchUseMutation.approveBookingPitch();
 
   useEffect(() => {
-    const day = date?.getDate() || new Date().getDate();
-    data?.result.forEach((item: any) => {
-      if (item.day === day) {
+    const day = date || new Date();
+    data?.result.forEach((item) => {
+      if (isSameDay(new Date(item.date), day)) {
         setTimeFrames(item.time_frames);
         return;
       }

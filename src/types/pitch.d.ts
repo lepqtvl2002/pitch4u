@@ -39,7 +39,7 @@ export interface IPitch {
 }
 
 export type BookingPitch = {
-  day: Date;
+  date: Date;
   time_frames: ITimeFrame[];
 };
 

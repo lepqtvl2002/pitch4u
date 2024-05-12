@@ -153,7 +153,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
     // Get time frame
     if (data?.result)
       for (const entry of data.result) {
-        if (isSameDay(date, new Date(entry.day))) {
+        if (isSameDay(date, new Date(entry.date))) {
           setTimeFrames(entry.time_frames);
           break;
         }
