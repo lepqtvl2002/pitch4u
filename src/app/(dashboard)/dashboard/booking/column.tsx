@@ -4,6 +4,7 @@ import { type DataFacetedOptionsType } from "@/components/dashboard/table-facet"
 import {
   bookingStateVariant,
   bookingStatusToString,
+  cn,
   formatMoney,
   pitchTypeVariant,
 } from "@/lib/utils";
@@ -53,8 +54,8 @@ export const columns: ColumnDef<Booking>[] = [
   {
     header: "Người đặt",
     cell: (ctx) => {
-      const userName = ctx.row.original.user.fullname;
-      return <div className={"text-bold"}>{userName}</div>;
+      const userName = ctx.row.original.user?.fullname ?? "Người dùng đã bị xóa";
+      return <div className={cn(ctx.row.original.user?.fullname ? "text-bold" : "line-through italic text-gray-400")}>{userName}</div>;
     },
   },
   {

@@ -6,9 +6,11 @@ import {
 } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { IToken } from "@/types/token";
-import { $fetch, $globalFetch } from "@/lib/axios";
+import { IRefreshReturn, IToken } from "@/types/token";
+import { $fetch, $globalFetch, setAccessToken } from "@/lib/axios";
 import { UserRole } from "@/enums/roles";
+import { requestUrl } from "@/config/request-urls";
+import { AxiosError } from "axios";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -52,9 +54,6 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
-  },
-  jwt: {
-    maxAge: 5000,
   },
   callbacks: {
     async redirect({ url, baseUrl }) {
@@ -107,6 +106,25 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = user?.refresh;
         token.userRole = user?.role.name;
         token.userId = user?.user_id;
+        if (user.access.token) {
+          setAccessToken(user.access.token);
+        }
+      }
+
+      if (token?.accessToken?.expiresIn && token?.refreshToken?.token) {
+        // Return previous token if the access token has not expired yet
+        if (Date.now() < token?.accessToken?.expiresIn.getTime()) {
+          return token;
+        } else {
+          const newTokens = await refreshAccessToken(
+            token?.refreshToken?.token
+          );
+          return {
+            ...token,
+            accessToken: newTokens?.access,
+            refreshToken: newTokens?.refresh,
+          };
+        }
       }
 
       return token;
@@ -185,3 +203,26 @@ export const getServerAuthSession = (ctx: {
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
+
+async function refreshAccessToken(refreshToken: string) {
+  try {
+    const response = await $globalFetch(requestUrl.refreshToken, {
+      method: "POST",
+      data: {
+        refresh_token: refreshToken,
+      },
+    });
+
+    const tokens = response.data?.tokens;
+
+    if (!tokens) {
+      throw response.config;
+    }
+
+    setAccessToken(tokens.access.token);
+
+    return tokens as IRefreshReturn;
+  } catch (error) {
+    console.log((error as AxiosError)?.message);
+  }
+}

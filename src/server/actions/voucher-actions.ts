@@ -1,6 +1,7 @@
-import { toast } from "@/components/ui/use-toast";
 import { $fetch } from "@/lib/axios";
+import { errorToast, successToast } from "@/lib/quick-toast";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 export class VoucherUseMutation {
   static create = () => {
@@ -16,23 +17,13 @@ export class VoucherUseMutation {
         $fetch("/v1/vouchers", {
           method: "POST",
           data,
-        }).then(res => res.data),
+        }).then((res) => res.data),
       onSuccess: () => {
-        toast({
-          title: "Tạo voucher thành công",
-          variant: "success",
-        });
+        successToast({ actionName: "Tạo voucher" });
       },
-      onError: (error: any) => {
-        toast({
-          title: "Đã xảy ra lỗi trong khi thực hiện hành động",
-          description: `${
-            error?.message || "Đã có lỗi xảy ra, vui lòng thử lại"
-          }`,
-          variant: "destructive",
-        });
+      onError: (error: AxiosError) => {
+        errorToast({ actionName: "Tạo voucher", code: error.response?.status });
       },
-      
     });
   };
 
@@ -49,20 +40,14 @@ export class VoucherUseMutation {
         $fetch(`/v1/vouchers/${voucher_id}`, {
           method: "PATCH",
           data,
-        }).then(res => res.data),
+        }).then((res) => res.data),
       onSuccess: () => {
-        toast({
-          title: "Update voucher thành công",
-          variant: "success",
-        });
+        successToast({ actionName: "Cập nhật voucher" });
       },
-      onError: (error: any) => {
-        toast({
-          title: "Đã xảy ra lỗi trong khi thực hiện hành động",
-          description: `${
-            error?.message || "Đã có lỗi xảy ra, vui lòng thử lại"
-          }`,
-          variant: "destructive",
+      onError: (error: AxiosError) => {
+        errorToast({
+          actionName: "Cập nhật voucher",
+          code: error.response?.status,
         });
       },
     });
@@ -73,21 +58,12 @@ export class VoucherUseMutation {
       mutationFn: () =>
         $fetch(`/v1/vouchers/${voucher_id}`, {
           method: "DELETE",
-        }).then(res => res.data),
+        }).then((res) => res.data),
       onSuccess: () => {
-        toast({
-          title: "Xóa voucher thành công",
-          variant: "success",
-        });
+        successToast({ actionName: "Xóa voucher" });
       },
-      onError: (error: any) => {
-        toast({
-          title: "Đã xảy ra lỗi trong khi thực hiện hành động",
-          description: `${
-            error?.message || "Đã có lỗi xảy ra, vui lòng thử lại"
-          }`,
-          variant: "destructive",
-        });
+      onError: (error: AxiosError) => {
+        errorToast({ actionName: "Xóa voucher", code: error.response?.status });
       },
     });
   };

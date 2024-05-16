@@ -60,18 +60,19 @@ export default function BookingTable() {
               row.original as unknown as Record<string, string>
             );
             const user = row.original.user;
-            params.set("user_avatar", user.avatar);
-            params.set("user_name", user.fullname);
-            params.set("user_phone", user.phone);
-            params.set("user_email", user.email);
+            if (user) {
+              params.set("user_avatar", user.avatar);
+              params.set("user_name", user.fullname);
+              params.set("user_phone", user.phone);
+              params.set("user_email", user.email);
+            } else {
+              params.set("user_name", "Người dùng đã bị xóa");
+            }
 
             const subPitches = row.original.booking_pitches;
             subPitches.forEach(
               ({ sub_pitch: subPitch, start_time, end_time }, index) => {
-                params.append(
-                  `subpitch_ids`,
-                  subPitch.subpitch_id.toString()
-                );
+                params.append(`subpitch_ids`, subPitch.subpitch_id.toString());
                 params.append(`subpitch_names`, subPitch.name.toString());
                 params.append(`subpitch_start_time`, start_time);
                 params.append(`subpitch_end_time`, end_time);

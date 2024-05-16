@@ -21,10 +21,7 @@ export default async function DashboardLayout({
   if (!session?.user) {
     return notFound();
   }
-
-  if (session?.user.userRole === UserRoles.Staff) {
-    window.location.href = "/dashboard/pitch";
-  }
+  
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="relative grid flex-1 md:grid-cols-[auto_1fr]">

@@ -10,7 +10,6 @@ import React, { useCallback } from "react";
 import { columns, voucherStatus, vouchersTypeOptions } from "./column";
 import { VoucherUseQuery } from "@/server/queries/voucher-queries";
 import DropdownMenuActions from "./dropdown-menu-actions";
-import { toast } from "@/components/ui/use-toast";
 import { VoucherType } from "@/enums/voucherTypes";
 import VoucherStatuses, { VoucherStatus } from "@/enums/voucherStatues";
 import { Button } from "@/components/ui/button";
@@ -67,13 +66,6 @@ function VoucherTable() {
     setStatuses(values.map((value) => stringToVoucherStatus(value)));
   }, []);
 
-  if (isError) {
-    toast({
-      title: "Có lỗi xảy ra",
-      description: "Vui lòng thử lại",
-      variant: "destructive",
-    });
-  }
   return (
     <div className="px-2 md:container py-4 md:py-10">
       <VoucherStatCards
