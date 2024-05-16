@@ -10,5 +10,6 @@ declare module "next-auth/jwt" {
         userRole?: UserRole;
         accessToken?: IToken;
         refreshToken?: IToken;
+        error?: string;
     }
 }

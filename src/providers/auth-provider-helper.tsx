@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { $fetch } from "@/lib/axios";
 import { errorToast } from "@/lib/quick-toast";
@@ -11,6 +11,10 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const router = useRouter();
 
   useEffect(() => {
+    if (session?.error === "RefreshAccessTokenError") {
+      signIn();
+    }
+
     const requestInterceptor = $fetch.interceptors.request.use(
       (config) => {
         if (session?.accessToken?.token) {
@@ -25,7 +29,6 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
     const responseInterceptor = $fetch.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        const originalRequest = error.response?.config;
         {
           errorToast({ actionName: "Call API", code: error.response?.status });
         }
@@ -36,12 +39,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       $fetch.interceptors.response.eject(responseInterceptor);
       $fetch.interceptors.request.eject(requestInterceptor);
     };
-  }, [
-    router,
-    session?.accessToken?.token,
-    session?.refreshToken?.token,
-    update,
-  ]);
+  }, [router, session, update]);
 
   return <>{children}</>;
 }

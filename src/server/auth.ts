@@ -23,6 +23,7 @@ declare module "next-auth" {
     user: DefaultSession["user"] & User;
     accessToken: IToken | null;
     refreshToken: IToken | null;
+    error?: string;
   }
 
   interface User {
@@ -97,6 +98,9 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = data.tokens.refresh;
         token.userRole = data.user?.role.name;
         token.userId = data.user?.user_id;
+        if (data.user.access.token) {
+          setAccessToken(user.access.token);
+        }
 
         return token;
       }
@@ -119,11 +123,20 @@ export const authOptions: NextAuthOptions = {
           const newTokens = await refreshAccessToken(
             token?.refreshToken?.token
           );
-          return {
-            ...token,
-            accessToken: newTokens?.access,
-            refreshToken: newTokens?.refresh,
-          };
+
+          if (newTokens?.access) {
+            setAccessToken(newTokens?.access.token);
+            return {
+              ...token,
+              accessToken: newTokens?.access,
+              refreshToken: newTokens?.refresh,
+            };
+          } else {
+            return {
+              ...token,
+              error: "RefreshAccessTokenError",
+            };
+          }
         }
       }
 
@@ -218,8 +231,6 @@ async function refreshAccessToken(refreshToken: string) {
     if (!tokens) {
       throw response.config;
     }
-
-    setAccessToken(tokens.access.token);
 
     return tokens as IRefreshReturn;
   } catch (error) {
