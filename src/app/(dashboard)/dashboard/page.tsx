@@ -18,12 +18,16 @@ import {
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import MonthPicker from "@/components/dashboard/month-picker";
-import { toast } from "@/components/ui/use-toast";
 import { RecentOrder } from "@/components/dashboard/recent-orders";
 import CardStatDashboard from "@/components/card-stats-dashboard";
 import StatCard from "@/components/dashboard/stat-card";
 import { SelectPitch } from "@/components/dashboard/pitch-picker";
 import YearPicker from "@/components/dashboard/year-picker";
+import { useSession } from "next-auth/react";
+import UserRoles from "@/enums/roles";
+import { redirect } from "next/navigation";
+import { errorToast } from "@/lib/quick-toast";
+import { AxiosError } from "axios";
 
 type All = {
   revenue: number;
@@ -88,21 +92,50 @@ const TabItems = [
   // },
 ];
 
+const fakeData = {
+  result: {
+    all: { revenue: 0, orders: 0 },
+    thisMonthOverview: { revenue: 0, orders: 0 },
+    lastMonthOverview: { revenue: 0, orders: 0 },
+    staffs: [],
+    pitches: [],
+    revenueByMonths: [],
+    revenueByDates: [],
+  },
+};
+
 export default function DashboardPage() {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
   const [pitchId, setPitchId] = useState<number | undefined>();
   const params = pitchId ? { pitch_id: pitchId, month, year } : { month, year };
-  const { data, isLoading, isError } = StatisticUseQuery.getPitchStats(params);
-  const { data: topPitches } = StatisticUseQuery.getTopPitchesByRevenue({
-    limit: 20,
-  });
+  const { data: session, status } = useSession();
+  const { data, isLoading, error } =
+    status === "authenticated" && session.user.userRole === UserRoles.Admin
+      ? StatisticUseQuery.getPitchStats(params)
+      : {
+          data: fakeData,
+          isLoading: false,
+          error: null,
+        };
 
-  if (isError) {
-    toast({
-      title: "Đã xảy ra lỗi khi tải dữ liệu trong tháng này",
-      description: "Vui lòng thử lại",
-      variant: "destructive",
+  const { data: topPitches } =
+    status === "authenticated" && session.user.userRole === UserRoles.Admin
+      ? StatisticUseQuery.getTopPitchesByRevenue({
+          limit: 20,
+        })
+      : {
+          data: { result: { data: [] } },
+        };
+
+  if (session?.user.userRole !== UserRoles.Staff) {
+    redirect("/dashboard/booking");
+  }
+
+  if (error) {
+    errorToast({
+      actionName: "Lấy dữ liệu thống kê",
+      code: (error as AxiosError).response?.status,
     });
   }
   return (
@@ -255,9 +288,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="pl-2 h-96">
                 {isLoading ? (
-                  <div className="flex gap-2">
-                    Loading...
-                  </div>
+                  <div className="flex gap-2">Loading...</div>
                 ) : (
                   <RevenueOverviewByPitch
                     data={

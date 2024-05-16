@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = React.HtmlHTMLAttributes<HTMLDivElement> & {
   title: string;
-  value: string | number;
+  value: string | number | undefined;
   icon: keyof typeof Icons;
   description?: string;
   trending?: "up" | "down";

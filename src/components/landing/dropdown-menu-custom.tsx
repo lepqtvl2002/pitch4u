@@ -30,7 +30,12 @@ export function DropdownMenuProfile({
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger className={className}>
-        Hi, {user.name || user.email} <ChevronDown />
+        <Button>
+          <span className="max-w-[160px] truncate">
+            Hi, {user.name || user.email}
+          </span>
+          <ChevronDown className="ml-2" />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
@@ -68,7 +73,9 @@ export function DropdownMenuNav({
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger className={className}>
-        <Menu />
+        <Button variant="ghost">
+          <Menu />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {publicNavbarConfig.sidebarNav.map((item) => (
@@ -80,16 +87,16 @@ export function DropdownMenuNav({
         {user ? (
           <DropdownMenuProfile user={user} className={"flex px-2 w-full"} />
         ) : (
-          <>
-            <Link href={"/login"} className="mb-2">
-              <Button className={"flex px-2 w-full"}>Đăng nhập</Button>
+          <div className="grid gap-2">
+            <Link href={"/login"}>
+              <Button className="w-full">Đăng nhập</Button>
             </Link>
             <Link href={"/register"}>
-              <Button variant="outline" className={"flex px-2 w-full"}>
+              <Button variant="outline" className="w-full">
                 Đăng ký
               </Button>
             </Link>
-          </>
+          </div>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

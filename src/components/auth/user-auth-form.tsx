@@ -55,9 +55,9 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
         await signIn("credentials", {
           email: values.email,
           password: values.password,
+          redirect: false,
         })
           .then((res) => {
-            console.log(res);
             if (res?.error) {
               toast({
                 title: "Đăng nhập thất bại",

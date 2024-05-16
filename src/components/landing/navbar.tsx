@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -7,16 +9,17 @@ import {
 } from "@/components/landing/dropdown-menu-custom";
 import { cn } from "@/lib/utils";
 import { publicNavbarConfig } from "@/config/site";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/server/auth";
+import { useSession } from "next-auth/react";
+import { Loader2Icon } from "lucide-react";
 
-export default async function Navbar({
+export default function Navbar({
   className,
   ...props
 }: {
   className?: string;
 }) {
-  const session = await getServerSession(authOptions);
+  const { data: session, status } = useSession();
+
   return (
     <nav className={cn("w-full md:px-4 md:m-0", className)} {...props}>
       <div className="mx-auto flex justify-between items-center w-full h-fit md:justify-between">
@@ -48,22 +51,32 @@ export default async function Navbar({
             ))}
           </ul>
         </div>
-        {session?.user ? (
-          <DropdownMenuProfile user={session?.user} className={"hidden md:flex"} />
+        {status === "loading" ? (
+          <Button>
+            <Loader2Icon className="animate-spin mr-2" /> Loading...
+          </Button>
+        ) : status === "authenticated" ? (
+          <DropdownMenuProfile
+            user={session?.user}
+            className={"hidden md:flex"}
+          />
         ) : (
           <div className="hidden md:flex gap-2 w-fit">
             <Button>
-              <Link className="w-max" href={"/login"}>Đăng nhập</Link>
+              <Link className="w-max" href={"/login"}>
+                Đăng nhập
+              </Link>
             </Button>
-            <Button variant="ghost" className="border border-primary">
-              <Link className="w-max" href={"/register"}>Đăng ký</Link>
+            <Button variant="outline">
+              <Link className="w-max" href={"/register"}>
+                Đăng ký
+              </Link>
             </Button>
           </div>
         )}
-        <DropdownMenuNav
-          user={session?.user}
-          className="md:hidden block px-6 bg-transparent border-none hover:bg-gray-200 text-primary"
-        />
+        {status !== "loading" && (
+          <DropdownMenuNav user={session?.user} className="md:hidden" />
+        )}
       </div>
     </nav>
   );
