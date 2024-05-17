@@ -88,8 +88,8 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             end_time: `${format(time.date, "yyyy-MM-dd")} ${frame[1]}`,
           };
         }),
-        returnUrl: "/personal/history",
-        cancelUrl: "/personal/history",
+        returnUrl: `${window.location.origin}/personal/history`,
+        cancelUrl: `${window.location.origin}/personal/history`,
       };
       const bookingInfo = await mutateAsync(data, {
         onSuccess(data, variables, context) {
