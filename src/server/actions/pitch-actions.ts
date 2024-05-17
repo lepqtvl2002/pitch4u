@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { $fetch } from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
 import { PaymentType } from "@/enums/paymentTypes";
+import { BookingStatus } from "@/enums/bookingStatuses";
 
 export type PitchInfo = {
   card_id: string;
@@ -15,6 +16,35 @@ export type PitchInfo = {
   long: number;
   proofs?: string[];
   type: string;
+};
+
+export type BookingInfo = {
+  bookingInfo: {
+    isRefund: boolean;
+    booking_id: number;
+    user_id: number;
+    payment_type: PaymentType;
+    pitch_id: number;
+    voucher_id: number | null;
+    booking_pitches: [
+      {
+        booking_pitch_id: number;
+        subpitch_id: number;
+        start_time: Date;
+        end_time: Date;
+        price: number;
+        booking_id: number;
+        updatedAt: Date;
+        createdAt: Date;
+      }
+    ];
+    status: BookingStatus;
+    total: number;
+    discount: number;
+    updatedAt: Date;
+    createdAt: Date;
+  };
+  paymentUrl: string;
 };
 export class PitchUseMutation {
   // Register pitch
@@ -57,11 +87,13 @@ export class PitchUseMutation {
         }[];
         payment_type: PaymentType;
         voucher_id?: number | string;
+        returnUrl: string;
+        cancelUrl: string;
       }) =>
         $fetch(`/v1/booking`, {
           method: "POST",
           data,
-        }).then((res) => res.data),
+        }).then((res) => res.data as { result: BookingInfo }),
       onSuccess: () => {
         toast({ title: "Đặt sân thành công", variant: "success" });
       },

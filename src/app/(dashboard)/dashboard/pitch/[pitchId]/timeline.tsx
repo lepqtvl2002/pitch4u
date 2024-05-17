@@ -95,6 +95,8 @@ function PitchTimeline() {
           end_time,
         },
       ],
+      cancelUrl: window.location.href,
+      returnUrl: window.location.href,
     });
     refetch();
   }

@@ -98,11 +98,6 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = data.tokens.refresh;
         token.userRole = data.user?.role.name;
         token.userId = data.user?.user_id;
-        if (data.user.access.token) {
-          setAccessToken(user.access.token);
-        }
-
-        return token;
       }
 
       if (user) {
@@ -110,11 +105,12 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = user?.refresh;
         token.userRole = user?.role.name;
         token.userId = user?.user_id;
-        if (user.access.token) {
-          setAccessToken(user.access.token);
-        }
       }
-
+      
+      if (token?.accessToken?.token) {
+        setAccessToken(token?.accessToken?.token);
+      }
+      
       if (token?.accessToken?.expiresIn && token?.refreshToken?.token) {
         // Return previous token if the access token has not expired yet
         if (Date.now() < token?.accessToken?.expiresIn.getTime()) {

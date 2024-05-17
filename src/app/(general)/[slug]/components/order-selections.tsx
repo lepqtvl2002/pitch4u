@@ -16,17 +16,18 @@ import {
 } from "@/components/ui/select";
 import { DatePickerBookingPitch } from "@/components/ui/date-picker";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { format, isSameDay, set } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { useSession } from "next-auth/react";
 import { soccerPitchTypeToString } from "@/lib/convert";
-import { cn, decimalToTimeString, formatMoney } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
 import { ReportForm } from "./report-form";
 import { IPitch, ITimeFrame } from "@/types/pitch";
 import { soccerPitchTypesArray } from "@/enums/soccerPitchTypes";
 import { mutatingToast } from "@/lib/quick-toast";
 import { ISubPitch } from "@/types/subPitch";
 import { stringToTimeFrame, timeFrameToString } from "@/lib/format-datetime";
-import PaymentTypes, { PaymentType } from "@/enums/paymentTypes";
+import PaymentTypes from "@/enums/paymentTypes";
+import { useRouter } from "next/navigation";
 
 const types = soccerPitchTypesArray;
 
@@ -58,6 +59,8 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
     }[]
   >([]);
 
+  const router = useRouter();
+
   const { data, isFetching, isError, refetch } = PitchUseQuery.getBookingStatus(
     {
       pitch_id: pitch.pitch_id,
@@ -77,7 +80,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
       mutatingToast();
       const data = {
         subpitch_id: grouped[groupKey][0].subPitchId,
-        payment_type: PaymentTypes.PayLater,
+        payment_type: PaymentTypes.PayOS,
         frame_times: grouped[groupKey].map((time) => {
           const frame = time.timeFrameString.split(" - ");
           return {
@@ -85,13 +88,19 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             end_time: `${format(time.date, "yyyy-MM-dd")} ${frame[1]}`,
           };
         }),
+        returnUrl: "/personal/history",
+        cancelUrl: "/personal/history",
       };
-      await mutateAsync(data, {
+      const bookingInfo = await mutateAsync(data, {
         onSuccess(data, variables, context) {
           console.log(data, variables, context);
           refetch();
         },
       });
+
+      console.log(bookingInfo);
+
+      router.push(bookingInfo.result.paymentUrl);
     }
   }
 
