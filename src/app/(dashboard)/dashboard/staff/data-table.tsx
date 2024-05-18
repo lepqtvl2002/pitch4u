@@ -9,7 +9,7 @@ import { toast } from "@/components/ui/use-toast";
 import DropdownMenuActions from "./dropdown-menu-actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { SelectPitch } from "@/components/dashboard/pitch-picker";
+import { SelectMyPitch } from "@/components/dashboard/pitch-picker";
 import { PlusIcon } from "lucide-react";
 
 function StaffTable() {
@@ -84,7 +84,7 @@ function StaffTable() {
         }
         headerSuffix={
           <div className="max-w-1/2">
-            <SelectPitch pitchId={pitchId} setPitchId={setPitchId} />
+            <SelectMyPitch pitchId={pitchId} setPitchId={setPitchId} />
           </div>
         }
         search={{

@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/select";
 import { DatePickerBookingPitch } from "@/components/ui/date-picker";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { format, isSameDay } from "date-fns";
+import { format, isSameDay, sub } from "date-fns";
 import { useSession } from "next-auth/react";
-import { soccerPitchTypeToString } from "@/lib/convert";
+import { soccerPitchTypeToString, subPitchTypeToString } from "@/lib/convert";
 import { cn, formatMoney } from "@/lib/utils";
 import { ReportForm } from "./report-form";
 import { IPitch, ITimeFrame } from "@/types/pitch";
@@ -38,7 +38,8 @@ interface GroupedType {
 export default function OrderSelections({ pitch }: { pitch: IPitch }) {
   const { data: session } = useSession();
   const [price, setPrice] = React.useState(0);
-  const [type, setType] = React.useState(types[0]);
+  const [subPitchTypes, setSubPitchTypes] = React.useState<string[]>([]);
+  const [type, setType] = React.useState<string>("");
   const [date, setDate] = React.useState<Date>(new Date());
   const [subPitches, setSubPitches] = React.useState<ISubPitch[]>([]);
   const [currentSubPitch, setCurrentSubPitch] = React.useState<ISubPitch>();
@@ -58,6 +59,10 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
       price: number;
     }[]
   >([]);
+
+  const { data: dataSubPitchType } = PitchUseQuery.getSubPitchTypes({
+    pitchType: pitch.type,
+  });
 
   const router = useRouter();
 
@@ -108,6 +113,12 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
     setIsLiked((prev) => !prev);
     await likePitchMutate(pitch.pitch_id);
   }
+
+  useEffect(() => {
+    if (dataSubPitchType?.result) {
+      setSubPitchTypes(Object.values(dataSubPitchType.result));
+    }
+  }, [dataSubPitchType]);
 
   useEffect(() => {
     // Get price
@@ -235,15 +246,18 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
         </div>
         <div className={"space-x-2 space-y-2 items-center"}>
           <Label className={"text-gray-500 w-1/4"}>Loại Sân</Label>
-          {types.map((typePitch) => (
+          {subPitchTypes.map((subPitchType, index) => (
             <Button
-              variant={typePitch === type ? "default" : "outline"}
-              key={typePitch}
+              variant={subPitchType === type ? "default" : "outline"}
+              key={index}
               onClick={() => {
-                setType(typePitch);
+                setType(subPitchType);
               }}
             >
-              {soccerPitchTypeToString(typePitch)}
+              {subPitchTypeToString({
+                pitchType: pitch.type,
+                subPitchType: subPitchType,
+              })}
             </Button>
           ))}
         </div>
@@ -257,11 +271,15 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             <SelectTrigger className="w-[180px]">
               <SelectValue
                 placeholder={
-                  currentSubPitch
-                    ? subPitches.length
-                      ? subPitches[0].name
-                      : "Không có sân"
-                    : "Chọn sân"
+                  currentSubPitch ? (
+                    currentSubPitch.name
+                  ) : subPitches.length > 0 ? (
+                    "Chọn sân"
+                  ) : (
+                    <span className="text-red-500 italic">
+                      Hết sân, vui lòng chọn khung giờ khác
+                    </span>
+                  )
                 }
               />
             </SelectTrigger>

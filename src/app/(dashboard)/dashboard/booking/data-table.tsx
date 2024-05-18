@@ -8,7 +8,7 @@ import DropdownMenuActions from "./dropdown-menu-actions";
 import { StatisticUseQuery } from "@/server/queries/statistic-queries";
 import { toast } from "@/components/ui/use-toast";
 import { BookingStatus } from "@/enums/bookingStatuses";
-import { SelectPitch } from "@/components/dashboard/pitch-picker";
+import { SelectMyPitch } from "@/components/dashboard/pitch-picker";
 
 export default function BookingTable() {
   const [statuses, setStatuses] = React.useState<BookingStatus[]>([]);
@@ -112,7 +112,7 @@ export default function BookingTable() {
       }}
       headerPrefix={
         <div className="max-w-1/2">
-          <SelectPitch pitchId={pitchId} setPitchId={setPitchId} />
+          <SelectMyPitch pitchId={pitchId} setPitchId={setPitchId} />
         </div>
       }
     />

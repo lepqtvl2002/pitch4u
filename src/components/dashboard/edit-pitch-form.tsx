@@ -93,16 +93,14 @@ export function EditPitchForm({ pitch }: FormProps) {
     },
     // mode: "onChange",
   });
-  const { mutateAsync } = PitchUseMutation.updatePitch(pitch?.pitch_id);
+  const { mutateAsync, isLoading } = PitchUseMutation.updatePitch(pitch?.pitch_id);
   const { mutateAsync: uploadImage } = ImageUseMutation.upload();
-  const [isLoading, setIsLoading] = useState(false);
   const route = useRouter();
   const [markerPos, setMarkerPos] = useState({
     lat: pitch.lat || 16.0544068,
     lng: pitch.long || 108.1655063,
   });
   async function onSubmit(data: z.infer<typeof schema>) {
-    setIsLoading(true);
     toast({
       title: "Đang xử lý yêu cầu",
       description: "Vui lòng chờ trong giây lát",
@@ -124,8 +122,6 @@ export function EditPitchForm({ pitch }: FormProps) {
     sendValues["lat"] = markerPos.lat;
     sendValues["long"] = markerPos.lng;
     await mutateAsync({ ...sendValues });
-    setIsLoading(false);
-    route.push(`/dashboard/pitch/${pitch?.pitch_id}`);
   }
   const mapDefaultProps = {
     center: {

@@ -25,7 +25,7 @@ import { UserUseMutation } from "@/server/actions/user-actions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { mutatingToast } from "@/lib/quick-toast";
-import { SelectMultiplePitches, SelectPitch } from "./pitch-picker";
+import { SelectMultiplePitches, SelectMyPitch } from "./pitch-picker";
 import { BirthdayPicker } from "../ui/date-picker";
 import { format } from "date-fns";
 import { IPitch } from "@/types/pitch";

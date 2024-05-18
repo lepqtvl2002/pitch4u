@@ -129,3 +129,24 @@ export const pitchTypeToString = (type: string | null) => {
       return "Loại sân chưa xác định";
   }
 };
+
+export const subPitchTypeToString = ({
+  subPitchType,
+  pitchType,
+}: {
+  subPitchType?: string;
+  pitchType: string;
+}) => {
+  switch (subPitchType) {
+    case SoccerPitchTypes.Pitch5:
+      return "Sân 5";
+    case SoccerPitchTypes.Pitch7:
+      return "Sân 7";
+    case SoccerPitchTypes.Pitch9:
+      return "Sân 5";
+    case SoccerPitchTypes.Pitch11:
+      return "Sân 11";
+    default:
+      return pitchTypeToString(pitchType);
+  }
+};

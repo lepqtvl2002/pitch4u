@@ -21,8 +21,8 @@ export default function Navbar({
   const { data: session, status } = useSession();
 
   return (
-    <nav className={cn("w-full md:px-4 md:m-0", className)} {...props}>
-      <div className="mx-auto flex justify-between items-center w-full h-fit md:justify-between">
+    <nav className={cn("w-full fixed z-50 top-0 left-0 right-0 md:px-4 md:m-0 bg-gradient-to-b from-emerald-300 from-60%", className)} {...props}>
+      <div className="md:container mx-auto flex justify-between items-center w-full h-fit md:justify-between">
         <div className="flex">
           <a
             href="/"

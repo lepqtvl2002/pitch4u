@@ -60,7 +60,7 @@ export const adminConfig: DashboardConfig = {
       icon: "managerPitch",
     },
     {
-      title: "Sân bóng",
+      title: "Sân",
       href: "/admin/pitch",
       icon: "layoutPanelLeft",
     },

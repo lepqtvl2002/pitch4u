@@ -17,8 +17,6 @@ import {
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import MonthPicker from "@/components/dashboard/month-picker";
-import { toast } from "@/components/ui/use-toast";
-import { RecentOrder } from "@/components/dashboard/recent-orders";
 import CardStatDashboard from "@/components/card-stats-dashboard";
 import StatCard from "@/components/dashboard/stat-card";
 import { SelectPitch } from "@/components/dashboard/pitch-picker";
@@ -97,15 +95,8 @@ export default function DashboardPage() {
   const [year, setYear] = useState(new Date().getFullYear());
   const [pitchId, setPitchId] = useState<number | undefined>();
   const params = pitchId ? { pitch_id: pitchId, month, year } : { month, year };
-  const { data, isLoading, isError } = StatisticUseQuery.getSystemStats(params);
+  const { data, isLoading } = StatisticUseQuery.getSystemStats(params);
 
-  if (isError) {
-    toast({
-      title: "Đã xảy ra lỗi khi tải dữ liệu trong tháng này",
-      description: "Vui lòng thử lại",
-      variant: "destructive",
-    });
-  }
   return (
     <div className="flex-1 space-y-4 px-4 py-2">
       <Tabs defaultValue="overview" className="space-y-4">

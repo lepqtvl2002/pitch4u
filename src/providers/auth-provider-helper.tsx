@@ -17,13 +17,13 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         refresh_token: session?.refreshToken?.token,
       });
       if (res.data) {
-        update({
+        await update({
           ...session,
           accessToken: res.data.access,
           refreshToken: res.data.refresh,
         });
       } else {
-        signIn();
+        await signIn();
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -32,11 +32,11 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           actionName: "Refresh Access Token",
           code: error.response?.status,
         });
-        signOut();
+        signIn();
       } else {
         // Handle general errors
         console.log("An error occurred while refreshing access token");
-        signOut();
+        // signOut();
       }
     }
   }, [session, update]);
@@ -75,7 +75,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       $fetch.interceptors.response.eject(responseInterceptor);
       $fetch.interceptors.request.eject(requestInterceptor);
     };
-  }, [router, session, update]);
+  }, [router]);
 
   return <>{children}</>;
 }

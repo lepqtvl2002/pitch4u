@@ -21,6 +21,7 @@ export interface IPitch {
   min_price: number;
   rate: string;
   images: string[];
+  type: string;
   config?: {
     pitch_config_id: number | string;
     pitch_id: number | string;

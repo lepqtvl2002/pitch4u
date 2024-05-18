@@ -33,7 +33,7 @@ export class PitchUseQuery {
         $fetch(`/v1/pitches`, {
           method: "GET",
           params: query,
-        }).then((res) => res.data),
+        }).then((res) => res.data as { result: { data: IPitch[] } & IPaginated }),
       cacheTime: 100,
       keepPreviousData: true,
     });

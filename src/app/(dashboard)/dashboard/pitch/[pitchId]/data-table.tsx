@@ -96,7 +96,7 @@ function PitchDetailTable() {
         pageIndex={pageIndex}
         pageSize={pageSize}
         headerPrefix={
-          <Link href={`/dashboard/pitch/${params.pitchId}/create`}>
+          <Link href={`/dashboard/pitch/${params.pitchId}/create?type=${data?.result.type}`}>
             <Button variant="secondary">
               <span className="mr-2 hidden md:inline-block">Thêm sân con</span>
               <PlusIcon />

@@ -21,7 +21,7 @@ import MonthPicker from "@/components/dashboard/month-picker";
 import { RecentOrder } from "@/components/dashboard/recent-orders";
 import CardStatDashboard from "@/components/card-stats-dashboard";
 import StatCard from "@/components/dashboard/stat-card";
-import { SelectPitch } from "@/components/dashboard/pitch-picker";
+import { SelectMyPitch } from "@/components/dashboard/pitch-picker";
 import YearPicker from "@/components/dashboard/year-picker";
 import { useSession } from "next-auth/react";
 import UserRoles from "@/enums/roles";
@@ -128,7 +128,7 @@ export default function DashboardPage() {
           data: { result: { data: [] } },
         };
 
-  if (session?.user.userRole !== UserRoles.Staff) {
+  if (session?.user.userRole === UserRoles.Staff) {
     redirect("/dashboard/booking");
   }
 
@@ -150,7 +150,7 @@ export default function DashboardPage() {
             ))}
           </TabsList>
           <div className="max-w-1/2">
-            <SelectPitch pitchId={pitchId} setPitchId={setPitchId} />
+            <SelectMyPitch pitchId={pitchId} setPitchId={setPitchId} />
           </div>
           <YearPicker selectedYear={year} setSelectedYear={setYear} />
         </div>

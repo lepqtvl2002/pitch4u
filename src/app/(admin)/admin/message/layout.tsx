@@ -9,7 +9,7 @@ export default function LayoutMessagePageAdmin({
 }) {
   return (
     <div className="flex h-screen md:h-full">
-      <SidebarChats area="dashboard" />
+      <SidebarChats area="admin" />
       {children}
     </div>
   );
