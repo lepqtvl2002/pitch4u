@@ -6,9 +6,9 @@ import { Separator } from "@/components/ui/separator";
 
 export default function ContactPage() {
   return (
-    <main className="bg-emerald-200">
-      <div className="px-2 md:container">
-        <Navbar />
+    <main>
+      <Navbar />
+      <div className="px-2 mt-20 md:mt-28 md:container">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="flex flex-col bg-white px-4 md:px-8 pb-4 rounded">
             <h3 className="text-3xl font-bold mt-6 mb-10">Form liên hệ</h3>
@@ -21,7 +21,7 @@ export default function ContactPage() {
           </div>
           <div className="lg:col-span-2 p-6 bg-white rounded">
             <h3 className="text-3xl mb-10 font-bold">
-            Thông tin liên hệ của chúng tôi:
+              Thông tin liên hệ của chúng tôi:
             </h3>
             <div className="text-lg">
               <Label className="font-semibold">Địa chỉ: </Label>
@@ -31,21 +31,15 @@ export default function ContactPage() {
             </div>
             <div className="text-lg">
               <Label className="font-semibold">Số điện thoại: </Label>
-              <span>
-                012 345 6789
-              </span>
+              <span>012 345 6789</span>
             </div>
             <div className="text-lg">
               <Label className="font-semibold">Email: </Label>
-              <span>
-                pitch4u@gmail.com
-              </span>
+              <span>pitch4u@gmail.com</span>
             </div>
             <div className="text-lg">
               <Label className="font-semibold">Facebook: </Label>
-              <span>
-                www.facebook.com/pitch4u
-              </span>
+              <span>www.facebook.com/pitch4u</span>
             </div>
 
             <p className="mt-20 italic text-xl">

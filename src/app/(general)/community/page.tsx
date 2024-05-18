@@ -31,9 +31,9 @@ const contents = [
 
 export default function CommunityPage() {
   return (
-    <main className="bg-emerald-200">
-      <div className="px-2 md:container">
-        <Navbar />
+    <main>
+      <Navbar />
+      <div className="px-2 md:container mt-20 md:mt-28">
         <div className="flex text-justify">
           <aside className="hidden w-[240px] mr-4 md:flex flex-col space-y-2 p-2 rounded bg-white">
             <ul className="list-disc space-y-2 pl-6 pt-10">

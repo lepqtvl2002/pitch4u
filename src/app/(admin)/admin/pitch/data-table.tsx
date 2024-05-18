@@ -85,7 +85,7 @@ function PitchTable() {
         ]}
         data={data?.result.data}
         isLoading={isFetching}
-        pageCount={Math.floor((data?.result.total - 1) / pageSize + 1)}
+        pageCount={Math.floor((data?.result.total ?? 1 - 1) / pageSize + 1)}
         setPagination={setPagination}
         pageIndex={pageIndex}
         pageSize={pageSize}

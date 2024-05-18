@@ -7,9 +7,9 @@ export default function GeneralLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="bg-emerald-300">
-      <div className="md:container flex min-h-screen flex-col items-center justify-between ">
-        <Navbar />
+    <main className="bg-emerald-300 md:bg-gray-100">
+      <Navbar />
+      <div className="md:container mt-20 md:mt-28 flex min-h-screen flex-col items-center justify-between ">
         {children}
         <div className="px-2 w-full">
           <Footer />

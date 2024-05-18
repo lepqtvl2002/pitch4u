@@ -4,9 +4,9 @@ import Link from "next/link";
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="bg-emerald-200">
-      <div className="px-2 md:container text-justify">
-        <Navbar />
+    <main>
+      <Navbar />
+      <div className="px-2 md:container text-justify mt-20 md:mt-28">
         <div className="flex">
           <aside className="hidden w-[240px] mr-4 md:flex p-2 pl-6 pt-10 space-y-2 rounded bg-white">
             <ul className="list-disc space-y-2">

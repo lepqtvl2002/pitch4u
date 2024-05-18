@@ -160,9 +160,11 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
     // Get sub pitches
     for (const frame of timeFrames) {
       if (frame && timeFrameToString(frame.frame) === timeFrame) {
-        const subPitchList = frame.free.filter((subPitch) => {
-          return subPitch.type === type;
-        });
+        const subPitchList = type
+          ? frame.free.filter((subPitch) => {
+              return subPitch.type === type;
+            })
+          : frame.free;
         setSubPitches(subPitchList);
         break;
       }
@@ -244,23 +246,25 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             </SelectContent>
           </Select>
         </div>
-        <div className={"space-x-2 space-y-2 items-center"}>
-          <Label className={"text-gray-500 w-1/4"}>Loại Sân</Label>
-          {subPitchTypes.map((subPitchType, index) => (
-            <Button
-              variant={subPitchType === type ? "default" : "outline"}
-              key={index}
-              onClick={() => {
-                setType(subPitchType);
-              }}
-            >
-              {subPitchTypeToString({
-                pitchType: pitch.type,
-                subPitchType: subPitchType,
-              })}
-            </Button>
-          ))}
-        </div>
+        {subPitchTypes.length > 0 && (
+          <div className={"space-x-2 space-y-2 items-center"}>
+            <Label className={"text-gray-500 w-1/4"}>Loại Sân</Label>
+            {subPitchTypes.map((subPitchType, index) => (
+              <Button
+                variant={subPitchType === type ? "default" : "outline"}
+                key={index}
+                onClick={() => {
+                  setType(subPitchType);
+                }}
+              >
+                {subPitchTypeToString({
+                  pitchType: pitch.type,
+                  subPitchType: subPitchType,
+                })}
+              </Button>
+            ))}
+          </div>
+        )}
         <div className={"flex space-x-2 items-center"}>
           <Label className={"text-gray-500 w-1/4"}>Chọn sân</Label>
           <Select

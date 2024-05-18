@@ -11,17 +11,18 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const { update, data: session } = useSession();
   const router = useRouter();
 
-  const fetchAccessToken = useCallback(async () => {
+  const fetchAccessToken = useCallback(async (refreshToken: string) => {
     try {
       const res = await $globalFetch.post(requestUrl.refreshToken, {
-        refresh_token: session?.refreshToken?.token,
+        refresh_token: refreshToken,
       });
       if (res.data) {
-        await update({
+        const a = await update({
           ...session,
           accessToken: res.data.access,
           refreshToken: res.data.refresh,
         });
+        console.log("Access token refreshed", a);
       } else {
         await signIn();
       }
@@ -39,7 +40,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         // signOut();
       }
     }
-  }, [session, update]);
+  }, [update]);
 
   useEffect(() => {
     if (session?.error === "RefreshAccessTokenError") {
@@ -64,9 +65,12 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           // signIn();
           console.log("401 error");
           console.log(session);
-          await fetchAccessToken();
+          if (session?.refreshToken?.token) {
+            await fetchAccessToken(session?.refreshToken?.token);
+          }
         } else {
-          errorToast({ actionName: "Call API", code: error.response?.status });
+          // errorToast({ actionName: "Call API", code: error.response?.status });
+          console.log("An error occurred while calling API", error.response?.status, error.message);
         }
       }
     );
@@ -75,7 +79,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       $fetch.interceptors.response.eject(responseInterceptor);
       $fetch.interceptors.request.eject(requestInterceptor);
     };
-  }, [router]);
+  }, [router, session, update]);
 
   return <>{children}</>;
 }
