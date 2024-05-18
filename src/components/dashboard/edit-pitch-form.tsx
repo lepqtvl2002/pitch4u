@@ -223,7 +223,7 @@ export function EditPitchForm({ pitch }: FormProps) {
             </FormItem>
           )}
         />
-        <div className="w-[1000px] h-screen pb-10 m-10">
+        <div className="xl:w-[1000px] h-screen pb-10 xl:m-10">
           <FormLabel>Địa chỉ trên Google map</FormLabel>
           <FormDescription>
             Hãy chọn chính xác địa chỉ sân bóng của bạn trên bản đồ để người

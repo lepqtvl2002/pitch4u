@@ -1,15 +1,19 @@
 "use client";
 import { ConfigPitchForm } from "@/components/dashboard/config-pitch-form";
 import { EditPitchForm } from "@/components/dashboard/edit-pitch-form";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
+import { ChevronDownIcon } from "lucide-react";
+import { useState } from "react";
 
 export default function EditPitchPage({
   params,
 }: {
   params: { pitchId: string };
 }) {
+  const [open, setOpen] = useState(false);
   const { data, isLoading, isError } = PitchUseQuery.getPitchDetail({
     pitch_id: params.pitchId,
   });
@@ -22,7 +26,7 @@ export default function EditPitchPage({
     });
   }
   return (
-    <div className="flex-1 lg:max-w-2xl space-y-6 p-10 pb-16">
+    <div className="flex-1 lg:max-w-2xl space-y-4 md:space-y-6 p-4 md:p-10 pb-16">
       <div id="edit-pitch">
         <h3 className="text-lg font-medium">Cài đặt sân</h3>
         <p className="text-sm text-muted-foreground">
@@ -35,14 +39,17 @@ export default function EditPitchPage({
       <Separator />
       <EditPitchForm pitch={data?.result} />
       <Separator />
-      <div id="config-pitch">
-        <h3 className="text-lg font-medium">Cài đặt nâng cao</h3>
+      <Button variant="ghost" onClick={() => setOpen((pre) => !pre)}>
+        <h3 className="text-lg font-medium mr-2">Cài đặt nâng cao</h3>
+        <ChevronDownIcon className={open ? "rotate-180" : ""} />
+      </Button>
+      <div id="config-pitch" className={open ? "block" : "hidden"}>
         <p className="text-sm text-muted-foreground">
           Bạn có thể đổi giờ mở cửa, giờ đóng cửa cũng như giá từng giờ cụ thể ở
           đây.
         </p>
+        <ConfigPitchForm pitch={data?.result} />
       </div>
-      <ConfigPitchForm pitch={data?.result} />
     </div>
   );
 }

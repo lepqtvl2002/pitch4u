@@ -98,7 +98,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
         },
       });
 
-      console.log(bookingInfo);
+      setBookingTimes([]);
 
       router.push(bookingInfo.result.paymentUrl);
     }

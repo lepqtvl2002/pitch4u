@@ -3,21 +3,22 @@ import { ProfileForm } from "@/components/dashboard/profile-form";
 import { ResetPasswordForm } from "@/components/dashboard/reset-password-form";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/use-toast";
+import { errorToast } from "@/lib/quick-toast";
 import { UserUseQuery } from "@/server/queries/user-queries";
+import { AxiosError } from "axios";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 
 export default function ProfilePage() {
-  const { data, isFetching, isError } = UserUseQuery.getProfile();
+  const { data, isFetching, error } = UserUseQuery.getProfile();
   const [isOpen, setIsOpen] = useState(false);
-  if (isFetching) return <div>Loading...</div>;
-  if (isError)
-    return toast({
-      title: "Đã có lỗi xảy ra trong khi tải dữ liệu.",
-      description: "Vui lòng thử lại!",
-      variant: "destructive",
+  
+  if (error)
+    errorToast({
+      actionName: "Load profile",
+      code: (error as AxiosError).response?.status,
     });
+  if (isFetching || error) return <div>Loading...</div>;
   return (
     <div className="space-y-6">
       <div>

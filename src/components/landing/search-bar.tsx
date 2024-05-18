@@ -6,12 +6,24 @@ import { IPitch } from "@/types/pitch";
 import Link from "next/link";
 import { CircleDollarSign, MapPin, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toast } from "../ui/use-toast";
 import Image from "next/image";
 import { Stars } from "../ui/vote-stars";
 import { Skeleton } from "../ui/skeleton";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { $globalFetch } from "@/lib/axios";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { pitchTypeToString } from "@/lib/convert";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
+import { pitchTypesArray } from "@/enums/pitchTypes";
+import { errorToast } from "@/lib/quick-toast";
+import { AxiosError } from "axios";
+import { Input } from "../ui/input";
 
 const LIMIT = 3;
 
@@ -75,6 +87,11 @@ const SearchBar: React.FC = () => {
     },
   });
 
+  const { data: pitchTypes, isLoading: isLoadingPitchTypes } =
+    PitchUseQuery.getPitchTypes();
+
+  const [pitchType, setPitchType] = React.useState<string>("");
+
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -117,20 +134,40 @@ const SearchBar: React.FC = () => {
   }, [debounceValue, rate, location.lat, location.long, sort]);
 
   if (error) {
-    toast({
-      title: "Có lỗi xảy ra khi tải sân bóng",
-      description: "Vui lòng thử lại",
-      variant: "destructive",
+    errorToast({
+      actionName: "Tải sân",
+      code: (error as AxiosError).response?.status,
     });
-    return <></>;
   }
 
   return (
     <div className="flex flex-col space-y-4 w-full lg:w-2/3 xl:w-1/2">
       <div className="flex items-center space-x-2 md:space-x-4">
-        <input
+        <Select onValueChange={setPitchType}>
+          <SelectTrigger className="w-full min-w-[100px] md:min-w-[200px] rounded-full flex-1">
+            <SelectValue className="truncate">{pitchTypeToString(pitchType)}</SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {isLoadingPitchTypes ? (
+              <SelectItem value="soccer">Loading...</SelectItem>
+            ) : (
+              pitchTypesArray.map((type) => (
+                <SelectItem
+                  key={type}
+                  value={type}
+                  disabled={
+                    pitchTypes && !(type.toUpperCase() in pitchTypes?.result)
+                  }
+                >
+                  {pitchTypeToString(type)}
+                </SelectItem>
+              ))
+            )}
+          </SelectContent>
+        </Select>
+        <Input
           type="text"
-          className="rounded-full w-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="rounded-full flex-2"
           placeholder="Tìm kiếm"
           value={searchQuery}
           onChange={handleSearchQueryChange}
@@ -141,7 +178,7 @@ const SearchBar: React.FC = () => {
           <Button
             key={condition.value}
             className={cn(
-              "rounded-full w-1/3 hover:bg-emerald-300",
+              "rounded-full w-1/3",
               conditions.includes(condition.value)
                 ? "bg-emerald-500 text-white"
                 : "bg-gray-200 text-gray-500"
@@ -160,7 +197,7 @@ const SearchBar: React.FC = () => {
         ))}
       </div>
       <div className="mt-4 list-inside list-disc no-scrollbar">
-        {isFetching ? (
+        {isFetching || error ? (
           <div className="flex gap-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4">
             <Skeleton className="w-[200px] h-[200px]" />
             <Skeleton className="flex-1 h-[200px]" />
@@ -178,7 +215,8 @@ const SearchBar: React.FC = () => {
           })
         )}
         <div>
-          <button
+          <Button
+            variant="ghost"
             onClick={() => fetchNextPage()}
             disabled={!hasNextPage || isFetchingNextPage}
           >
@@ -187,9 +225,8 @@ const SearchBar: React.FC = () => {
               : hasNextPage
               ? "Tải thêm"
               : "Không có gì để hiển thị thêm"}
-          </button>
+          </Button>
         </div>
-        <div>{isFetching && !isFetchingNextPage ? "Đang tải..." : null}</div>
       </div>
     </div>
   );
@@ -229,7 +266,9 @@ export function PitchItem({ pitch }: { pitch: IPitch }) {
         />
         <div className="flex flex-col justify-between h-full flex-1">
           <div className="md:space-y-2">
-            <h3 className="text-md md:text-xl font-semibold text-gray-800">{pitch?.name}</h3>
+            <h3 className="text-md md:text-xl font-semibold text-gray-800">
+              {pitch?.name}
+            </h3>
             <p className="text-gray-600 text-xs md:text-sm">{pitch.address}</p>
             <Stars className="flex text-sm" rating={Number(pitch?.rate)} />
           </div>

@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { Nunito } from "next/font/google";
 import AuthProvider from "@/providers/auth-provider";
 import { Toaster } from "@/components/ui/toaster";
 import ClientProvider from "@/providers/client-provider";
@@ -9,7 +9,7 @@ import AuthProviderHelper from "@/providers/auth-provider-helper";
 import PageProgress from "@/components/progress-bar";
 import SocketProvider from "@/providers/socket-provider";
 
-const inter = Inter({ subsets: ["latin"] });
+const nunito = Nunito({ subsets: ["latin"] });
 
 export const metadata = {
   metadataBase: {},
@@ -43,7 +43,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn("scroll-smooth mdl-js")}>
-      <body className={cn(inter.className)}>
+      <body className={cn(nunito.className)}>
         <ClientProvider>
           <AuthProvider>
             <AuthProviderHelper>

@@ -52,9 +52,10 @@ export default function Navbar({
           </ul>
         </div>
         {status === "loading" ? (
-          <Button>
-            <Loader2Icon className="animate-spin mr-2" /> Loading...
-          </Button>
+          <span className="flex">
+            <Loader2Icon className="animate-spin mr-2" />{" "}
+            <span className="hidden md:inline-block">Loading...</span>
+          </span>
         ) : status === "authenticated" ? (
           <DropdownMenuProfile
             user={session?.user}

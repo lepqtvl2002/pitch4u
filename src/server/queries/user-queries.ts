@@ -64,8 +64,8 @@ export type BookingHistory = {
     booking_pitch_id: number;
     booking_id: number;
     subpitch_id: number;
-    start_time: string;
-    end_time: string;
+    start_time: Date;
+    end_time: Date;
     price: number;
     createdAt: string;
     updatedAt: string;

@@ -20,7 +20,7 @@ export default function Footer({
       {...props}
     >
       <div className="w-full flex flex-col md:w-1/2 mb-10">
-        <h2 className="text-3xl mb-4">Contact with us</h2>
+        <h2 className="text-3xl mb-4 font-semibold">Liên hệ với chúng tôi</h2>
         {mainFooterConfig.map((ele) => (
           <Link className="underline" key={ele.href} href={ele.href}>
             {ele.title}

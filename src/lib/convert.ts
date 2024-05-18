@@ -113,9 +113,7 @@ export const stringToPitchType = (type: string) => {
 };
 
 export const pitchTypeToString = (type: string | null) => {
-  if (!type) {
-    return "Loại sân chưa xác định";
-  }
+  if (!type) return "Tất cả";
   switch (type) {
     case PitchTypes.Soccer:
       return "Sân bóng đá";

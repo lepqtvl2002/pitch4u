@@ -103,13 +103,26 @@ export class PitchUseQuery {
     return useQuery({
       queryKey: ["pitchTypes"],
       queryFn: () =>
-        $fetch(`/v1/pitches/type`, {
+        $fetch(`/v1/pitches/pitch-type`, {
           method: "GET",
         }).then((res) => res.data as { result: Record<string, string> }),
       cacheTime: 100,
       keepPreviousData: true,
     });
   };
+
+  static getSubPitchTypes = ({ pitchType }: { pitchType: string }) => {
+    return useQuery({
+      queryKey: ["subPitchTypes", pitchType],
+      queryFn: () =>
+        $fetch(`/v1/pitches/subpitch-type/${pitchType}`, {
+          method: "GET",
+        }).then((res) => res.data as { result: Record<string, string> }),
+      cacheTime: 100,
+      keepPreviousData: true,
+    });
+  };
+
   static getSubPitchPriceConfig = ({
     subpitchId,
   }: {

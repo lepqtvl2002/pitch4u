@@ -30,7 +30,7 @@ export function DropdownMenuProfile({
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger className={className}>
-        <Button>
+        <Button variant="ghost">
           <span className="max-w-[160px] truncate">
             Hi, {user.name || user.email}
           </span>

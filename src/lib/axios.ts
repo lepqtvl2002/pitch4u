@@ -11,7 +11,3 @@ export const $fetch = axios.create({
     },
     // withCredentials: true,
 });
-
-export const setAccessToken = (token: string) => {
-    $fetch.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-};

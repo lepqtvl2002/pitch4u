@@ -27,6 +27,8 @@ import SoccerPitchTypes from "@/enums/soccerPitchTypes";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { useRouter } from "next/navigation";
 import { Icons } from "../icons";
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
+import { useEffect, useState } from "react";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -52,6 +54,21 @@ export function SubPitchForm({ pitch_id }: FormProps) {
   });
   const { mutateAsync, isLoading } = PitchUseMutation.addSubPitch();
   const router = useRouter();
+  const { data, isLoading: isLoadingSubPitchTypes } =
+    PitchUseQuery.getSubPitchTypes({
+      pitchType: "soccer",
+    });
+
+  const [subPitchTypes, setSubPitchTypes] = useState(
+    data ? Object.values(data.result) : []
+  );
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+      setSubPitchTypes(Object.values(data.result));
+    }
+  }, [data]);
 
   async function onSubmit(data: ProfileFormValues) {
     try {
@@ -111,18 +128,15 @@ export function SubPitchForm({ pitch_id }: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={SoccerPitchTypes.Pitch5}>
-                    Sân dành cho 5 người
-                  </SelectItem>
-                  <SelectItem value={SoccerPitchTypes.Pitch7}>
-                    Sân dành cho 7 người
-                  </SelectItem>
-                  <SelectItem value={SoccerPitchTypes.Pitch9}>
-                    Sân dành cho 9 người
-                  </SelectItem>
-                  <SelectItem value={SoccerPitchTypes.Pitch11}>
-                    Sân dành cho 11 người
-                  </SelectItem>
+                  {isLoadingSubPitchTypes ? (
+                    <>Loading...</>
+                  ) : (
+                    subPitchTypes?.map((type, index) => (
+                      <SelectItem key={index} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
               <FormDescription>

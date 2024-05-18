@@ -6,6 +6,7 @@ import BookingStatuses from "@/enums/bookingStatuses";
 import VoucherStatuses from "@/enums/voucherStatues";
 import VoucherTypes, { VoucherType } from "@/enums/voucherTypes";
 import UserRoles from "@/enums/roles";
+import PaymentTypes from "@/enums/paymentTypes";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -470,8 +471,10 @@ export const formatMoney = (amount: number) => {
 
 export const paymentTypeToString = (paymentType: string) => {
   switch (paymentType) {
-    case "vnpay":
+    case PaymentTypes.VNPay:
       return "Ví VnPay";
+    case PaymentTypes.PayOS:
+      return "PayOS";
     default:
       return "Trả sau";
   }

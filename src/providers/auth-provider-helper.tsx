@@ -1,14 +1,45 @@
 "use client";
-import { signIn, useSession } from "next-auth/react";
-import { useEffect } from "react";
-import { $fetch } from "@/lib/axios";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useCallback, useEffect } from "react";
+import { $fetch, $globalFetch } from "@/lib/axios";
 import { errorToast } from "@/lib/quick-toast";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { requestUrl } from "@/config/request-urls";
 
 function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const { update, data: session } = useSession();
   const router = useRouter();
+
+  const fetchAccessToken = useCallback(async () => {
+    try {
+      const res = await $globalFetch.post(requestUrl.refreshToken, {
+        refresh_token: session?.refreshToken?.token,
+      });
+      if (res.data) {
+        update({
+          ...session,
+          accessToken: res.data.access,
+          refreshToken: res.data.refresh,
+        });
+      } else {
+        signIn();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // Handle Axios error
+        errorToast({
+          actionName: "Refresh Access Token",
+          code: error.response?.status,
+        });
+        signOut();
+      } else {
+        // Handle general errors
+        console.log("An error occurred while refreshing access token");
+        signOut();
+      }
+    }
+  }, [session, update]);
 
   useEffect(() => {
     if (session?.error === "RefreshAccessTokenError") {
@@ -29,7 +60,12 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
     const responseInterceptor = $fetch.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        {
+        if (error.response?.status === 401) {
+          // signIn();
+          console.log("401 error");
+          console.log(session);
+          await fetchAccessToken();
+        } else {
           errorToast({ actionName: "Call API", code: error.response?.status });
         }
       }

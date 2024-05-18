@@ -7,7 +7,6 @@ import useDebounce from "@/hooks/use-debounce";
 import { toast } from "@/components/ui/use-toast";
 import { UserUseQuery } from "@/server/queries/user-queries";
 import DropdownMenuActions from "./dropdown-menu-action";
-import { addHours } from "date-fns";
 
 export default function BookingTable() {
   const [search, setSearch] = React.useState<string>();
@@ -62,12 +61,6 @@ export default function BookingTable() {
                   refetch={refetch}
                   id={bookingId}
                   booking={row.original}
-                  isCancelable={
-                    row.original.status === "success" &&
-                    new Date(
-                      row.original.booking_pitches.at(0)?.start_time ?? ""
-                    ) > addHours(new Date(), 1)
-                  }
                 />
               );
             },

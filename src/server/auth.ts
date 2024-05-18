@@ -6,11 +6,9 @@ import {
 } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { IRefreshReturn, IToken } from "@/types/token";
-import { $fetch, $globalFetch, setAccessToken } from "@/lib/axios";
+import { IToken } from "@/types/token";
+import { $fetch, $globalFetch } from "@/lib/axios";
 import { UserRole } from "@/enums/roles";
-import { requestUrl } from "@/config/request-urls";
-import { AxiosError } from "axios";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -98,6 +96,8 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = data.tokens.refresh;
         token.userRole = data.user?.role.name;
         token.userId = data.user?.user_id;
+
+        return token;
       }
 
       if (user) {
@@ -105,35 +105,6 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = user?.refresh;
         token.userRole = user?.role.name;
         token.userId = user?.user_id;
-      }
-      
-      if (token?.accessToken?.token) {
-        setAccessToken(token?.accessToken?.token);
-      }
-      
-      if (token?.accessToken?.expiresIn && token?.refreshToken?.token) {
-        // Return previous token if the access token has not expired yet
-        if (Date.now() < token?.accessToken?.expiresIn.getTime()) {
-          return token;
-        } else {
-          const newTokens = await refreshAccessToken(
-            token?.refreshToken?.token
-          );
-
-          if (newTokens?.access) {
-            setAccessToken(newTokens?.access.token);
-            return {
-              ...token,
-              accessToken: newTokens?.access,
-              refreshToken: newTokens?.refresh,
-            };
-          } else {
-            return {
-              ...token,
-              error: "RefreshAccessTokenError",
-            };
-          }
-        }
       }
 
       return token;
@@ -212,24 +183,3 @@ export const getServerAuthSession = (ctx: {
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
-
-async function refreshAccessToken(refreshToken: string) {
-  try {
-    const response = await $globalFetch(requestUrl.refreshToken, {
-      method: "POST",
-      data: {
-        refresh_token: refreshToken,
-      },
-    });
-
-    const tokens = response.data?.tokens;
-
-    if (!tokens) {
-      throw response.config;
-    }
-
-    return tokens as IRefreshReturn;
-  } catch (error) {
-    console.log((error as AxiosError)?.message);
-  }
-}
