@@ -6,7 +6,7 @@ import { toast } from "@/components/ui/use-toast";
 import { mutatingToast } from "@/lib/quick-toast";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
-import { Search, Trash2Icon } from "lucide-react";
+import { Search, XIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function FavoritePage() {
@@ -42,7 +42,10 @@ export default function FavoritePage() {
         <div>
           {data?.result?.length ? (
             data?.result?.map((pitch) => (
-              <div key={pitch.pitch_id} className="flex justify-between gap-2 items-center">
+              <div
+                key={pitch.pitch_id}
+                className="flex justify-between gap-2 items-center"
+              >
                 <PitchItem pitch={pitch} />
                 <Button
                   variant="destructive"
@@ -50,7 +53,7 @@ export default function FavoritePage() {
                     await unLikePitch(pitch.pitch_id);
                   }}
                 >
-                  <Trash2Icon />
+                  <XIcon />
                 </Button>
               </div>
             ))

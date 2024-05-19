@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import BookingStatuses from "@/enums/bookingStatuses";
+import PaymentTypes from "@/enums/paymentTypes";
 import { mutatingToast } from "@/lib/quick-toast";
 import {
   bookingStateVariant,
@@ -50,6 +51,10 @@ export default function DropdownMenuActions({
       new Date(firstBooking.start_time) < addHours(new Date(), 1)) ||
     booking.status === BookingStatuses.Pending;
 
+  const canPayment =
+    booking.status === BookingStatuses.Pending &&
+    booking.payment_type === PaymentTypes.PayOS;
+
   const { mutateAsync: cancelBookingMutate, isLoading: isCanceling } =
     PitchUseMutation.cancelBookingPitch();
 
@@ -69,6 +74,16 @@ export default function DropdownMenuActions({
           <DialogTrigger className="w-full">
             <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
           </DialogTrigger>
+          {canPayment && (
+            <DropdownMenuItem
+              className="bg-yellow-500 text-white hover:cursor-pointer hover:bg-yellow-300"
+              onClick={() => {
+                window.open(booking.payment_url, "_blank");
+              }}
+            >
+              Thanh toán
+            </DropdownMenuItem>
+          )}
           {isCancelable ? (
             <DropdownMenuItem
               disabled={isCanceling}

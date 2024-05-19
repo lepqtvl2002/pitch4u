@@ -73,6 +73,7 @@ export type BookingHistory = {
     sub_pitch: ISubPitch;
   }[];
   pitch: IPitch;
+  payment_url?: string;
 };
 
 export class UserUseQuery {

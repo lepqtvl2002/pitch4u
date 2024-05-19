@@ -1,6 +1,6 @@
 export interface IToken {
     token: string;
-    expiresIn: Date;
+    expires: Date;
 }
 
 export interface IRefreshReturn {

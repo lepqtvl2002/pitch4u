@@ -145,7 +145,9 @@ const SearchBar: React.FC = () => {
       <div className="flex items-center space-x-2 md:space-x-4">
         <Select onValueChange={setPitchType}>
           <SelectTrigger className="w-full min-w-[100px] md:min-w-[200px] rounded-full flex-1">
-            <SelectValue className="truncate">{pitchTypeToString(pitchType)}</SelectValue>
+            <SelectValue className="truncate">
+              {pitchTypeToString(pitchType)}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {isLoadingPitchTypes ? (
@@ -249,10 +251,7 @@ export function PitchItem({ pitch }: { pitch: IPitch }) {
   };
 
   return (
-    <div
-      className="relative flex flex-1 space-x-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4"
-      style={{ listStyleType: "none" }}
-    >
+    <div className="relative flex flex-1 space-x-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4">
       <Link
         href={`/${pitch?.slug}`}
         className="flex justify-between items-start w-full gap-2"
@@ -267,7 +266,7 @@ export function PitchItem({ pitch }: { pitch: IPitch }) {
         <div className="flex flex-col justify-between h-full flex-1">
           <div className="md:space-y-2">
             <h3 className="text-md md:text-xl font-semibold text-gray-800">
-              {pitch?.name}
+              {pitchTypeToString(pitch.type)} {pitch?.name}
             </h3>
             <p className="text-gray-600 text-xs md:text-sm">{pitch.address}</p>
             <Stars className="flex text-sm" rating={Number(pitch?.rate)} />
