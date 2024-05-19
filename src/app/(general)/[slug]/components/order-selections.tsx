@@ -16,20 +16,17 @@ import {
 } from "@/components/ui/select";
 import { DatePickerBookingPitch } from "@/components/ui/date-picker";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { format, isSameDay, sub } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { useSession } from "next-auth/react";
-import { soccerPitchTypeToString, subPitchTypeToString } from "@/lib/convert";
+import { subPitchTypeToString } from "@/lib/convert";
 import { cn, formatMoney } from "@/lib/utils";
 import { ReportForm } from "./report-form";
 import { IPitch, ITimeFrame } from "@/types/pitch";
-import { soccerPitchTypesArray } from "@/enums/soccerPitchTypes";
 import { mutatingToast } from "@/lib/quick-toast";
 import { ISubPitch } from "@/types/subPitch";
 import { stringToTimeFrame, timeFrameToString } from "@/lib/format-datetime";
 import PaymentTypes from "@/enums/paymentTypes";
 import { useRouter } from "next/navigation";
-
-const types = soccerPitchTypesArray;
 
 interface GroupedType {
   [key: string]: any[];

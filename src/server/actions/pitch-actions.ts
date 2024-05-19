@@ -3,6 +3,7 @@ import { $fetch } from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
 import { PaymentType } from "@/enums/paymentTypes";
 import { BookingStatus } from "@/enums/bookingStatuses";
+import { AxiosError } from "axios";
 
 export type PitchInfo = {
   card_id: string;
@@ -95,7 +96,11 @@ export class PitchUseMutation {
           data,
         }).then((res) => res.data as { result: BookingInfo }),
       onSuccess: () => {
-        toast({ title: "Đặt sân thành công", variant: "success" });
+        toast({
+          title:
+            "Tạo lệnh đặt sân thành công. Vui lòng thanh toán để hoàn thành đặt sân",
+          description: "Đang chuyển trang...",
+        });
       },
       onError: (err: any) => {
         toast({
@@ -118,10 +123,10 @@ export class PitchUseMutation {
       onSuccess: () => {
         toast({ title: "Đã hủy đặt sân thành công", variant: "success" });
       },
-      onError: (err: any) => {
+      onError: (err: AxiosError) => {
         toast({
           title: "Đã xảy ra lỗi trong khi hủy đặt sân",
-          description: `${err?.message || "Đã xảy ra lỗi"}`,
+          description: `${err.message} ${err.status}`,
           variant: "destructive",
         });
       },

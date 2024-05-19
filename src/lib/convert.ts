@@ -143,7 +143,7 @@ export const subPitchTypeToString = ({
     case SoccerPitchTypes.Pitch7:
       return "Sân 7";
     case SoccerPitchTypes.Pitch9:
-      return "Sân 5";
+      return "Sân 9";
     case SoccerPitchTypes.Pitch11:
       return "Sân 11";
     default:

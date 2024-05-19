@@ -1,14 +1,22 @@
 "use client";
 import { DataTable } from "@/components/dashboard/data-table";
 import { type PaginationState } from "@tanstack/react-table";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { columns } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { toast } from "@/components/ui/use-toast";
 import { UserUseQuery } from "@/server/queries/user-queries";
 import DropdownMenuActions from "./dropdown-menu-action";
+import { useSearchParams } from "next/navigation";
+import { PitchUseMutation } from "@/server/actions/pitch-actions";
+import PaymentStatuses from "@/enums/paymentStatuses";
 
 export default function BookingTable() {
+  const searchParams = useSearchParams();
+  const cancel = searchParams.get("cancel");
+  const status = searchParams.get("status");
+  const orderCode = searchParams.get("orderCode");
+  let isCancelledRef = useRef(false);
   const [search, setSearch] = React.useState<string>();
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
@@ -35,6 +43,8 @@ export default function BookingTable() {
     }
   );
 
+  const { mutateAsync } = PitchUseMutation.cancelBookingPitch();
+
   const setSearchHandler = useCallback((value: string) => {
     setSearch(value);
   }, []);
@@ -46,6 +56,26 @@ export default function BookingTable() {
       variant: "destructive",
     });
   }
+
+  useEffect(() => {
+    const handleCancelBooking = async (bookingId: string) => {
+      isCancelledRef.current = true;
+      await mutateAsync({ booking_id: bookingId });
+      await refetch();
+    };
+
+    if (
+      cancel === "true" &&
+      status === PaymentStatuses.Cancelled &&
+      orderCode &&
+      !isFetching &&
+      !isCancelledRef.current
+    ) {
+      handleCancelBooking(orderCode as string);
+    }
+  }, [cancel, isFetching, mutateAsync, orderCode, refetch, status]);
+
+  
 
   return (
     <div>

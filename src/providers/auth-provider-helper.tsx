@@ -2,8 +2,6 @@
 import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect } from "react";
 import { $fetch, $globalFetch } from "@/lib/axios";
-import { errorToast } from "@/lib/quick-toast";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { requestUrl } from "@/config/request-urls";
 
@@ -32,17 +30,9 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           await signIn();
         }
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          // Handle Axios error
-          errorToast({
-            actionName: "Refresh Access Token",
-            code: error.response?.status,
-          });
-          signIn();
-        } else {
-          // Handle general errors
-          console.log("An error occurred while refreshing access token");
-        }
+        // Handle general errors
+        await signIn();
+        console.log("An error occurred while refreshing access token");
       }
     },
     [update, session]
@@ -64,6 +54,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
         return Promise.reject(error);
       }
     );
+
     const responseInterceptor = $fetch.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -77,6 +68,13 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
             ] = `Bearer ${session?.accessToken?.token}`;
             return $fetch(prevRequest);
           }
+        } else if (error.response?.status === 429 && !prevRequest._retry) {
+          prevRequest._retry = true;
+          const retryAfter = error.response.headers["retry-after"] || 60;
+          await new Promise((resolve) =>
+            setTimeout(resolve, retryAfter * 1000)
+          );
+          return $fetch(prevRequest);
         } else {
           console.log(
             "An error occurred while calling API",
