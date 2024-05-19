@@ -11,7 +11,6 @@ import {
   paymentTypeToString,
 } from "@/lib/utils";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { format } from "date-fns";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 export default function DetailBookingPage() {
@@ -46,7 +45,7 @@ export default function DetailBookingPage() {
         return;
       } else
         return (
-          <p key={index} className="flex justify-between">
+          <p key={index} className="flex justify-between flex-wrap">
             <Label className="mr-2">{stringToLabel(item[0])} :</Label>
             {renderValueByTitle(item)}
           </p>
@@ -177,6 +176,8 @@ export default function DetailBookingPage() {
 
 const stringToLabel = (string: string) => {
   switch (string) {
+    case "payment_url": 
+      return "Link thanh toán";
     case "booking_id":
       return "Mã đặt sân";
     case "user_id":
