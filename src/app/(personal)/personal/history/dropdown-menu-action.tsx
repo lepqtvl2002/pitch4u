@@ -1,3 +1,4 @@
+import { ReviewDialogForm } from "@/app/(general)/[slug]/components/review-form";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,8 +26,9 @@ import {
 } from "@/lib/utils";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { BookingHistory } from "@/server/queries/user-queries";
-import { addHours, format } from "date-fns";
+import { addHours, format, set } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
+import { useState } from "react";
 
 type DropdownMenuProps = {
   id: string | number;
@@ -39,6 +41,8 @@ export default function DropdownMenuActions({
   refetch,
   booking,
 }: DropdownMenuProps) {
+  const [isReview, setIsReview] = useState(false);
+
   booking.booking_pitches.sort((a, b) => {
     if (new Date(a.start_time) > new Date(b.start_time)) return 1;
     return -1;
@@ -46,9 +50,13 @@ export default function DropdownMenuActions({
 
   const firstBooking = booking.booking_pitches[0];
 
+  const canReview =
+    booking.status === BookingStatuses.Success &&
+    new Date(firstBooking.start_time).getTime() < Date.now();
+
   const isCancelable =
     (booking.status === BookingStatuses.Success &&
-      new Date(firstBooking.start_time) < addHours(new Date(), 1)) ||
+      new Date(firstBooking.start_time) > addHours(new Date(), 1)) ||
     booking.status === BookingStatuses.Pending;
 
   const canPayment =
@@ -65,7 +73,14 @@ export default function DropdownMenuActions({
   }
 
   return (
-    <Dialog>
+    <Dialog
+      onOpenChange={(value) => {
+        // Set isReview is false when close dialog
+        if (isReview && !value) {
+          setIsReview(false);
+        }
+      }}
+    >
       <DropdownMenu>
         <DropdownMenuTrigger>
           <MoreHorizontal />
@@ -74,6 +89,18 @@ export default function DropdownMenuActions({
           <DialogTrigger className="w-full">
             <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
           </DialogTrigger>
+          {canReview && (
+            <DialogTrigger className="w-full">
+              <DropdownMenuItem
+                onClick={() => {
+                  setIsReview(true);
+                }}
+                className="bg-blue-500 text-white hover:cursor-pointer hover:bg-blue-300"
+              >
+                Review sân
+              </DropdownMenuItem>
+            </DialogTrigger>
+          )}
           {canPayment && (
             <DropdownMenuItem
               className="bg-yellow-500 text-white hover:cursor-pointer hover:bg-yellow-300"
@@ -93,36 +120,38 @@ export default function DropdownMenuActions({
               Hủy đặt sân
             </DropdownMenuItem>
           ) : (
-            booking.status === BookingStatuses.Canceled && (
-              <DropdownMenuItem
-                disabled
-                className="bg-green-500 text-white hover:cursor-pointer hover:bg-green-300"
-              >
-                Đặt lại
-              </DropdownMenuItem>
-            )
+            <DropdownMenuItem
+              disabled
+              className="bg-green-500 text-white hover:cursor-pointer hover:bg-green-300"
+            >
+              Đặt lại
+            </DropdownMenuItem>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Thông tin đặt sân chi tiết</DialogTitle>
-          {isCancelable && (
-            <DialogDescription>
-              Bạn chỉ có thể hủy sân 1 giờ trước giờ đá, việc hủy đặt sân thường
-              xuyên không có lý do sẽ bị cảnh cáo và xử phạt.
-            </DialogDescription>
-          )}
-        </DialogHeader>
-        <BookingDetailDialogContent booking={booking} />
-        <DialogFooter>
-          {isCancelable && (
-            <Button variant="destructive" onClick={cancelBooking}>
-              Hủy đặt sân
-            </Button>
-          )}
-        </DialogFooter>
-      </DialogContent>
+      {isReview ? (
+        <ReviewDialogForm bookingId={booking.booking_id} />
+      ) : (
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Thông tin đặt sân chi tiết</DialogTitle>
+            {isCancelable && (
+              <DialogDescription>
+                Bạn chỉ có thể hủy sân 1 giờ trước giờ đá, việc hủy đặt sân
+                thường xuyên không có lý do sẽ bị cảnh cáo và xử phạt.
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          <BookingDetailDialogContent booking={booking} />
+          <DialogFooter>
+            {isCancelable && (
+              <Button variant="destructive" onClick={cancelBooking}>
+                Hủy đặt sân
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      )}
     </Dialog>
   );
 }

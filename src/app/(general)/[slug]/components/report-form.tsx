@@ -55,7 +55,7 @@ export function ReportForm({ pitchId }: { pitchId: string | number }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Tố cáo sân bóng</DialogTitle>
+          <DialogTitle>Tố cáo sân</DialogTitle>
           <DialogDescription>
             Chúng tôi sẽ xem xét và xử lý tố cáo của bạn trong thời gian sớm
             nhất.

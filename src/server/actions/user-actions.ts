@@ -260,4 +260,45 @@ export class UserUseMutation {
       },
     });
   };
+
+  static review = () => {
+    return useMutation({
+      mutationKey: ["review"],
+      mutationFn: ({
+        bookingId,
+        star,
+        text,
+        attaches,
+      }: {
+        bookingId: number | string;
+        star: number;
+        text: string;
+        attaches: string[];
+      }) =>
+        $fetch(`/v1/reviews`, {
+          method: "POST",
+          data: {
+            booking_id: bookingId,
+            star,
+            text,
+            attaches,
+          },
+        }).then((res) => res.data),
+      onSuccess: () => {
+        toast({
+          title: "Review thành công",
+          variant: "success",
+          description: "Cảm ơn bạn đã chia sẻ trải nghiệm của mình.",
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+        toast({
+          title: "Hành động thất bại",
+          variant: "destructive",
+          description: "Đã xảy ra lỗi trong lúc thực hiện hành động này.",
+        });
+      },
+    });
+  };
 }

@@ -1,7 +1,7 @@
 "use client";
 import { signIn, useSession } from "next-auth/react";
-import { useCallback, useEffect } from "react";
-import { $fetch, $globalFetch } from "@/lib/axios";
+import { useEffect } from "react";
+import { $fetch } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { requestUrl } from "@/config/request-urls";
 
@@ -9,10 +9,10 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const { update, data: session } = useSession();
   const router = useRouter();
 
-  const fetchAccessToken = useCallback(
-    async (refreshToken: string) => {
+  useEffect(() => {
+    const fetchAccessToken = async (refreshToken: string) => {
       try {
-        const res = await $globalFetch.post(requestUrl.refreshToken, {
+        const res = await $fetch.post(requestUrl.refreshToken, {
           refresh_token: refreshToken,
         });
         if (res.data && session) {
@@ -30,15 +30,10 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           await signIn();
         }
       } catch (error) {
-        // Handle general errors
         await signIn();
-        console.log("An error occurred while refreshing access token");
       }
-    },
-    [update, session]
-  );
+    };
 
-  useEffect(() => {
     if (session?.error === "RefreshAccessTokenError") {
       signIn();
     }
@@ -68,8 +63,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
             ] = `Bearer ${session?.accessToken?.token}`;
             return $fetch(prevRequest);
           }
-        } else if (error.response?.status === 429 && !prevRequest._retry) {
-          prevRequest._retry = true;
+        } else if (error.response?.status === 429) {
           const retryAfter = error.response.headers["retry-after"] || 60;
           await new Promise((resolve) =>
             setTimeout(resolve, retryAfter * 1000)
@@ -90,7 +84,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       $fetch.interceptors.response.eject(responseInterceptor);
       $fetch.interceptors.request.eject(requestInterceptor);
     };
-  }, [fetchAccessToken, router, session, update]);
+  }, [router, session, update]);
 
   return <>{children}</>;
 }

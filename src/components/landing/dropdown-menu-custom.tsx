@@ -15,30 +15,42 @@ import { signOut } from "next-auth/react";
 import { personalNavConfig, publicNavbarConfig } from "@/config/site";
 import Link from "next/link";
 import { Icons } from "../icons";
+import { User } from "next-auth";
+import { AvatarCustom } from "../ui/avatar-custom";
 
 export function DropdownMenuProfile({
   user,
   className,
+  showAvatar = true,
   ...props
 }: {
-  user: {
-    name: string;
-    email: string;
-  };
+  user: User;
+  showAvatar?: boolean;
   className?: string;
 }) {
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger className={className}>
-        <Button variant="ghost">
-          <span className="max-w-[160px] truncate">
-            Hi, {user.name || user.email}
-          </span>
-          <ChevronDown className="ml-2" />
-        </Button>
+        {showAvatar ? (
+          <Button
+            variant="outline"
+            size="icon"
+            className="relative rounded-full"
+          >
+            <AvatarCustom avatarUrl={user?.image} name={user.name} />
+            <ChevronDown
+              size={18}
+              className="absolute bottom-0 -right-1 rounded-full bg-white"
+            />
+          </Button>
+        ) : (
+          <Button variant="outline">
+            {user.name ?? user.email} <ChevronDown className="ml-2" />
+          </Button>
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
+        <DropdownMenuLabel>{user.name ?? user.email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {personalNavConfig.mainNav.map((item) => {
@@ -85,7 +97,11 @@ export function DropdownMenuNav({
         ))}
         <DropdownMenuSeparator />
         {user ? (
-          <DropdownMenuProfile user={user} className={"flex px-2 w-full"} />
+          <DropdownMenuProfile
+            user={user}
+            className={"flex px-2 w-full"}
+            showAvatar={false}
+          />
         ) : (
           <div className="grid gap-2">
             <Link href={"/login"}>
