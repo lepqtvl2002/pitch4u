@@ -37,14 +37,14 @@ export default function Footer({
           </div>
           <div className="md:w-1/2 text-lg flex flex-col">
             <h4 className="pb-2 text-sm font-bold mb-4">Social media</h4>
-            <a className="flex underline" href="/">
+            <Link className="flex underline" href="/">
               <Facebook className="mr-2" />
               Facebook
-            </a>
-            <a className="flex underline" href="/">
+            </Link>
+            <Link className="flex underline" href="/">
               <Twitter className="mr-2" />
               Twitter
-            </a>
+            </Link>
           </div>
         </div>
         <div className="mb-10">

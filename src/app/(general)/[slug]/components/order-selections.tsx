@@ -251,6 +251,10 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
                 variant={subPitchType === type ? "default" : "outline"}
                 key={index}
                 onClick={() => {
+                  if (subPitchType === type) {
+                    setType("");
+                    return;
+                  }
                   setType(subPitchType);
                 }}
               >
@@ -307,15 +311,19 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             key={index}
             variant="secondary"
             className="justify-between gap-2"
-            onClick={() => {
-              setBookingTimes(bookingTimes.filter((_, i) => i !== index));
-            }}
           >
             <b>{time.subPitchName}</b>
             <span>{format(time.date, "dd/MM/yyyy")}</span>
             <span className="italic">{time.timeFrameString}</span>
             <span className="text-lg">{formatMoney(time.price)}</span>
-            <XCircleIcon color="gray" size={20} className="ml-2" />
+            <XCircleIcon
+              color="gray"
+              size={20}
+              className="ml-2"
+              onClick={() => {
+                setBookingTimes(bookingTimes.filter((_, i) => i !== index));
+              }}
+            />
           </Button>
         );
       })}
