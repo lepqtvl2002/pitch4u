@@ -1,7 +1,7 @@
 "use client";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { $fetch } from "@/lib/axios";
+import { $fetch, $globalFetch } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
 
@@ -12,7 +12,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
   useEffect(() => {
     const fetchAccessToken = async (refreshToken: string) => {
       try {
-        const res = await $fetch.post(REQUEST_URLS_CURRENT.REFRESH_TOKEN, {
+        const res = await $globalFetch.post(REQUEST_URLS_CURRENT.REFRESH_TOKEN, {
           refresh_token: refreshToken,
         });
         if (res.data && session) {
@@ -54,7 +54,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       (response) => response,
       async (error) => {
         const prevRequest = error?.config;
-        if (error.response?.status === 401 && !prevRequest?.sent) {
+        if (error.response?.status === 401 && !prevRequest._retry) {
           prevRequest._retry = true;
           if (session?.refreshToken?.token) {
             await fetchAccessToken(session?.refreshToken?.token);

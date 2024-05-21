@@ -1,3 +1,4 @@
+import { UserRole } from "@/enums/roles";
 import { VoucherType } from "@/enums/voucherTypes";
 
 export interface IVoucher {
@@ -8,7 +9,7 @@ export interface IVoucher {
   expire_date: Date;
   usage_count: number | null;
   discount: number;
-  created_from: "super_admin" | "admin" | "user" | "staff";
+  created_from: UserRole;
   created_by: number;
   pitch_id: null | number;
   createdAt: Date;

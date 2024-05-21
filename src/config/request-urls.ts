@@ -5,6 +5,8 @@ export const REQUEST_URLS = {
     USERS: "/v1/users",
     STAFFS: "/v1/users/staffs",
     BOOKING_HISTORY: "/v1/booking/my-bookings",
+    VOUCHERS: "/v1/vouchers",
+    VOUCHERS_USER: "/v1/vouchers/user",
   },
 };
 

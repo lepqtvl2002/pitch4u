@@ -27,6 +27,8 @@ import { ISubPitch } from "@/types/subPitch";
 import { stringToTimeFrame, timeFrameToString } from "@/lib/format-datetime";
 import PaymentTypes from "@/enums/paymentTypes";
 import { useRouter } from "next/navigation";
+import { VoucherDialog } from "./voucher-dialog";
+import { IVoucher } from "@/types/voucher";
 
 interface GroupedType {
   [key: string]: any[];
@@ -47,6 +49,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
     (e: { user_id: number }) => e.user_id === session?.user.userId
   );
   const [isLiked, setIsLiked] = React.useState(isLikedPitch);
+  const [voucher, setVoucher] = React.useState<IVoucher | undefined>();
   const [bookingTimes, setBookingTimes] = React.useState<
     {
       date: Date;
@@ -134,7 +137,10 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
                 time.date !== date ||
                 time.timeFrameString !== timeFrame ||
                 time.subPitchId !== subPitch.subpitch_id
-            )
+            ) &&
+            subPitches.findIndex(
+              (e) => e.subpitch_id === currentSubPitch.subpitch_id
+            ) !== -1
           ) {
             setBookingTimes([
               ...bookingTimes,
@@ -231,7 +237,13 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
                     : true;
                   return (
                     <SelectItem
-                      disabled={!canBookThisTime}
+                      disabled={
+                        !canBookThisTime ||
+                        timeFrame.free.length === 0 ||
+                        timeFrame.busy.findIndex(
+                          (e) => e.subpitch_id === currentSubPitch?.subpitch_id
+                        ) !== -1
+                      }
                       key={value}
                       value={value}
                     >
@@ -335,6 +347,13 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
           {bookingTimes.reduce((prev, cur) => prev + Number(cur.price), 0)}
         </span>
       </div>
+      <VoucherDialog
+        pitchId={pitch.pitch_id}
+        voucher={voucher}
+        setVoucher={(voucher) =>
+          setVoucher((prev) => (prev ? undefined : voucher))
+        }
+      />
       <div
         className={
           "fixed bottom-0 right-0 left-0 md:relative flex md:flex-col lg:flex-row md:gap-2 md:pt-20 bg-white z-10"
