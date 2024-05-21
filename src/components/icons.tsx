@@ -59,6 +59,9 @@ import {
   FolderHeartIcon,
   History,
   BarChartBigIcon,
+  SearchIcon,
+  GroupIcon,
+  PhoneIcon
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -231,4 +234,7 @@ export const Icons = {
   trendingDown: TrendingDown,
   twitter: Twitter,
   check: Check,
+  search: SearchIcon,
+  group: GroupIcon,
+  phone: PhoneIcon
 };

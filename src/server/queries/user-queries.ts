@@ -120,7 +120,7 @@ export class UserUseQuery {
           await $fetch(REQUEST_URLS_CURRENT.STAFFS, {
             params,
           })
-        ).data as PaginatedUserList,
+        ).data as { result: User[] },
       ...config,
     });
   };
