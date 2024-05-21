@@ -5,7 +5,7 @@ export default function TermsOfUsePage() {
   return (
     <main className="px-2 md:container text-justify">
       <Navbar />
-      <div className="flex-1 bg-white rounded p-4 md:p-6 mt-20 md:mt-28">
+      <div className="flex-1 bg-white rounded p-4 md:p-6">
         <h2 className="font-bold text-3xl mb-10">Điều khoản sử dụng</h2>
         <p className="indent-8">
           Với việc sử dụng các thông tin, dịch vụ, sản phẩm trên website

@@ -6,6 +6,8 @@ import { IPitch } from "@/types/pitch";
 import { PaymentType } from "@/enums/paymentTypes";
 import { UserRole } from "@/enums/roles";
 import { BookingStatus } from "@/enums/bookingStatuses";
+import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
+import { config } from "./commom";
 
 export type User = {
   user_id: number;
@@ -77,45 +79,31 @@ export type BookingHistory = {
 };
 
 export class UserUseQuery {
-  // Function to testing
-  static search = (params: Record<string, any>) => {
-    return useQuery({
-      queryKey: ["posts", params],
-      queryFn: () =>
-        $fetch(`https://jsonplaceholder.typicode.com/posts`, {
-          method: "GET",
-          params,
-        }).then((res) => res.data),
-      cacheTime: 100,
-      keepPreviousData: true,
-    });
-  };
-
   static getProfile = (params?: { userId: number | string }) => {
     return useQuery({
       queryKey: ["profile", params],
-      queryFn: () =>
-        $fetch(`/v1/users/profile`, {
-          method: "GET",
-          params: {
-            user_id: params?.userId,
-          },
-        }).then((res) => res.data as { result: UserProfile }),
-      cacheTime: 100,
-      keepPreviousData: true,
+      queryFn: async () =>
+        (
+          await $fetch(REQUEST_URLS_CURRENT.USER_PROFILE, {
+            params: {
+              user_id: params?.userId,
+            },
+          })
+        ).data as { result: UserProfile },
+      ...config,
     });
   };
 
   static getManyUsers = (params: Record<string, any>) => {
     return useQuery({
       queryKey: ["users", params],
-      queryFn: () =>
-        $fetch(`/v1/users`, {
-          method: "GET",
-          params,
-        }).then((res) => res.data as PaginatedUserList),
-      cacheTime: 100,
-      keepPreviousData: true,
+      queryFn: async () =>
+        (
+          await $fetch(REQUEST_URLS_CURRENT.USERS, {
+            params,
+          })
+        ).data as PaginatedUserList,
+      ...config,
     });
   };
 
@@ -126,30 +114,27 @@ export class UserUseQuery {
     sort_by?: string;
   }) => {
     return useQuery({
-      queryKey: ["users", params],
-      queryFn: () =>
-        $fetch(`/v1/users/staffs`, {
-          method: "GET",
-          params,
-        }).then((res) => res.data as { result: User[] }),
-      cacheTime: 100,
-      keepPreviousData: true,
+      queryKey: ["staffs", params],
+      queryFn: async () =>
+        (
+          await $fetch(REQUEST_URLS_CURRENT.STAFFS, {
+            params,
+          })
+        ).data as PaginatedUserList,
+      ...config,
     });
   };
 
   static getBookingHistory = (params: Record<string, any>) => {
     return useQuery({
       queryKey: ["myBookingHistory", params],
-      queryFn: () =>
-        $fetch(`/v1/booking/my-bookings`, {
-          method: "GET",
-          params,
-        }).then(
-          (res) =>
-            res.data as { result: { data: BookingHistory[] } & IPaginated }
-        ),
-      cacheTime: 100,
-      keepPreviousData: true,
+      queryFn: async () =>
+        (
+          await $fetch(REQUEST_URLS_CURRENT.BOOKING_HISTORY, {
+            params,
+          })
+        ).data as { result: { data: BookingHistory[] } & IPaginated },
+      ...config,
     });
   };
 }

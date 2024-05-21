@@ -1,4 +1,5 @@
 import { NavItem, type DashboardConfig } from "@/types";
+import { REDIRECT_URLS } from "./redirect-urls";
 export const siteConfig = {
   name: "Pitch4u",
   description: "Tìm sân, tìm đồng dội, tìm đối thủ, tìm niềm vui sân cỏ.",
@@ -24,71 +25,71 @@ export const adminConfig: DashboardConfig = {
   mainNav: [
     {
       title: "Điều khiển",
-      href: "/admin",
+      href: REDIRECT_URLS.ADMIN.OVERVIEW,
       icon: "chart",
     },
     {
       title: "Phê duyệt yêu cầu",
-      href: "/admin/registration",
+      href: REDIRECT_URLS.ADMIN.REGISTRATION,
       icon: "managerPitch",
     },
     {
       title: "Người dùng",
-      href: "/admin/user",
+      href: REDIRECT_URLS.ADMIN.USER,
       icon: "userSquare",
     },
     {
       title: "Tố cáo của người dùng",
-      href: "/admin/report",
+      href: REDIRECT_URLS.ADMIN.REPORT,
       icon: "scrollText",
     },
     {
       title: "Quảng cáo",
-      href: "/admin/advertisement",
+      href: REDIRECT_URLS.ADMIN.ADVERTISEMENT,
       icon: "megaPhone",
     },
   ],
   sidebarNav: [
     {
       title: "Điều khiển",
-      href: "/admin",
+      href: REDIRECT_URLS.ADMIN.OVERVIEW,
       icon: "chart",
     },
     {
       title: "Phê duyệt yêu cầu",
-      href: "/admin/registration",
+      href: REDIRECT_URLS.ADMIN.REGISTRATION,
       icon: "managerPitch",
     },
     {
       title: "Sân",
-      href: "/admin/pitch",
+      href: REDIRECT_URLS.ADMIN.PITCH,
       icon: "layoutPanelLeft",
     },
     {
       title: "Người dùng",
-      href: "/admin/user",
+      href: REDIRECT_URLS.ADMIN.USER,
       icon: "userSquare",
     },
     {
       title: "Tố cáo của người dùng",
-      href: "/admin/report",
+      href: REDIRECT_URLS.ADMIN.REPORT,
       icon: "scrollText",
     },
     {
       title: "Quảng cáo",
-      href: "/admin/advertisement",
+      href: REDIRECT_URLS.ADMIN.ADVERTISEMENT,
       icon: "megaPhone",
     },
   ],
   notificationNav: [
     {
       title: "Tin nhắn",
-      href: "/admin/message",
+      href: REDIRECT_URLS.ADMIN.MESSAGE,
       icon: "message",
     },
     {
       title: "Thông báo",
-      href: "/admin/notification",
+      href: REDIRECT_URLS.ADMIN.NOTIFICATION,
       icon: "notification",
     },
   ],
@@ -98,56 +99,56 @@ export const dashboardConfig: DashboardConfig = {
   mainNav: [
     {
       title: "Quản lý sân",
-      href: "/dashboard/pitch",
+      href: REDIRECT_URLS.DASHBOARD.PITCH,
       icon: "layoutPanelLeft",
     },
     {
       title: "Quản lý đặt sân",
-      href: "/dashboard/booking",
+      href: REDIRECT_URLS.DASHBOARD.BOOKING,
       icon: "scrollText",
     },
     {
       title: "Voucher",
-      href: "/dashboard/voucher",
+      href: REDIRECT_URLS.DASHBOARD.VOUCHER,
       icon: "ticket",
     },
     {
       title: "Quảng cáo",
-      href: "/dashboard/advertisement",
+      href: REDIRECT_URLS.DASHBOARD.ADVERTISEMENT,
       icon: "megaPhone",
     },
   ],
   sidebarNav: [
     {
       title: "Quản lý sân",
-      href: "/dashboard/pitch",
+      href: REDIRECT_URLS.DASHBOARD.PITCH,
       icon: "layoutPanelLeft",
     },
     {
       title: "Quản lý đặt sân",
-      href: "/dashboard/booking",
+      href: REDIRECT_URLS.DASHBOARD.BOOKING,
       icon: "scrollText",
     },
     {
       title: "Voucher",
-      href: "/dashboard/voucher",
+      href: REDIRECT_URLS.DASHBOARD.VOUCHER,
       icon: "ticket",
     },
     {
       title: "Quảng cáo",
-      href: "/dashboard/advertisement",
+      href: REDIRECT_URLS.DASHBOARD.ADVERTISEMENT,
       icon: "megaPhone",
     },
   ],
   notificationNav: [
     {
       title: "Tin nhắn",
-      href: "/dashboard/message",
+      href: REDIRECT_URLS.DASHBOARD.MESSAGE,
       icon: "message",
     },
     {
       title: "Thông báo",
-      href: "/dashboard/notification",
+      href: REDIRECT_URLS.DASHBOARD.NOTIFICATION,
       icon: "notification",
     },
   ],
@@ -158,30 +159,30 @@ export const dashboardConfigOperator: DashboardConfig = {
   mainNav: [
     {
       title: "Điều khiển",
-      href: "/dashboard",
+      href: REDIRECT_URLS.DASHBOARD.OVERVIEW,
       icon: "chart",
     },
     {
       title: "Nhân viên",
-      href: "/dashboard/staff",
+      href: REDIRECT_URLS.DASHBOARD.STAFF,
       icon: "userSquare",
     },
   ],
   sidebarNav: [
     {
       title: "Điều khiển",
-      href: "/dashboard",
+      href: REDIRECT_URLS.DASHBOARD.OVERVIEW,
       icon: "chart",
     },
     {
       title: "Nhân viên",
-      href: "/dashboard/staff",
+      href: REDIRECT_URLS.DASHBOARD.STAFF,
       icon: "userSquare",
     },
     ...dashboardConfig.sidebarNav,
     {
       title: "Dịch vụ",
-      href: "/dashboard/service",
+      href: REDIRECT_URLS.DASHBOARD.SERVICE,
       icon: "coffee",
     },
     // {
@@ -270,34 +271,34 @@ export const personalNavConfig: DashboardConfig = {
   mainNav: [
     {
       title: "Thông tin cá nhân",
-      href: "/personal/profile",
+      href: REDIRECT_URLS.PERSONAL.PROFILE,
       icon: "user",
     },
     {
       title: "Sân yêu thích",
-      href: "/personal/favorite",
+      href: REDIRECT_URLS.PERSONAL.FAVORITE,
       icon: "favorite",
     },
     {
       title: "Lịch sử đặt sân",
-      href: "/personal/history",
+      href: REDIRECT_URLS.PERSONAL.HISTORY,
       icon: "history",
     },
   ],
   sidebarNav: [
     {
       title: "Thông tin cá nhân",
-      href: "/personal/profile",
+      href: REDIRECT_URLS.PERSONAL.PROFILE,
       icon: "user",
     },
     {
       title: "Sân yêu thích",
-      href: "/personal/favorite",
+      href: REDIRECT_URLS.PERSONAL.FAVORITE,
       icon: "favorite",
     },
     {
       title: "Lịch sử đặt sân",
-      href: "/personal/history",
+      href: REDIRECT_URLS.PERSONAL.HISTORY,
       icon: "history",
     },
   ],
@@ -306,26 +307,26 @@ export const personalNavConfig: DashboardConfig = {
 export const mainFooterConfig: NavItem[] = [
   {
     title: "Về chúng tôi",
-    href: "/about-us",
+    href: REDIRECT_URLS.ABOUT_US,
   },
   {
     title: "FAQ",
-    href: "/faq",
+    href: REDIRECT_URLS.FAQ,
   },
   {
     title: "Liên hệ",
-    href: "/contact",
+    href: REDIRECT_URLS.CONTACT,
   },
   {
     title: "Điều khoản sử dụng",
-    href: "/terms-of-use",
+    href: REDIRECT_URLS.TERMS_OF_USE,
   },
   {
     title: "Chính sách bảo mật",
-    href: "/privacy-policy",
+    href: REDIRECT_URLS.PRIVACY_POLICY,
   },
   {
     title: "Quyền riêng tư",
-    href: "/privacy",
+    href: REDIRECT_URLS.PRIVACY,
   },
 ];

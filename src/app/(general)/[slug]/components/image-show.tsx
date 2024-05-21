@@ -26,7 +26,7 @@ export default function ImageGallery({ pitch }: { pitch: IPitch }) {
           className={"w-auto h-full content-center"}
         />
       </div>
-      <div className="flex space-x-2 md:space-x-4 w-full py-1 px-1 h-24 md:h-40 overflow-auto no-scrollbar md:show-scrollbar mt-2 md:mt-4 items-center border border-main md:rounded">
+      <div className="flex space-x-2 md:space-x-4 w-full py-1 px-1 h-24 md:h-40 overflow-auto mt-2 md:mt-4 items-center border border-main md:rounded">
         {pitch.images.map((imageUrl: string, index: number) => (
           <Image
             key={imageUrl + index}

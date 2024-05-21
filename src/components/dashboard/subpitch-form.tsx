@@ -22,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
 import SoccerPitchTypes from "@/enums/soccerPitchTypes";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { useRouter } from "next/navigation";
@@ -30,6 +29,8 @@ import { Icons } from "../icons";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { useEffect, useState } from "react";
 import { subPitchTypeToString } from "@/lib/convert";
+import { mutatingToast } from "@/lib/quick-toast";
+import { toast } from "../ui/use-toast";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -68,33 +69,22 @@ export function SubPitchForm({ pitch_id, pitchType }: FormProps) {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setSubPitchTypes(Object.values(data.result));
     }
   }, [data]);
 
   async function onSubmit(data: ProfileFormValues) {
-    try {
-      const result = await mutateAsync({
-        ...data,
-        pitch_id,
-        price: Number(data.price),
-      });
-      if (result) {
-        toast({
-          title: "Tạo thành công",
-          description: `Đã thêm thành công sân ${data.name}.`,
-          variant: "success",
-        });
-        router.push(`/dashboard/pitch/${pitch_id}`);
-      }
-    } catch (error) {
-      toast({
-        title: "Hành động thất bại",
-        variant: "destructive",
-        description: "Đã có lỗi xảy ra, vui lòng thử lại.",
-      });
+    if (subPitchTypes.length && !data.type) {
+      toast({ title: "Vui lòng chọn loại sân!" });
+      return;
     }
+    mutatingToast();
+    await mutateAsync({
+      ...data,
+      pitch_id,
+      price: Number(data.price),
+    });
+    router.push(`/dashboard/pitch/${pitch_id}`);
   }
 
   return (
@@ -118,7 +108,7 @@ export function SubPitchForm({ pitch_id, pitchType }: FormProps) {
             </FormItem>
           )}
         />
-        {pitchType && (subPitchTypes.length > 0) && (
+        {pitchType && subPitchTypes.length > 0 && (
           <FormField
             control={form.control}
             name="type"

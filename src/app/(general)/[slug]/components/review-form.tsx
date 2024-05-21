@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { UserUseMutation } from "@/server/actions/user-actions";
+import { isEmptyObject } from "@/lib/utils";
 
 export function ReviewDialogForm({
   bookingId,
@@ -33,7 +34,7 @@ export function ReviewDialogForm({
     await mutateAsync({
       bookingId,
       star: Number(rate),
-      text: description,
+      text: isEmptyObject(description) ? " " : description,
       attaches: [],
     });
   }

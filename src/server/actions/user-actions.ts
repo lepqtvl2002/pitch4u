@@ -1,6 +1,8 @@
 import { toast } from "@/components/ui/use-toast";
 import { $fetch } from "@/lib/axios";
+import { handleErrorAxiosMessage } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
 
 export class UserUseMutation {
   static updateProfile = () => {
@@ -267,7 +269,7 @@ export class UserUseMutation {
       mutationFn: ({
         bookingId,
         star,
-        text,
+        text = ".",
         attaches,
       }: {
         bookingId: number | string;
@@ -291,12 +293,11 @@ export class UserUseMutation {
           description: "Cảm ơn bạn đã chia sẻ trải nghiệm của mình.",
         });
       },
-      onError: (error) => {
-        console.log(error);
+      onError: (error : AxiosError) => {
         toast({
           title: "Hành động thất bại",
           variant: "destructive",
-          description: "Đã xảy ra lỗi trong lúc thực hiện hành động này.",
+          description: handleErrorAxiosMessage(error),
         });
       },
     });

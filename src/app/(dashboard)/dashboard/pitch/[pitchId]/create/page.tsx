@@ -8,6 +8,8 @@ export default function CreateSubPitchPage() {
   const searchParams = useSearchParams();
   const pitchType = searchParams.get("type");
 
+  console.log(pitchType);
+
   return (
     <div className="flex-1 lg:max-w-2xl space-y-6 p-10 pb-16">
       <div>

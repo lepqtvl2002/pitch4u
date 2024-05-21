@@ -8,7 +8,7 @@ export default function ContactPage() {
   return (
     <main>
       <Navbar />
-      <div className="px-2 mt-20 md:mt-28 md:container">
+      <div className="px-2 md:container">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="flex flex-col bg-white px-4 md:px-8 pb-4 rounded">
             <h3 className="text-3xl font-bold mt-6 mb-10">Form liên hệ</h3>

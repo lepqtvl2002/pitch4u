@@ -3,7 +3,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { $fetch } from "@/lib/axios";
 import { useRouter } from "next/navigation";
-import { requestUrl } from "@/config/request-urls";
+import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
 
 function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const { update, data: session } = useSession();
@@ -12,7 +12,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
   useEffect(() => {
     const fetchAccessToken = async (refreshToken: string) => {
       try {
-        const res = await $fetch.post(requestUrl.refreshToken, {
+        const res = await $fetch.post(REQUEST_URLS_CURRENT.REFRESH_TOKEN, {
           refresh_token: refreshToken,
         });
         if (res.data && session) {

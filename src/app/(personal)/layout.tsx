@@ -17,7 +17,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <div className="px-2 md:px-0 pb-16">
       <Navbar />
-      <Separator className="mb-6 mt-20 md:mt-28" />
+      <Separator className="mb-6" />
       <div className="md:container flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
         <aside className="md:-mx-4 lg:w-1/5">
           <SidebarNav items={personalNavConfig.sidebarNav || []} />

@@ -9,7 +9,7 @@ export default async function Home() {
   return (
     <main className="scroll-smooth bg-gray-50">
       <Navbar />
-      <div className="md:container mt-20 md:mt-28 px-2 flex min-h-screen flex-col items-center justify-between">
+      <div className="md:container px-2 flex min-h-screen flex-col items-center justify-between">
         <section
           id="general"
           className=" flex flex-col lg:flex-row w-full justify-between pb-20"

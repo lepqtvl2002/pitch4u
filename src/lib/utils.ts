@@ -7,6 +7,7 @@ import VoucherStatuses from "@/enums/voucherStatues";
 import VoucherTypes, { VoucherType } from "@/enums/voucherTypes";
 import UserRoles from "@/enums/roles";
 import PaymentTypes from "@/enums/paymentTypes";
+import { AxiosError } from "axios";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -620,4 +621,22 @@ export function isValidUrl(url: string) {
     "i"
   ); // fragment locator
   return !!pattern.test(url);
+}
+
+interface ErrorResponse {
+  message: string;
+}
+
+export function handleErrorAxiosMessage(error: AxiosError) {
+  try {
+    const data = error.response?.data as ErrorResponse;
+    return data.message;
+  } catch (e) {
+    console.log(e);
+    return error.message;
+  }
+}
+
+export function isEmptyObject(obj: any) {
+  return Object.keys(obj).length === 0;
 }
