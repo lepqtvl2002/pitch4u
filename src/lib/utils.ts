@@ -627,7 +627,7 @@ interface ErrorResponse {
   message: string;
 }
 
-export function handleErrorAxiosMessage(error: AxiosError) {
+export function handleAxiosErrorMessage(error: AxiosError) {
   try {
     const data = error.response?.data as ErrorResponse;
     return data.message;

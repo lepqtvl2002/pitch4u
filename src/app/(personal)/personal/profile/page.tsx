@@ -3,7 +3,7 @@ import { ProfileForm } from "@/components/dashboard/profile-form";
 import { ResetPasswordForm } from "@/components/dashboard/reset-password-form";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { errorToast } from "@/lib/quick-toast";
+import { errorToastWithCode } from "@/lib/quick-toast";
 import { UserUseQuery } from "@/server/queries/user-queries";
 import { AxiosError } from "axios";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const [isOpen, setIsOpen] = useState(false);
   
   if (error)
-    errorToast({
+    errorToastWithCode({
       actionName: "Load profile",
       code: (error as AxiosError).response?.status,
     });

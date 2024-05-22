@@ -26,7 +26,7 @@ import YearPicker from "@/components/dashboard/year-picker";
 import { useSession } from "next-auth/react";
 import UserRoles from "@/enums/roles";
 import { redirect } from "next/navigation";
-import { errorToast } from "@/lib/quick-toast";
+import { errorToastWithCode } from "@/lib/quick-toast";
 import { AxiosError } from "axios";
 
 type All = {
@@ -133,7 +133,7 @@ export default function DashboardPage() {
   }
 
   if (error) {
-    errorToast({
+    errorToastWithCode({
       actionName: "Lấy dữ liệu thống kê",
       code: (error as AxiosError).response?.status,
     });

@@ -75,41 +75,37 @@ export default function BookingTable() {
     }
   }, [cancel, isFetching, mutateAsync, orderCode, refetch, status]);
 
-  
-
   return (
-    <div>
-      <DataTable
-        columns={[
-          ...columns,
-          {
-            id: "actions",
-            cell: ({ row }) => {
-              const bookingId = row.original.booking_id;
-              return (
-                <DropdownMenuActions
-                  refetch={refetch}
-                  id={bookingId}
-                  booking={row.original}
-                />
-              );
-            },
+    <DataTable
+      columns={[
+        ...columns,
+        {
+          id: "actions",
+          cell: ({ row }) => {
+            const bookingId = row.original.booking_id;
+            return (
+              <DropdownMenuActions
+                refetch={refetch}
+                id={bookingId}
+                booking={row.original}
+              />
+            );
           },
-        ]}
-        data={data?.result.data}
-        isLoading={isFetching}
-        pageCount={Math.floor((data?.result.total! - 1) / pageSize + 1)}
-        setPagination={setPagination}
-        pageIndex={pageIndex}
-        pageSize={pageSize}
-        sort={{
-          columnName: sort.columnName,
-          direction: sort.direction,
-          onChange: (columnName, direction) => {
-            setSort({ columnName, direction });
-          },
-        }}
-      />
-    </div>
+        },
+      ]}
+      data={data?.result.data}
+      isLoading={isFetching}
+      pageCount={Math.floor((data?.result.total! - 1) / pageSize + 1)}
+      setPagination={setPagination}
+      pageIndex={pageIndex}
+      pageSize={pageSize}
+      sort={{
+        columnName: sort.columnName,
+        direction: sort.direction,
+        onChange: (columnName, direction) => {
+          setSort({ columnName, direction });
+        },
+      }}
+    />
   );
 }

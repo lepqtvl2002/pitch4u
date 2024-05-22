@@ -324,9 +324,7 @@ export function DataTable<TData, TValue>({
       <div className="mx-auto flex w-full items-center justify-center space-x-4 py-4">
         <Pagination>
           <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious onClick={() => table.previousPage()} />
-            </PaginationItem>
+            <PaginationPrevious onClick={() => table.previousPage()} />
             <PaginationItem
               className={
                 table.getState().pagination.pageIndex > 5 ||
@@ -371,9 +369,7 @@ export function DataTable<TData, TValue>({
             >
               <PaginationEllipsis />
             </PaginationItem>
-            <PaginationItem>
-              <PaginationNext onClick={() => table.nextPage()} />
-            </PaginationItem>
+            <PaginationNext onClick={() => table.nextPage()} />
           </PaginationContent>
         </Pagination>
       </div>

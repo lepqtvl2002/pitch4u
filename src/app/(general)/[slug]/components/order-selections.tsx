@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Stars } from "@/components/ui/vote-stars";
 import Link from "next/link";
-import { Heart, MessageCircle, Phone, XCircleIcon } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  Phone,
+  TicketIcon,
+  XCircleIcon,
+} from "lucide-react";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import {
   Select,
@@ -15,20 +21,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DatePickerBookingPitch } from "@/components/ui/date-picker";
-import { PitchUseMutation } from "@/server/actions/pitch-actions";
+import {
+  BookingPitchProps,
+  PitchUseMutation,
+} from "@/server/actions/pitch-actions";
 import { format, isSameDay } from "date-fns";
 import { useSession } from "next-auth/react";
 import { subPitchTypeToString } from "@/lib/convert";
-import { cn, formatMoney } from "@/lib/utils";
+import { activeVariant, cn, formatMoney } from "@/lib/utils";
 import { ReportForm } from "./report-form";
 import { IPitch, ITimeFrame } from "@/types/pitch";
 import { mutatingToast } from "@/lib/quick-toast";
 import { ISubPitch } from "@/types/subPitch";
 import { stringToTimeFrame, timeFrameToString } from "@/lib/format-datetime";
 import PaymentTypes from "@/enums/paymentTypes";
-import { useRouter } from "next/navigation";
 import { VoucherDialog } from "./voucher-dialog";
 import { IVoucher } from "@/types/voucher";
+import VoucherTypes from "@/enums/voucherTypes";
 
 interface GroupedType {
   [key: string]: any[];
@@ -64,8 +73,6 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
     pitchType: pitch.type,
   });
 
-  const router = useRouter();
-
   const { data, isFetching, isError, refetch } = PitchUseQuery.getBookingStatus(
     {
       pitch_id: pitch.pitch_id,
@@ -81,9 +88,14 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
       return result;
     }, {});
 
+    if (Object.keys(grouped).length > 1) {
+      alert(
+        "Bạn đang đặt nhiều sân cùng lúc, đơn hàng của bạn sẽ được chia nhỏ, vui lòng thanh thanh toán theo từng sân."
+      );
+    }
     for (const groupKey in grouped) {
       mutatingToast();
-      const data = {
+      const data: BookingPitchProps = {
         subpitch_id: grouped[groupKey][0].subPitchId,
         payment_type: PaymentTypes.PayOS,
         frame_times: grouped[groupKey].map((time) => {
@@ -96,6 +108,9 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
         returnUrl: `${window.location.origin}/personal/history`,
         cancelUrl: `${window.location.origin}/personal/history`,
       };
+      if (voucher) {
+        data.voucher_id = voucher.voucher_id;
+      }
       const bookingInfo = await mutateAsync(data, {
         onSuccess(data, variables, context) {
           console.log(data, variables, context);
@@ -103,9 +118,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
         },
       });
 
-      setBookingTimes([]);
-
-      router.push(bookingInfo.result.paymentUrl);
+      window.open(bookingInfo.result.paymentUrl, "_blank");
     }
   }
 
@@ -347,6 +360,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
           {bookingTimes.reduce((prev, cur) => prev + Number(cur.price), 0)}
         </span>
       </div>
+      {voucher && <VoucherSelectedItem voucher={voucher} />}
       <VoucherDialog
         pitchId={pitch.pitch_id}
         voucher={voucher}
@@ -409,6 +423,32 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
         >
           Đặt sân ngay
         </Button>
+      </div>
+    </div>
+  );
+}
+
+function VoucherSelectedItem({ voucher }: { voucher: IVoucher }) {
+  return (
+    <div className="flex border-2 border-emerald-400 rounded overflow-hidden">
+      <div className=" bg-emerald-500 text-center p-4">
+        <TicketIcon className="w-6 h-6 text-white font-semibold" />
+      </div>
+      <div className="flex-1 flex flex-wrap justify-between gap-x-2 p-2">
+        <p>{voucher.code}</p>
+        {voucher.type === VoucherTypes.Percent ? (
+          <p>{Number(voucher.discount) * 100}%</p>
+        ) : (
+          <p>{voucher.discount.toLocaleString()}đ</p>
+        )}
+        {voucher.active ? (
+          <div className={activeVariant({ variant: true })}>Đang hoạt động</div>
+        ) : (
+          <div className={activeVariant({ variant: false })}>Đã hết hạn</div>
+        )}
+        <p>
+          Ngày hết hạn: {format(new Date(voucher.expire_date), "dd/MM/yyyy")}
+        </p>
       </div>
     </div>
   );

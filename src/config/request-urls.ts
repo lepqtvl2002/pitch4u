@@ -7,6 +7,11 @@ export const REQUEST_URLS = {
     BOOKING_HISTORY: "/v1/booking/my-bookings",
     VOUCHERS: "/v1/vouchers",
     VOUCHERS_USER: "/v1/vouchers/user",
+    RESET_PASSWORD: "/v1/auth/reset-password",
+    SUSPEND_USER: "/v1/users/suspend",
+    UNSUSPEND_USER: "/v1/users/unsuspend",
+    CHAT: "/v1/chats",
+    REVIEW: "/v1/reviews",
   },
 };
 

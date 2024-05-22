@@ -1,6 +1,8 @@
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
+import { AxiosError } from "axios";
 import { signOut } from "next-auth/react";
+import { handleAxiosErrorMessage } from "./utils";
 
 export function mutatingToast() {
   toast({ title: "Đang xử lý", description: "Vui lòng chờ..." });
@@ -21,6 +23,20 @@ export function successToast({
 }
 
 export function errorToast({
+  actionName,
+  error,
+}: {
+  actionName?: string;
+  error?: AxiosError;
+}) {
+  toast({
+    variant: "destructive",
+    title: `Không thể thực hiện hành động ${actionName}`,
+    description: error ? handleAxiosErrorMessage(error) : "Vui lòng thử lại",
+  });
+}
+
+export function errorToastWithCode({
   actionName,
   code,
 }: {

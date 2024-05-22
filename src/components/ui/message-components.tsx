@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn, isEmptyObject } from "@/lib/utils";
 import { ChatObject, Message } from "@/types/message";
 import { useSession } from "next-auth/react";
 import { Input } from "./input";
@@ -445,7 +445,7 @@ export function PopupChatList({ className }: { className?: string }) {
     useContext(SocketContext);
 
   const { data, isLoading } = UserUseQuery.getManyUsers({
-    q: searchValue,
+    q: debounceValue,
   });
 
   const { mutateAsync: joinChatMutate } = UserUseMutation.joinChat();
@@ -479,6 +479,7 @@ export function PopupChatList({ className }: { className?: string }) {
           className={cn("flex-1")}
           placeholder={"Tìm kiếm"}
           type={"text"}
+          autoFocus={false}
         />
       </div>
       <div
@@ -516,7 +517,6 @@ export function PopupChatList({ className }: { className?: string }) {
         ) : isLoading ? (
           <Skeleton className="w-10 h-10 rounded-full" />
         ) : (
-          debounceValue.length > 0 &&
           data?.result.data?.map((user) => {
             let chat: ChatObject | undefined = undefined;
             conversations.forEach((conversation) => {

@@ -21,7 +21,7 @@ import {
 import { pitchTypeToString } from "@/lib/convert";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { pitchTypesArray } from "@/enums/pitchTypes";
-import { errorToast } from "@/lib/quick-toast";
+import { errorToastWithCode } from "@/lib/quick-toast";
 import { AxiosError } from "axios";
 import { Input } from "../ui/input";
 
@@ -134,7 +134,7 @@ const SearchBar: React.FC = () => {
   }, [debounceValue, rate, location.lat, location.long, sort]);
 
   if (error) {
-    errorToast({
+    errorToastWithCode({
       actionName: "Tải sân",
       code: (error as AxiosError).response?.status,
     });
