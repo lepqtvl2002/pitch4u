@@ -1,5 +1,5 @@
 import { toast } from "@/components/ui/use-toast";
-import { $fetch, $globalFetch } from "@/lib/axios";
+import { $globalFetch } from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
 
 export class AuthenticationUseMutation {

@@ -83,7 +83,12 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user, account, profile, trigger, session }) {
+      if (trigger === "update" && session) {
+        token.accessToken = session?.accessToken;
+        token.refreshToken = session?.refreshToken;
+        return token;
+      }
       if (account?.provider === "google" && profile) {
         const res = await $globalFetch(`/v1/auth/login-email`, {
           method: "POST",

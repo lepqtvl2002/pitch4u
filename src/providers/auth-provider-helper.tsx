@@ -4,28 +4,34 @@ import { useEffect } from "react";
 import { $fetch, $globalFetch } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
+import { useMutation } from "@tanstack/react-query";
 
 function AuthProviderHelper({ children }: React.PropsWithChildren) {
   const { update, data: session } = useSession();
+  const { mutateAsync: refreshTokenMutate } = useMutation({
+    mutationFn: (refreshToken: string) =>
+      $globalFetch
+        .post(REQUEST_URLS_CURRENT.REFRESH_TOKEN, {
+          refresh_token: refreshToken,
+        })
+        .then((res) => res.data),
+  });
   const router = useRouter();
 
   useEffect(() => {
     const fetchAccessToken = async (refreshToken: string) => {
       try {
-        const res = await $globalFetch.post(REQUEST_URLS_CURRENT.REFRESH_TOKEN, {
-          refresh_token: refreshToken,
-        });
-        if (res.data && session) {
+        const tokens = await refreshTokenMutate(refreshToken);
+        if (tokens && session) {
           //update server session
-          const a = await update({
+          await update({
             ...session,
-            accessToken: res.data.access,
-            refreshToken: res.data.refresh,
+            accessToken: tokens.access,
+            refreshToken: tokens.refresh,
           });
           //update client session at the same time
-          session.accessToken = res.data.access;
-          session.refreshToken = res.data.refresh;
-          console.log("Access token refreshed", a);
+          session.accessToken = tokens.access;
+          session.refreshToken = tokens.refresh;
         } else {
           await signIn();
         }
@@ -84,7 +90,7 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
       $fetch.interceptors.response.eject(responseInterceptor);
       $fetch.interceptors.request.eject(requestInterceptor);
     };
-  }, [router, session, update]);
+  }, [refreshTokenMutate, router, session, update]);
 
   return <>{children}</>;
 }
