@@ -30,9 +30,11 @@ import { mutatingToast } from "@/lib/quick-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn, voucherTypeToString } from "@/lib/utils";
 import { addDays, format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, XCircleIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import VoucherTypes from "@/enums/voucherTypes";
+import { SelectMultipleMyPitches } from "./pitch-picker";
+import { IPitch } from "@/types/pitch";
 
 const createVoucherFormSchema = z.object({
   code: z.string().min(2, {
@@ -82,14 +84,11 @@ export function VoucherInputForm({ voucher }: FormProps) {
     },
     // mode: "onChange",
   });
+  const [pitches, setPitches] = useState<IPitch[]>([]);
   const { mutateAsync: createVoucher, isLoading } = VoucherUseMutation.create();
   const { mutateAsync: updateVoucher, isLoading: isUpdating } =
     VoucherUseMutation.update(voucher?.voucher_id!);
   const router = useRouter();
-  const [pitch, setPitch] = useState<{ pitchId: number; pitchName: string }>({
-    pitchId: Number(voucher?.pitch_id),
-    pitchName: voucher?.pitch_id ? voucher.pitch_id.toString() : "",
-  });
 
   async function onSubmit(data: VoucherFormValues) {
     if (voucher) {
@@ -105,7 +104,7 @@ export function VoucherInputForm({ voucher }: FormProps) {
       });
       router.push("/dashboard/voucher");
     } else {
-      if (pitch) {
+      if (pitches.length > 0) {
         mutatingToast();
         const { ...sendValues } = data;
         await createVoucher({
@@ -118,11 +117,11 @@ export function VoucherInputForm({ voucher }: FormProps) {
             data.type == "fixed"
               ? Number(data.discount)
               : Number(data.discount) / 100,
-          pitch_id: pitch?.pitchId,
+          pitch_id: pitches.at(0)?.pitch_id,
         });
         router.push("/dashboard/voucher");
       } else {
-        toast({ title: "" });
+        toast({ title: "Vui lòng chọn sân áp dụng voucher này!" });
       }
     }
   }
@@ -247,71 +246,40 @@ export function VoucherInputForm({ voucher }: FormProps) {
             </FormItem>
           )}
         />
-        {!voucher ? <SelectPitch pitch={pitch} setPitch={setPitch} /> : null}
+        <div className="space-y-2">
+          <FormLabel>Sân áp dụng</FormLabel>
+          <div className="flex gap-2">
+            {pitches?.map((pitch) => (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                key={pitch.pitch_id}
+                onClick={() =>
+                  setPitches((prev) =>
+                    prev.filter(
+                      (prevPitch) => prevPitch.pitch_id !== pitch.pitch_id
+                    )
+                  )
+                }
+              >
+                {pitch.name}
+                <XCircleIcon color="gray" size={20} className="ml-2" />
+              </Button>
+            ))}
+          </div>
+          {voucher ? null : (
+            <SelectMultipleMyPitches
+              pitches={pitches}
+              setPitches={setPitches}
+              prevPitchIDs={undefined}
+            />
+          )}
+        </div>
         <Button disabled={isLoading || isUpdating} type="submit">
           {voucher ? "Cập nhật thông tin" : "Thêm mới voucher"}
         </Button>
       </form>
     </Form>
-  );
-}
-
-import * as React from "react";
-import { PitchUseQuery } from "@/server/queries/pitch-queries";
-import { Card, CardContent, CardHeader } from "../ui/card";
-import useDebounce from "@/hooks/use-debounce";
-
-function SelectPitch({
-  pitch,
-  setPitch,
-}: {
-  pitch: { pitchId: number; pitchName: string };
-  setPitch: any;
-}) {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(pitch?.pitchName);
-  const debouncedSearch = useDebounce(value);
-  const { data, isLoading } = PitchUseQuery.getMyPitches({
-    name: debouncedSearch,
-  });
-  React.useEffect(() => {
-    if (value.length > 0) setOpen(true);
-    else setOpen(false);
-  }, [value]);
-  return (
-    <div className="grid gap-8 mt-8">
-      <FormLabel>Sân bóng sử dụng voucher này</FormLabel>
-      <Input
-        placeholder="Nhập tên sân"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <div className={cn(open ? "flex" : "hidden")}>
-        <Card>
-          <CardHeader>Chọn sân sử dụng voucher</CardHeader>
-          {isLoading ? (
-            <>Loading...</>
-          ) : (
-            <CardContent>
-              {data?.result.data.map((item) => (
-                <Button
-                  type="button"
-                  key={item.pitch_id}
-                  variant={
-                    pitch?.pitchId == item.pitch_id ? "default" : "outline"
-                  }
-                  onClick={() => {
-                    setPitch({ pitchId: item.pitch_id });
-                    setValue(item.name);
-                  }}
-                >
-                  {item.name}
-                </Button>
-              ))}
-            </CardContent>
-          )}
-        </Card>
-      </div>
-    </div>
   );
 }

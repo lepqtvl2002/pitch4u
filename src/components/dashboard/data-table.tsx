@@ -126,7 +126,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between flex-wrap">
+      <div className="flex justify-between flex-wrap gap-2">
         {headerPrefix}
         <section id="table-facets" className="flex items-center space-x-4">
           {facets &&
