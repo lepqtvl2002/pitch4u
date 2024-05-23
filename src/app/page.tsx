@@ -4,6 +4,7 @@ import SearchBar from "@/components/landing/search-bar";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import Link from "next/link";
+import { ArrowDownIcon } from "lucide-react";
 
 export default async function Home() {
   return (
@@ -35,10 +36,10 @@ export default async function Home() {
                 <Button
                   variant="outline"
                   className={
-                    "w-full md:h-16 md:text-xl rounded-full bg-emerald-100 text-emerald-500"
+                    "w-full md:h-16 md:text-xl animate-bounce rounded-full bg-emerald-100 text-emerald-500"
                   }
                 >
-                  Tìm sân
+                  Tìm sân <ArrowDownIcon className="ml-2" />
                 </Button>
               </Link>
             </div>
@@ -84,7 +85,7 @@ export default async function Home() {
             Giao lưu gắn kết
           </h2>
           <div className="w-full px-4 md:px-10 lg:px-20 grid grid-cols-1 md:grid-cols-3 md:gap-4 lg:gap-10 xl:gap-32 rounded-none">
-            <div className="flex flex-col items-center justify-end space-y-8 pb-6 mb-4 h-80 bg-white p-4 shadow-xl rounded-tr-[100px] rounded-bl-[100px]">
+            <div className="transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-red-300 flex flex-col items-center justify-end space-y-8 pb-6 mb-4 h-80 bg-white p-4 shadow-xl rounded-tr-[100px] rounded-bl-[100px]">
               <Image
                 alt="Feature 1"
                 src={"/pitch4u-photo03.webp"}
@@ -99,7 +100,7 @@ export default async function Home() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col items-center justify-end space-y-8 pb-6 mb-4 h-80 bg-white p-4 shadow-xl rounded-tr-[100px] rounded-bl-[100px]">
+            <div className="transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-yellow-300 flex flex-col items-center justify-end space-y-8 pb-6 mb-4 h-80 bg-white p-4 shadow-xl rounded-tr-[100px] rounded-bl-[100px]">
               <Image
                 alt="Feature 2"
                 src={"/pitch4u-photo04.webp"}
@@ -113,7 +114,7 @@ export default async function Home() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col items-center justify-end space-y-8 pb-6 mb-4 h-80 bg-white p-4 shadow-xl rounded-tr-[100px] rounded-bl-[100px]">
+            <div className="transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-emerald-300 flex flex-col items-center justify-end space-y-8 pb-6 mb-4 h-80 bg-white p-4 shadow-xl rounded-tr-[100px] rounded-bl-[100px]">
               <Image
                 alt="Feature 3"
                 src={"/pitch4u-photo05.webp"}
@@ -157,7 +158,7 @@ export default async function Home() {
               </Button>
             </Link>
           </div>
-          <div className="flex w-full overflow-hidden justify-center">
+          <div className="flex w-full overflow-hidden justify-center transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110">
             <Image
               alt="Image"
               src={"/pitch4u-photo06.webp"}
@@ -171,7 +172,7 @@ export default async function Home() {
           id={"contact"}
           className="flex w-full flex-col-reverse justify-between py-10 md:py-20 md:flex-row"
         >
-          <div className=" flex w-full justify-center">
+          <div className=" flex w-full justify-center transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110">
             <Image
               alt="Image"
               src={"/pitch4u-photo07.webp"}

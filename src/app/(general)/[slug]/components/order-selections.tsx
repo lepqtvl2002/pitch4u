@@ -201,7 +201,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
   }, [data?.result, date]);
 
   if (isFetching) return <div>Loading...</div>;
-  if (isError) return <div>Error!!!</div>;
+  if (isError) return <div></div>;
   return (
     <div className={"relative flex flex-col space-y-2"}>
       <div className={cn("absolute top-0 right-0", !session && "hidden")}>
@@ -396,7 +396,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
           <MessageCircle />
           <span className={"text-xs"}>Chat ngay</span>
         </Button>
-        <a
+        <Link
           className={"w-1/2 md:w-auto rounded-none md:rounded-md "}
           href="tel:+4733378901"
         >
@@ -412,7 +412,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             )}
             <Phone className="mr-2" /> Gọi điện đặt sân
           </Button>
-        </a>
+        </Link>
         <Button
           className={cn(
             "w-1/2 md:w-auto rounded-none md:rounded-md  bg-emerald-500 hover:bg-emerald-300",

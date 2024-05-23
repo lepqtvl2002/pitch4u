@@ -169,7 +169,7 @@ const SearchBar: React.FC = () => {
           <Button
             key={condition.value}
             className={cn(
-              "rounded-full w-1/3",
+              "rounded-full w-1/3 hover:bg-blue-200",
               conditions.includes(condition.value)
                 ? "bg-emerald-500 text-white"
                 : "bg-gray-200 text-gray-500"
@@ -240,7 +240,7 @@ export function PitchItem({ pitch }: { pitch: IPitch }) {
   };
 
   return (
-    <div className="relative flex flex-1 space-x-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4">
+    <div className="transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:shadow-2xl relative flex flex-1 space-x-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4">
       <Link
         href={`/${pitch?.slug}`}
         className="flex justify-between items-start w-full gap-2"

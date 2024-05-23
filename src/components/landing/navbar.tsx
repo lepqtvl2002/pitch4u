@@ -36,7 +36,7 @@ export default function Navbar({
     >
       <div className="md:container mx-auto flex justify-between items-center w-full h-fit md:justify-between">
         <div className="flex">
-          <a
+          <Link
             href="/"
             className="text-xl md:text-2xl font-semibold flex items-center p-2 md:p-4"
           >
@@ -49,7 +49,7 @@ export default function Navbar({
               priority
             />
             <h1>PITCH4U</h1>
-          </a>
+          </Link>
           <ul className="md:flex items-center w-auto hidden text-center">
             {publicNavbarConfig.mainNav.map((item) => (
               <li key={item.title} className="h-full px-3">
