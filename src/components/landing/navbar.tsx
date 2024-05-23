@@ -15,6 +15,7 @@ import { NotificationBadge } from "../notification-badge";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import NotificationList from "../notification-list";
 import { PopupChatList } from "../ui/message-components";
+import { NotificationUseQuery } from "@/server/queries/notification-queries";
 
 export default function Navbar({
   className,
@@ -23,6 +24,7 @@ export default function Navbar({
   className?: string;
 }) {
   const { data: session, status } = useSession();
+  const { data } = NotificationUseQuery.getNumberOfUnread();
 
   return (
     <nav
@@ -75,7 +77,7 @@ export default function Navbar({
                     variant="ghost"
                     className={"relative hover:bg-gray-200 rounded-full p-2"}
                   >
-                    <NotificationBadge number={1} />
+                    <NotificationBadge number={0} />
                     <MessageCircleIcon />
                   </Button>
                 </PopoverTrigger>
@@ -89,7 +91,7 @@ export default function Navbar({
                     variant="ghost"
                     className={"relative hover:bg-gray-200 rounded-full p-2"}
                   >
-                    {true ? <NotificationBadge number={1} /> : null}
+                    {data ? <NotificationBadge number={data.result} /> : null}
                     <BellIcon />
                   </Button>
                 </PopoverTrigger>

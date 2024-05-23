@@ -2,20 +2,20 @@ import { cn } from "@/lib/utils";
 
 export function NotificationBadge({
   number = 0,
-  className = "",
+  className,
 }: {
   number: number;
   className?: string;
 }) {
   return (
-    <>
+    <div className={cn(!number && "hidden")}>
       <span
         className={cn(
           "absolute top-0 right-0 inline-flex rounded-full h-4 w-4 bg-sky-500 justify-center text-xs text-white font-semibold",
           className
         )}
       >
-        {!number ? null : number > 9 ? "+9" : number}
+        {number > 9 ? "+9" : number}
       </span>
       <span
         className={cn(
@@ -23,6 +23,6 @@ export function NotificationBadge({
           className
         )}
       ></span>
-    </>
+    </div>
   );
 }

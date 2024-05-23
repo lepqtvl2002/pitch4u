@@ -12,6 +12,8 @@ export const REQUEST_URLS = {
     UNSUSPEND_USER: "/v1/users/unsuspend",
     CHAT: "/v1/chats",
     REVIEW: "/v1/reviews",
+    NOTIFICATIONS: "/v1/notifications",
+    NOTIFICATIONS_UNREAD: "/v1/notifications/unread",
   },
 };
 
