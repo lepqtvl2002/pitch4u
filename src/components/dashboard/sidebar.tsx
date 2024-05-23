@@ -23,9 +23,10 @@ type Props = {
 };
 
 function DashboardSidebar({ user, items }: Props) {
-  const [isShrink, setShrink] = useState<boolean>(
-    JSON.parse(localStorage.getItem(SIDEBAR_SHIRK_KEY) ?? "false")
+  const isShrinkBefore = JSON.parse(
+    localStorage.getItem(SIDEBAR_SHIRK_KEY) ?? "false"
   );
+  const [isShrink, setShrink] = useState<boolean>(isShrinkBefore);
 
   return (
     <motion.aside

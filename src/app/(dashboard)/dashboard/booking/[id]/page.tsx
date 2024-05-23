@@ -132,7 +132,7 @@ export default function DetailBookingPage() {
     );
   }
   return (
-    <div className="flex-1 lg:w-2/3 xl:w-1/2 space-y-6 p-2 md:p-10 pb-16">
+    <div className="flex-1 xl:w-2/3 space-y-6 p-2 md:p-10 pb-16">
       <div>
         <h3 className="text-lg font-medium">Thông tin đặt sân</h3>
         <p className="text-sm text-muted-foreground">
