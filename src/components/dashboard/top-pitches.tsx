@@ -5,7 +5,7 @@ import { toast } from "../ui/use-toast";
 import { Skeleton } from "../ui/skeleton";
 
 export default function TopPitches() {
-  const { data, isLoading, error } = StatisticUseQuery.getTopPitchesByRevenue({
+  const { data, isLoading, error } = StatisticUseQuery.getPitchesByRevenue({
     limit: 5,
   });
 

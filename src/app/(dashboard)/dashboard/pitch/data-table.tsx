@@ -2,7 +2,7 @@
 import { DataTable } from "@/components/dashboard/data-table";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns } from "./column";
+import { columns, pitchStatusOptions } from "./column";
 import useDebounce from "@/hooks/use-debounce";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { toast } from "@/components/ui/use-toast";
@@ -10,11 +10,13 @@ import DropdownMenuPitch from "./dropdown-menu-action";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import SelectPitchType from "@/components/select-pitch-type";
 
 type PitchStatus = "suspended" | "active";
 function PitchTable() {
   const [statuses, setStatuses] = React.useState<PitchStatus[]>(["active"]);
   const [search, setSearch] = React.useState<string>();
+  const [type, setType] = React.useState("");
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
     columnName: string;
@@ -30,23 +32,28 @@ function PitchTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isFetching, refetch } =
+  const pitchParams =
     statuses.length === 1
-      ? PitchUseQuery.getMyPitches({
+      ? {
           limit: pageSize,
           page: pageIndex + 1,
           name: debouncedSearch,
           sort_by: sort.columnName,
           sort: sort.direction,
+          typePitch: type,
           is_suspended: statuses.includes("suspended") ? true : false,
-        })
-      : PitchUseQuery.getMyPitches({
+        }
+      : {
           limit: pageSize,
           page: pageIndex + 1,
           name: debouncedSearch,
           sort_by: sort.columnName,
           sort: sort.direction,
-        });
+          typePitch: type,
+        };
+
+  const { data, isError, isFetching, refetch } =
+    PitchUseQuery.getMyPitches(pitchParams);
 
   const setStatusesHandler = useCallback((values: string[]) => {
     setStatuses([...(values as PitchStatus[])]);
@@ -87,14 +94,14 @@ function PitchTable() {
       setPagination={setPagination}
       pageIndex={pageIndex}
       pageSize={pageSize}
-      // facets={[
-      //   {
-      //     title: "Trạng thái",
-      //     columnName: "status",
-      //     options: pitchStatusOptions,
-      //     onChange: setStatusesHandler,
-      //   },
-      // ]}
+      facets={[
+        {
+          title: "Trạng thái",
+          columnName: "status",
+          options: pitchStatusOptions,
+          onChange: setStatusesHandler,
+        },
+      ]}
       search={{
         placeholder: "Tìm kiếm",
         value: search || "",
@@ -114,6 +121,15 @@ function PitchTable() {
             <PlusIcon />
           </Button>
         </Link>
+      }
+      headerSuffix={
+        <div>
+          <SelectPitchType
+            pitchType={type}
+            setPitchType={setType}
+            className="rounded-md"
+          />
+        </div>
       }
     />
   );

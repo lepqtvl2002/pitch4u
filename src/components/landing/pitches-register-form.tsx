@@ -17,13 +17,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,9 +30,8 @@ import { ImageUseMutation } from "@/server/actions/image-actions";
 import GoogleMapReact, { ClickEventValue } from "google-map-react";
 import { IPitch } from "@/types/pitch";
 import { UserProfile } from "@/server/queries/user-queries";
-import { pitchTypesArray } from "@/enums/pitchTypes";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
-import { pitchTypeToString } from "@/lib/convert";
+import SelectPitchType from "../select-pitch-type";
 
 const formSchema = z.object({
   card_id: z.string(),
@@ -275,30 +267,11 @@ export function PitchRegisterForm({
                 )}
                 {step === 2 && (
                   <>
-                    <FormLabel>Loại sân</FormLabel>
-                    <Select onValueChange={setPitchType}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Chọn loại sân" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {isLoadingPitchTypes ? (
-                          <SelectItem value="soccer">Loading</SelectItem>
-                        ) : (
-                          pitchTypesArray.map((type) => (
-                            <SelectItem
-                              key={type}
-                              value={type}
-                              disabled={
-                                pitchTypes &&
-                                !(type.toUpperCase() in pitchTypes?.result)
-                              }
-                            >
-                              {pitchTypeToString(type)}
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                    <SelectPitchType
+                      pitchType={pitchType}
+                      setPitchType={setPitchType}
+                      className="rounded-md"
+                    />
 
                     <FormField
                       control={form.control}

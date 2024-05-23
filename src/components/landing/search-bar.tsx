@@ -11,17 +11,9 @@ import { Stars } from "../ui/vote-stars";
 import { Skeleton } from "../ui/skeleton";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { $globalFetch } from "@/lib/axios";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { pitchTypeToString } from "@/lib/convert";
-import { PitchUseQuery } from "@/server/queries/pitch-queries";
-import { pitchTypesArray } from "@/enums/pitchTypes";
 import { Input } from "../ui/input";
+import SelectPitchType from "../select-pitch-type";
 
 const LIMIT = 3;
 
@@ -39,6 +31,9 @@ const Conditions = [
 const SearchBar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const debounceValue = useDebounce(searchQuery);
+
+  const [pitchType, setPitchType] = React.useState<string>("");
+
   const [conditions, setConditions] = useState<string[]>([]);
   const [location, setLocation] = useState<{ long?: number; lat?: number }>({
     long: undefined,
@@ -61,6 +56,7 @@ const SearchBar: React.FC = () => {
       lat: location.lat,
       name: searchQuery,
       rate_gte: rate,
+      typePitch: pitchType,
     } as unknown as string[][]);
     const res = await $globalFetch(`/v1/pitches?${params}`);
     return res.data;
@@ -82,11 +78,6 @@ const SearchBar: React.FC = () => {
       return Number(lastPage?.result?.page + 1);
     },
   });
-
-  const { data: pitchTypes, isLoading: isLoadingPitchTypes } =
-    PitchUseQuery.getPitchTypes();
-
-  const [pitchType, setPitchType] = React.useState<string>("");
 
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -127,35 +118,12 @@ const SearchBar: React.FC = () => {
 
   useEffect(() => {
     refetch();
-  }, [debounceValue, rate, location.lat, location.long, sort]);
+  }, [debounceValue, rate, location.lat, location.long, sort, pitchType]);
 
   return (
     <div className="flex flex-col space-y-4 w-full lg:w-2/3 xl:w-1/2">
       <div className="flex items-center space-x-2 md:space-x-4">
-        <Select onValueChange={setPitchType}>
-          <SelectTrigger className="w-full min-w-[100px] md:min-w-[200px] rounded-full flex-1">
-            <SelectValue className="truncate">
-              {pitchTypeToString(pitchType)}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {isLoadingPitchTypes ? (
-              <SelectItem value="soccer">Loading...</SelectItem>
-            ) : (
-              pitchTypesArray.map((type) => (
-                <SelectItem
-                  key={type}
-                  value={type}
-                  disabled={
-                    pitchTypes && !(type.toUpperCase() in pitchTypes?.result)
-                  }
-                >
-                  {pitchTypeToString(type)}
-                </SelectItem>
-              ))
-            )}
-          </SelectContent>
-        </Select>
+        <SelectPitchType pitchType={pitchType} setPitchType={setPitchType} />
         <Input
           type="text"
           className="rounded-full flex-2"

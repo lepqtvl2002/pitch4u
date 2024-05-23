@@ -10,11 +10,13 @@ import {
   columns,
   pitchStatusOptions,
 } from "@/app/(dashboard)/dashboard/pitch/column";
+import SelectPitchType from "@/components/select-pitch-type";
 
 type PitchStatus = "suspended" | "active";
 function PitchTable() {
   const [statuses, setStatuses] = React.useState<PitchStatus[]>([]);
   const [search, setSearch] = React.useState<string>();
+  const [type, setType] = React.useState("");
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
     columnName: string;
@@ -30,23 +32,26 @@ function PitchTable() {
       pageSize: 10,
     });
 
-  const { data, isError, isFetching, refetch } =
+  const pitchParams =
     statuses.length === 1
-      ? PitchUseQuery.getAllPitches({
+      ? {
           limit: pageSize,
           page: pageIndex + 1,
           name: debouncedSearch,
           sort_by: sort.columnName,
           sort: sort.direction,
           suspended: statuses.includes("suspended") ? true : false,
-        })
-      : PitchUseQuery.getAllPitches({
+        }
+      : {
           limit: pageSize,
           page: pageIndex + 1,
           name: debouncedSearch,
           sort_by: sort.columnName,
           sort: sort.direction,
-        });
+        };
+
+  const { data, isError, isFetching, refetch } =
+    PitchUseQuery.getAllPitches(pitchParams);
 
   const setSearchHandler = useCallback((value: string) => {
     setSearch(value);
@@ -109,6 +114,15 @@ function PitchTable() {
             setSort({ columnName, direction });
           },
         }}
+        headerSuffix={
+          <div>
+            <SelectPitchType
+              pitchType={type}
+              setPitchType={setType}
+              className="rounded-md"
+            />
+          </div>
+        }
       />
     </div>
   );

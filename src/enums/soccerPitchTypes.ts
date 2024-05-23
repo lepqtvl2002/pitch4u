@@ -7,7 +7,7 @@ enum SoccerPitchTypes {
 export const soccerPitchTypesArray = Object.values(SoccerPitchTypes);
 export default SoccerPitchTypes;
 
-export type PitchType =
+export type SoccerPitchType =
   | SoccerPitchTypes.Pitch5
   | SoccerPitchTypes.Pitch7
   | SoccerPitchTypes.Pitch9

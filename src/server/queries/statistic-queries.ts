@@ -3,8 +3,9 @@ import { $fetch } from "@/lib/axios";
 import { Data as DataStatisticOwner } from "@/app/(dashboard)/dashboard/page";
 import { Data as DataStatisticSystem } from "@/app/(admin)/admin/page";
 import IPaginated from "@/types/paginated";
-import { PitchType } from "@/enums/soccerPitchTypes";
 import { BookingStatus } from "@/enums/bookingStatuses";
+import { config } from "./commom";
+import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
 
 export type Booking = {
   booking_id: number;
@@ -61,7 +62,7 @@ type SubPitch = {
   pitch_id: number;
   name: string;
   price: number;
-  type: PitchType;
+  type: string;
   active: boolean;
   createdAt: string;
   updatedAt: string;
@@ -73,37 +74,32 @@ export class StatisticUseQuery {
     return useQuery({
       queryKey: ["statisticOwner", params],
       queryFn: () =>
-        $fetch(`/v1/statistic/owner`, {
-          method: "GET",
+        $fetch(REQUEST_URLS_CURRENT.STATISTIC_OWNER, {
           params,
         }).then((res) => res.data as DataStatisticOwner),
-      cacheTime: 100,
-      keepPreviousData: true,
+      ...config,
     });
   };
   static getSystemStats = (params?: Record<string, any>) => {
     return useQuery({
       queryKey: ["statisticSystem", params],
       queryFn: () =>
-        $fetch(`/v1/statistic/system`, {
-          method: "GET",
+        $fetch(REQUEST_URLS_CURRENT.STATISTIC_SYSTEM, {
           params,
         }).then((res) => res.data as DataStatisticSystem),
-      cacheTime: 100,
-      keepPreviousData: true,
+      ...config,
     });
   };
-  static getTopPitchesByRevenue = (params?: {
+  static getPitchesByRevenue = (params?: {
     limit?: number;
     page?: number;
     sort?: "asc" | "desc";
     sort_by?: string;
   }) => {
     return useQuery({
-      queryKey: ["topPitches", params],
+      queryKey: ["revenue", params],
       queryFn: () =>
-        $fetch(`/v1/statistic/revenue`, {
-          method: "GET",
+        $fetch(REQUEST_URLS_CURRENT.STATISTIC_REVENUE, {
           params,
         }).then(
           (res) =>
@@ -113,8 +109,7 @@ export class StatisticUseQuery {
               } & IPaginated;
             }
         ),
-      cacheTime: 100,
-      keepPreviousData: true,
+      ...config,
     });
   };
   static getBooking = (params?: {
@@ -126,16 +121,14 @@ export class StatisticUseQuery {
     sort_by?: string;
   }) => {
     return useQuery({
-      queryKey: ["booking", params],
+      queryKey: ["statisticBooking", params],
       queryFn: () =>
-        $fetch(`/v1/booking`, {
-          method: "GET",
+        $fetch(REQUEST_URLS_CURRENT.STATISTIC_BOOKING, {
           params,
         }).then(
           (res) => res.data as { result: { data: Booking[] } & IPaginated }
         ),
-      cacheTime: 100,
-      keepPreviousData: true,
+      ...config,
     });
   };
 }

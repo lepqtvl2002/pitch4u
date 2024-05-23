@@ -14,6 +14,10 @@ export const REQUEST_URLS = {
     REVIEW: "/v1/reviews",
     NOTIFICATIONS: "/v1/notifications",
     NOTIFICATIONS_UNREAD: "/v1/notifications/unread",
+    STATISTIC_OWNER: "/v1/statistic/owner",
+    STATISTIC_SYSTEM: "/v1/statistic/system",
+    STATISTIC_REVENUE: "/v1/statistic/revenue",
+    STATISTIC_BOOKING: "/v1/booking",
   },
 };
 

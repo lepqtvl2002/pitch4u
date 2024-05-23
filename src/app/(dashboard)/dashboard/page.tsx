@@ -121,7 +121,7 @@ export default function DashboardPage() {
 
   const { data: topPitches } =
     status === "authenticated" && session.user.userRole === UserRoles.Admin
-      ? StatisticUseQuery.getTopPitchesByRevenue({
+      ? StatisticUseQuery.getPitchesByRevenue({
           limit: 20,
         })
       : {
