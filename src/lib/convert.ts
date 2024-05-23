@@ -2,6 +2,7 @@ import PitchTypes from "@/enums/pitchTypes";
 import SoccerPitchTypes from "@/enums/soccerPitchTypes";
 import RegistrationStatuses from "@/enums/registrationStatuses";
 import ReportTypes from "@/enums/reportTypes";
+import NotificationTypes from "@/enums/notificationTypes";
 
 export const stringToRegistrationStatus = (status: string) => {
   switch (status) {
@@ -150,3 +151,28 @@ export const subPitchTypeToString = ({
       return pitchTypeToString(pitchType);
   }
 };
+
+export function notificationTypeToString(type: string) {
+  switch (type) {
+    case NotificationTypes.PostLike:
+      return "Thích bài viết";
+    case NotificationTypes.PostComment:
+      return "Bình luận bài viết";
+    case NotificationTypes.PostReplyComment:
+      return "Trả lời bình luận";
+    case NotificationTypes.PostLikeReplyComment:
+      return "Thích bình luận";
+    case NotificationTypes.BookingCancel:
+      return "Hủy đặt lịch";
+    case NotificationTypes.BookingPending:
+      return "Đặt lịch chờ xác nhận";
+    case NotificationTypes.BookingApprove:
+      return "Đặt lịch đã được xác nhận";
+    case NotificationTypes.Success:
+      return "Thành công";
+    case NotificationTypes.Canceled:
+      return "Đã bị hủy";
+    default:
+      return "Thông báo";
+  }
+}

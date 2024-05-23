@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 import { BellIcon, Loader2Icon, MessageCircleIcon } from "lucide-react";
 import { NotificationBadge } from "../notification-badge";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import NotificationList from "../dashboard/notification-list";
+import NotificationList from "../notification-list";
 import { PopupChatList } from "../ui/message-components";
 
 export default function Navbar({

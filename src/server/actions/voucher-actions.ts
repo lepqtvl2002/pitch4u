@@ -1,6 +1,9 @@
 import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
 import { $fetch } from "@/lib/axios";
-import { errorToastWithCode, successToast } from "@/lib/quick-toast";
+import {
+  errorToast,
+  successToast,
+} from "@/lib/quick-toast";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
@@ -23,10 +26,7 @@ export class VoucherUseMutation {
         successToast({ actionName: "Tạo voucher" });
       },
       onError: (error: AxiosError) => {
-        errorToastWithCode({
-          actionName: "Tạo voucher",
-          code: error.response?.status,
-        });
+        errorToast({ actionName: "Tạo voucher", error });
       },
     });
   };
@@ -49,10 +49,7 @@ export class VoucherUseMutation {
         successToast({ actionName: "Cập nhật voucher" });
       },
       onError: (error: AxiosError) => {
-        errorToastWithCode({
-          actionName: "Cập nhật voucher",
-          code: error.response?.status,
-        });
+        errorToast({ actionName: "Cập nhật voucher", error });
       },
     });
   };
@@ -67,10 +64,7 @@ export class VoucherUseMutation {
         successToast({ actionName: "Xóa voucher" });
       },
       onError: (error: AxiosError) => {
-        errorToastWithCode({
-          actionName: "Xóa voucher",
-          code: error.response?.status,
-        });
+        errorToast({ actionName: "Xóa voucher", error });
       },
     });
   };

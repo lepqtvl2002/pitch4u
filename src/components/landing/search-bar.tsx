@@ -21,8 +21,6 @@ import {
 import { pitchTypeToString } from "@/lib/convert";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { pitchTypesArray } from "@/enums/pitchTypes";
-import { errorToastWithCode } from "@/lib/quick-toast";
-import { AxiosError } from "axios";
 import { Input } from "../ui/input";
 
 const LIMIT = 3;
@@ -70,13 +68,11 @@ const SearchBar: React.FC = () => {
 
   const {
     data,
-    error,
     fetchNextPage,
     hasNextPage,
     isFetching,
     isFetchingNextPage,
     refetch,
-    status,
   } = useInfiniteQuery({
     queryKey: ["pitches"],
     queryFn: fetchPitches,
@@ -132,13 +128,6 @@ const SearchBar: React.FC = () => {
   useEffect(() => {
     refetch();
   }, [debounceValue, rate, location.lat, location.long, sort]);
-
-  if (error) {
-    errorToastWithCode({
-      actionName: "Tải sân",
-      code: (error as AxiosError).response?.status,
-    });
-  }
 
   return (
     <div className="flex flex-col space-y-4 w-full lg:w-2/3 xl:w-1/2">
@@ -199,7 +188,7 @@ const SearchBar: React.FC = () => {
         ))}
       </div>
       <div className="mt-4 list-inside list-disc no-scrollbar">
-        {isFetching || error ? (
+        {isFetching ? (
           <div className="flex gap-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4">
             <Skeleton className="w-[200px] h-[200px]" />
             <Skeleton className="flex-1 h-[200px]" />
