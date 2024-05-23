@@ -18,6 +18,15 @@ export const REQUEST_URLS = {
     STATISTIC_SYSTEM: "/v1/statistic/system",
     STATISTIC_REVENUE: "/v1/statistic/revenue",
     STATISTIC_BOOKING: "/v1/booking",
+    PITCHES: "/v1/pitches",
+    MY_PITCHES: "/v1/pitches/my-pitches",
+    PITCH_SLUG: "/v1/pitches/slug",
+    PITCH_DETAIL: "/v1/pitches/detail",
+    PITCH_BOOKING_STATUS: "/v1/pitches/booking-status",
+    PITCHES_FAVORITE: "/v1/pitches/favorite",
+    PITCH_TYPES: "/v1/pitches/pitch-type",
+    SUB_PITCH_TYPES: "/v1/pitches/subpitch-type",
+    SUB_PITCH_PRICES_CONFIG: "/v1/pitches/subpitches/config-price",
   },
 };
 

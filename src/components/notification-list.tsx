@@ -21,20 +21,9 @@ import { NotificationUseMutation } from "@/server/actions/notification-actions";
 import { Fragment, useState } from "react";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
-import { LIMIT_DEFAULT } from "@/lib/constants";
-import { $fetch } from "@/lib/axios";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { Button } from "./ui/button";
 import { notificationTypeToString } from "@/lib/convert";
-
-const fetchNotifications = async ({ pageParam = 1 }) => {
-  const params = new URLSearchParams({
-    limit: LIMIT_DEFAULT,
-    page: pageParam,
-  } as unknown as string[][]);
-  const res = await $fetch(`/v1/notifications?${params}`);
-  return res.data;
-};
+import { NotificationUseQuery } from "@/server/queries/notification-queries";
 
 export default function NotificationList() {
   const [isUnread, setIsUnread] = useState(false);
@@ -42,21 +31,10 @@ export default function NotificationList() {
   const [types, setTypes] = useState<string[]>([]);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["notifications"],
-      queryFn: fetchNotifications,
-      getNextPageParam: (lastPage, pages) => {
-        if (
-          pages?.length >
-          (lastPage?.result.pagination.total - 1) / LIMIT_DEFAULT + 1
-        )
-          return false;
-        return Number(lastPage?.result?.pagination?.page + 1);
-      },
-    });
+    NotificationUseQuery.getNotificationsInfinite();
 
   return (
-    <div className="flex flex-col min-h-[400px]">
+    <div className="flex flex-col min-h-[400px] max-h-[80vh]">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">Thông báo</h2>
         <UnreadSwitch

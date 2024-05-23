@@ -8,14 +8,10 @@ import { CircleDollarSign, MapPin, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Stars } from "../ui/vote-stars";
-import { Skeleton } from "../ui/skeleton";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { $globalFetch } from "@/lib/axios";
 import { pitchTypeToString } from "@/lib/convert";
 import { Input } from "../ui/input";
 import SelectPitchType from "../select-pitch-type";
-
-const LIMIT = 3;
+import { PitchUseQuery } from "@/server/queries/pitch-queries";
 
 const Conditions = [
   { title: "Gần bạn", value: "near" },
@@ -48,36 +44,15 @@ const SearchBar: React.FC = () => {
   });
   const [rate, setRate] = useState(0);
 
-  const fetchPitches = async ({ pageParam = 1 }) => {
-    const params = new URLSearchParams({
-      limit: LIMIT,
-      page: pageParam,
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
+    PitchUseQuery.getPitchesInfinite({
+      limit: 3,
       long: location.long,
       lat: location.lat,
       name: searchQuery,
       rate_gte: rate,
       typePitch: pitchType,
-    } as unknown as string[][]);
-    const res = await $globalFetch(`/v1/pitches?${params}`);
-    return res.data;
-  };
-
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    refetch,
-  } = useInfiniteQuery({
-    queryKey: ["pitches"],
-    queryFn: fetchPitches,
-    getNextPageParam: (lastPage, pages) => {
-      if (pages?.length > (lastPage?.result.total - 1) / LIMIT + 1)
-        return false;
-      return Number(lastPage?.result?.page + 1);
-    },
-  });
+    });
 
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -156,23 +131,16 @@ const SearchBar: React.FC = () => {
         ))}
       </div>
       <div className="mt-4 list-inside list-disc no-scrollbar">
-        {isFetching ? (
-          <div className="flex gap-2 bg-white shadow rounded-lg p-2 md:pd-4 mb-4">
-            <Skeleton className="w-[200px] h-[200px]" />
-            <Skeleton className="flex-1 h-[200px]" />
-          </div>
-        ) : (
-          data?.pages.map((group, i) => {
-            const pitches = group?.result.data;
-            return (
-              <React.Fragment key={i}>
-                {pitches?.map((pitch: IPitch) => (
-                  <PitchItem key={pitch?.pitch_id} pitch={pitch} />
-                ))}
-              </React.Fragment>
-            );
-          })
-        )}
+        {data?.pages.map((group, i) => {
+          const pitches = group?.result.data;
+          return (
+            <React.Fragment key={i}>
+              {pitches?.map((pitch: IPitch) => (
+                <PitchItem key={pitch?.pitch_id} pitch={pitch} />
+              ))}
+            </React.Fragment>
+          );
+        })}
         <div>
           <Button
             variant="ghost"
