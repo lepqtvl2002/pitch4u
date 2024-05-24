@@ -487,7 +487,7 @@ export function PopupChatList({ className }: { className?: string }) {
       </div>
       <div
         className={
-          "flex flex-col h-[60vh] min-h-[400px] space-y-3 p-2 overflow-y-auto"
+          "flex flex-col h-[76vh] md:h-[60vh] md:min-h-[400px] space-y-3 p-2 overflow-y-auto"
         }
       >
         {conversations.length && !debounceValue.length ? (
@@ -539,11 +539,9 @@ export function PopupChatList({ className }: { className?: string }) {
                   mutatingToast();
                   const newChat = await joinChatMutate(user.user_id);
                   joinChat(newChat.result.chat_id);
-                  () => {
-                    setUser({ avatar: user.avatar, fullname: user.fullname });
-                    setChatId(newChat.result.chat_id);
-                    setOpenPopup(true);
-                  };
+                  setUser({ avatar: user.avatar, fullname: user.fullname });
+                  setChatId(newChat.result.chat_id);
+                  setOpenPopup(true);
                 }}
               >
                 <MessageCard

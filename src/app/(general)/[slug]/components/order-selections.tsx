@@ -435,7 +435,7 @@ function VoucherSelectedItem({ voucher }: { voucher: IVoucher }) {
         <TicketIcon className="w-6 h-6 text-white font-semibold" />
       </div>
       <div className="flex-1 flex flex-wrap justify-between gap-x-2 p-2">
-        <p>{voucher.code}</p>
+        <p className="truncate">{voucher.code}</p>
         {voucher.type === VoucherTypes.Percent ? (
           <p>{Number(voucher.discount) * 100}%</p>
         ) : (
