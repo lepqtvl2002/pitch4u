@@ -40,7 +40,7 @@ function PitchTable() {
           name: debouncedSearch,
           sort_by: sort.columnName,
           sort: sort.direction,
-          typePitch: type,
+          pitchType: type,
           is_suspended: statuses.includes("suspended") ? true : false,
         }
       : {
@@ -49,7 +49,7 @@ function PitchTable() {
           name: debouncedSearch,
           sort_by: sort.columnName,
           sort: sort.direction,
-          typePitch: type,
+          pitchType: type,
         };
 
   const { data, isError, isFetching, refetch } =

@@ -14,7 +14,7 @@ import { BellIcon, Loader2Icon, MessageCircleIcon } from "lucide-react";
 import { NotificationBadge } from "../notification-badge";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import NotificationList from "../notification-list";
-import { PopupChatList } from "../ui/message-components";
+import { PopupMessage } from "../ui/message-components";
 import { NotificationUseQuery } from "@/server/queries/notification-queries";
 
 export default function Navbar({
@@ -71,20 +71,7 @@ export default function Navbar({
             </span>
           ) : status === "authenticated" ? (
             <div className="flex gap-3">
-              <Popover>
-                <PopoverTrigger>
-                  <Button
-                    variant="ghost"
-                    className={"relative hover:bg-gray-200 rounded-full p-2"}
-                  >
-                    <NotificationBadge number={0} />
-                    <MessageCircleIcon />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[360px]">
-                  <PopupChatList />
-                </PopoverContent>
-              </Popover>
+              <PopupMessage />
               <Popover>
                 <PopoverTrigger>
                   <Button

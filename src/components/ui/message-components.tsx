@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import {
   ArrowLeftIcon,
   Loader2Icon,
+  MessageCircleIcon,
   MoreHorizontal,
   PanelLeftCloseIcon,
   SearchIcon,
@@ -24,6 +25,8 @@ import Link from "next/link";
 import { Skeleton } from "./skeleton";
 import { mutatingToast } from "@/lib/quick-toast";
 import { AvatarCustom } from "./avatar-custom";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { NotificationBadge } from "../notification-badge";
 
 // MessageList.js
 export function MessageList({
@@ -697,5 +700,24 @@ export function PopupChat({
         </div>
       </div>
     </div>
+  );
+}
+
+export function PopupMessage() {
+  return (
+    <Popover>
+      <PopoverTrigger>
+        <Button
+          variant="ghost"
+          className={"relative hover:bg-gray-200 rounded-full p-2"}
+        >
+          <NotificationBadge number={0} />
+          <MessageCircleIcon />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-screen md:w-[360px]">
+        <PopupChatList />
+      </PopoverContent>
+    </Popover>
   );
 }

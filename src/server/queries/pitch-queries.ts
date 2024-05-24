@@ -40,10 +40,14 @@ export class PitchUseQuery {
         });
         return res.data;
       },
-      getNextPageParam: (lastPage, pages) => {
+      getNextPageParam: (lastPage) => {
         if (
-          pages?.length >
-          (lastPage?.result.total - 1) / (params.limit ?? LIMIT_DEFAULT) + 1
+          lastPage?.result.page >=
+          Math.floor(
+            (lastPage?.result.total - 1) /
+              (lastPage?.result.limit ?? LIMIT_DEFAULT) +
+              1
+          )
         )
           return false;
         return Number(lastPage?.result?.page + 1);

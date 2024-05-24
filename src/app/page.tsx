@@ -36,10 +36,10 @@ export default async function Home() {
                 <Button
                   variant="outline"
                   className={
-                    "w-full md:h-16 md:text-xl animate-bounce rounded-full bg-emerald-100 text-emerald-500"
+                    "w-full md:h-16 md:text-xl rounded-full bg-emerald-100 text-emerald-500"
                   }
                 >
-                  Tìm sân <ArrowDownIcon className="ml-2" />
+                  Tìm sân <ArrowDownIcon className="ml-2 animate-bounce" />
                 </Button>
               </Link>
             </div>

@@ -41,6 +41,7 @@ function PitchTable() {
           sort_by: sort.columnName,
           sort: sort.direction,
           suspended: statuses.includes("suspended") ? true : false,
+          pitchType: type,
         }
       : {
           limit: pageSize,
@@ -48,6 +49,7 @@ function PitchTable() {
           name: debouncedSearch,
           sort_by: sort.columnName,
           sort: sort.direction,
+          pitchType: type,
         };
 
   const { data, isError, isFetching, refetch } =

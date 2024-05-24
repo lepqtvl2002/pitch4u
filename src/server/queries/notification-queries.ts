@@ -29,7 +29,7 @@ export class NotificationUseQuery {
       },
       getNextPageParam: (lastPage, pages) => {
         if (
-          pages?.length >
+          pages?.length >=
           (lastPage?.result.pagination.total - 1) /
             (params?.limit ?? LIMIT_DEFAULT) +
             1

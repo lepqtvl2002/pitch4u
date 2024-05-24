@@ -44,15 +44,22 @@ const SearchBar: React.FC = () => {
   });
   const [rate, setRate] = useState(0);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
-    PitchUseQuery.getPitchesInfinite({
-      limit: 3,
-      long: location.long,
-      lat: location.lat,
-      name: searchQuery,
-      rate_gte: rate,
-      typePitch: pitchType,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isInitialLoading,
+    refetch,
+    remove,
+  } = PitchUseQuery.getPitchesInfinite({
+    limit: 3,
+    long: location.long,
+    lat: location.lat,
+    name: searchQuery,
+    rate_gte: rate,
+    pitchType,
+  });
 
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -93,7 +100,12 @@ const SearchBar: React.FC = () => {
 
   useEffect(() => {
     refetch();
-  }, [debounceValue, rate, location.lat, location.long, sort, pitchType]);
+  }, [debounceValue, rate, location.lat, location.long, sort, refetch]);
+
+  useEffect(() => {
+    remove();
+    refetch();
+  }, [pitchType, refetch, remove]);
 
   return (
     <div className="flex flex-col space-y-4 w-full lg:w-2/3 xl:w-1/2">
@@ -131,17 +143,21 @@ const SearchBar: React.FC = () => {
         ))}
       </div>
       <div className="mt-4 list-inside list-disc no-scrollbar">
-        {data?.pages.map((group, i) => {
-          const pitches = group?.result.data;
-          return (
-            <React.Fragment key={i}>
-              {pitches?.map((pitch: IPitch) => (
-                <PitchItem key={pitch?.pitch_id} pitch={pitch} />
-              ))}
-            </React.Fragment>
-          );
-        })}
-        <div>
+        {isInitialLoading ? (
+          <p>Đang tải...</p>
+        ) : (
+          data?.pages.map((group, i) => {
+            const pitches = group?.result.data;
+            return (
+              <React.Fragment key={i}>
+                {pitches?.map((pitch: IPitch) => (
+                  <PitchItem key={pitch?.pitch_id} pitch={pitch} />
+                ))}
+              </React.Fragment>
+            );
+          })
+        )}
+        <div className={isInitialLoading ? "hidden" : "block"}>
           <Button
             variant="ghost"
             onClick={() => fetchNextPage()}
