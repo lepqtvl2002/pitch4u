@@ -1,5 +1,5 @@
 "use client";
-import { cn, isEmptyObject } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { ChatObject, Message } from "@/types/message";
 import { useSession } from "next-auth/react";
 import { Input } from "./input";
@@ -116,10 +116,12 @@ export function MessageCard({
   avatarUrl,
   name,
   lastMessage,
+  lastUser = "",
 }: {
   avatarUrl?: string | null;
   name?: string | null;
   lastMessage: string;
+  lastUser?: string;
 }) {
   return (
     <div
@@ -130,7 +132,9 @@ export function MessageCard({
       <AvatarCustom avatarUrl={avatarUrl} name={name ?? "Unknown"} />
       <div className="flex flex-col">
         <p className={"font-semibold text-lg truncate"}>{name}</p>
-        <span className={"text-sm truncate"}>{lastMessage}</span>
+        <span
+          className={"text-sm truncate"}
+        >{`${lastUser}: ${lastMessage}`}</span>
       </div>
     </div>
   );
@@ -350,6 +354,11 @@ export function SidebarChats({
                     avatarUrl={user?.avatar || "/fallback-avatar.png"}
                     name={user?.fullname || "Unknown"}
                     lastMessage={chat?.last_message?.text}
+                    lastUser={
+                      chat?.last_message?.user_id == session?.user?.userId
+                        ? "you"
+                        : user?.fullname
+                    }
                   />
                 </Link>
               );
@@ -513,6 +522,11 @@ export function PopupChatList({ className }: { className?: string }) {
                     avatarUrl={user?.avatar}
                     name={user?.fullname}
                     lastMessage={chat?.last_message?.text}
+                    lastUser={
+                      chat?.last_message?.user_id == session?.user?.userId
+                        ? "you"
+                        : user?.fullname
+                    }
                   />
                 </div>
               );
@@ -563,6 +577,12 @@ export function PopupChatList({ className }: { className?: string }) {
                   avatarUrl={user.avatar}
                   name={user.fullname}
                   lastMessage={(chat as ChatObject)?.last_message?.text}
+                  lastUser={
+                    (chat as ChatObject).last_message?.user_id ==
+                    session?.user?.userId
+                      ? "you"
+                      : user?.fullname
+                  }
                 />
               </div>
             );
