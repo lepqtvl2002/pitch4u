@@ -34,8 +34,9 @@ import { addDays, format } from "date-fns";
 import { CalendarIcon, XCircleIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import VoucherTypes from "@/enums/voucherTypes";
-import { SelectMultipleMyPitches } from "./pitch-picker";
+import { SelectMultipleMyPitches, SelectMultiplePitches } from "./pitch-picker";
 import { IPitch } from "@/types/pitch";
+import UserRoles, { UserRole } from "@/enums/roles";
 
 const createVoucherFormSchema = z.object({
   code: z.string().min(2, {
@@ -64,7 +65,7 @@ type FormProps = {
   voucher?: IVoucher;
 };
 
-export function VoucherCreateForm() {
+export function VoucherCreateForm({ userRole }: { userRole: UserRole }) {
   const voucherFormSchema = createVoucherFormSchema;
   type VoucherFormValues = z.infer<typeof voucherFormSchema>;
   const form = useForm<VoucherFormValues>({
@@ -288,13 +289,27 @@ export function VoucherCreateForm() {
               </Button>
             ))}
           </div>
-          <SelectMultipleMyPitches
-            pitches={pitches}
-            setPitches={setPitches}
-            prevPitchIDs={undefined}
-          />
+          {userRole === UserRoles.Admin ? (
+            <SelectMultipleMyPitches
+              pitches={pitches}
+              setPitches={setPitches}
+              prevPitchIDs={undefined}
+            />
+          ) : userRole === UserRoles.SuperAdmin ? (
+            <SelectMultiplePitches
+              pitches={pitches}
+              setPitches={setPitches}
+              prevPitchIDs={undefined}
+            />
+          ) : null}
         </div>
-        <Button disabled={isLoading} type="submit">
+        <Button
+          disabled={
+            isLoading ||
+            (userRole !== UserRoles.Admin && userRole != UserRoles.SuperAdmin)
+          }
+          type="submit"
+        >
           Thêm mới voucher
         </Button>
       </form>

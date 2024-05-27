@@ -1,10 +1,9 @@
 "use client";
 import { VoucherCreateForm } from "@/components/dashboard/voucher-input-form";
 import { Separator } from "@/components/ui/separator";
-import { useSession } from "next-auth/react";
+import UserRoles from "@/enums/roles";
 
 export default function CreateVoucherPage() {
-  const { data: session, status } = useSession();
   return (
     <div className="flex-1 lg:max-w-2xl space-y-6 p-2 md:p-10 pb-16">
       <div>
@@ -14,13 +13,7 @@ export default function CreateVoucherPage() {
         </p>
       </div>
       <Separator />
-      {status === "loading" ? (
-        <div>Loading...</div>
-      ) : (
-        session?.user.userRole && (
-          <VoucherCreateForm userRole={session?.user.userRole} />
-        )
-      )}
+      <VoucherCreateForm userRole={UserRoles.SuperAdmin} />
     </div>
   );
 }

@@ -42,6 +42,16 @@ const adminNavItems: Record<string, NavItem> = {
     href: REDIRECT_URLS.ADMIN.REPORT,
     icon: "scrollText",
   },
+  pitch: {
+    title: "Quản lý sân",
+    href: REDIRECT_URLS.ADMIN.PITCH,
+    icon: "layoutPanelLeft",
+  },
+  voucher: {
+    title: "Voucher",
+    href: REDIRECT_URLS.ADMIN.VOUCHER,
+    icon: "ticket",
+  },
   advertisement: {
     title: "Quảng cáo",
     href: REDIRECT_URLS.ADMIN.ADVERTISEMENT,
@@ -64,6 +74,8 @@ export const adminConfig: DashboardConfig = {
     adminNavItems.overview,
     adminNavItems.registration,
     adminNavItems.user,
+    adminNavItems.pitch,
+    adminNavItems.voucher,
     adminNavItems.report,
     adminNavItems.advertisement,
   ],
@@ -72,6 +84,7 @@ export const adminConfig: DashboardConfig = {
     adminNavItems.registration,
     adminNavItems.user,
     adminNavItems.pitch,
+    adminNavItems.voucher,
     adminNavItems.report,
     adminNavItems.advertisement,
   ],

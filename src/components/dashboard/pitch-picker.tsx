@@ -151,7 +151,7 @@ export function SelectMultipleMyPitches({
   );
 }
 
-function SelectMultiplePitches({
+export function SelectMultiplePitches({
   pitches,
   setPitches,
   prevPitchIDs,
