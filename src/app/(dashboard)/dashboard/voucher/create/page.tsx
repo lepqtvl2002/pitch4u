@@ -1,5 +1,5 @@
 "use client";
-import { VoucherInputForm } from "@/components/dashboard/voucher-input-form";
+import { VoucherCreateForm } from "@/components/dashboard/voucher-input-form";
 import { Separator } from "@/components/ui/separator";
 
 export default function CreateVoucherPage() {
@@ -12,7 +12,7 @@ export default function CreateVoucherPage() {
         </p>
       </div>
       <Separator />
-      <VoucherInputForm />
+      <VoucherCreateForm />
     </div>
   );
 }

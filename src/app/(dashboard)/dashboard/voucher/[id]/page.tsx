@@ -1,5 +1,5 @@
 "use client";
-import { VoucherInputForm } from "@/components/dashboard/voucher-input-form";
+import { VoucherUpdateForm } from "@/components/dashboard/voucher-input-form";
 import { Separator } from "@/components/ui/separator";
 import { IVoucher } from "@/types/voucher";
 import { useSearchParams } from "next/navigation";
@@ -18,7 +18,7 @@ export default function DetailVoucherPage() {
         </p>
       </div>
       <Separator />
-      <VoucherInputForm voucher={voucher as unknown as IVoucher} />
+      <VoucherUpdateForm voucher={voucher as unknown as IVoucher} />
     </div>
   );
 }

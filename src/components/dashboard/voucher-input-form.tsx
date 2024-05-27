@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -41,88 +42,56 @@ const createVoucherFormSchema = z.object({
     message: "Code phải chứa tối thiểu 3 ký tự.",
   }),
   type: z.string(),
-  usage_count: z.string(),
+  usage_count: z.string().optional(),
   discount: z.string(),
   expire_date: z.date().optional(),
+  public: z.boolean(),
+  min_price: z.string().optional(),
+  max_discount: z.string().optional(),
 });
 
 const updateVoucherFormSchema = z.object({
-  code: z
-    .string()
-    .min(2, {
-      message: "Code phải chứa tối thiểu 3 ký tự.",
-    })
-    .optional(),
   type: z.string().optional(),
   usage_count: z.string().optional(),
   discount: z.string().optional(),
   expire_date: z.date().optional(),
+  public: z.boolean().optional(),
+  min_price: z.string().optional(),
+  max_discount: z.string().optional(),
 });
 
 type FormProps = {
   voucher?: IVoucher;
 };
 
-export function VoucherInputForm({ voucher }: FormProps) {
-  const voucherFormSchema = voucher
-    ? updateVoucherFormSchema
-    : createVoucherFormSchema;
+export function VoucherCreateForm() {
+  const voucherFormSchema = createVoucherFormSchema;
   type VoucherFormValues = z.infer<typeof voucherFormSchema>;
   const form = useForm<VoucherFormValues>({
     resolver: zodResolver(voucherFormSchema),
-    defaultValues: {
-      code: voucher?.code,
-      type: voucher?.type,
-      expire_date: voucher?.expire_date
-        ? new Date(voucher.expire_date)
-        : addDays(new Date(), 1),
-      usage_count: voucher?.usage_count?.toString(),
-      discount:
-        voucher?.type === "percent"
-          ? (voucher?.discount * 100)?.toString()
-          : voucher?.discount.toString(),
-    },
-    // mode: "onChange",
   });
   const [pitches, setPitches] = useState<IPitch[]>([]);
   const { mutateAsync: createVoucher, isLoading } = VoucherUseMutation.create();
-  const { mutateAsync: updateVoucher, isLoading: isUpdating } =
-    VoucherUseMutation.update(voucher?.voucher_id!);
   const router = useRouter();
 
   async function onSubmit(data: VoucherFormValues) {
-    if (voucher) {
+    if (pitches.length > 0) {
       mutatingToast();
-      const { ...sendValues } = data;
-      await updateVoucher({
-        ...sendValues,
-        usage_count: Number(data.usage_count),
+      await createVoucher({
+        ...data,
+        usage_count: Number(data?.usage_count),
         discount:
           data.type == "fixed"
             ? Number(data.discount)
             : Number(data.discount) / 100,
+        pitch_id: pitches.at(0)?.pitch_id,
+        public: data?.public || true,
+        max_discount: data?.max_discount ? Number(data.max_discount) : null,
+        min_price: data?.min_price ? Number(data.min_price) : null,
       });
       router.push("/dashboard/voucher");
     } else {
-      if (pitches.length > 0) {
-        mutatingToast();
-        const { ...sendValues } = data;
-        await createVoucher({
-          ...sendValues,
-          code: data?.code || "CODE",
-          // expire_date,
-          type: data.type || "fixed",
-          usage_count: Number(data?.usage_count),
-          discount:
-            data.type == "fixed"
-              ? Number(data.discount)
-              : Number(data.discount) / 100,
-          pitch_id: pitches.at(0)?.pitch_id,
-        });
-        router.push("/dashboard/voucher");
-      } else {
-        toast({ title: "Vui lòng chọn sân áp dụng voucher này!" });
-      }
+      toast({ title: "Vui lòng chọn sân áp dụng voucher này!" });
     }
   }
 
@@ -151,6 +120,41 @@ export function VoucherInputForm({ voucher }: FormProps) {
         />
         <FormField
           control={form.control}
+          name="public"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Sử dung cho tất cả người dùng (công khai)</FormLabel>
+                <FormDescription>
+                  Nếu chọn, voucher sẽ hiển thị cho tất cả người dùng. Nếu
+                  không, người dùng chỉ có thể sử dụng voucher khi có được mã.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="usage_count"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Số lượng voucher được tung ra</FormLabel>
+              <FormControl>
+                <Input type="number" defaultValue={field.value} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="type"
           render={({ field }) => (
             <FormItem>
@@ -174,19 +178,7 @@ export function VoucherInputForm({ voucher }: FormProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="usage_count"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Số tiền tối thiểu để sử mã giảm giá</FormLabel>
-              <FormControl>
-                <Input type="number" defaultValue={field.value} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name="discount"
@@ -205,6 +197,34 @@ export function VoucherInputForm({ voucher }: FormProps) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="max_discount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Số tiền giảm tối đa</FormLabel>
+              <FormControl>
+                <Input type="number" defaultValue={field.value} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="min_price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Số tiền tối thiểu để sử dụng voucher</FormLabel>
+              <FormControl>
+                <Input type="number" defaultValue={field.value} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="expire_date"
@@ -268,16 +288,215 @@ export function VoucherInputForm({ voucher }: FormProps) {
               </Button>
             ))}
           </div>
-          {voucher ? null : (
-            <SelectMultipleMyPitches
-              pitches={pitches}
-              setPitches={setPitches}
-              prevPitchIDs={undefined}
-            />
-          )}
+          <SelectMultipleMyPitches
+            pitches={pitches}
+            setPitches={setPitches}
+            prevPitchIDs={undefined}
+          />
         </div>
-        <Button disabled={isLoading || isUpdating} type="submit">
-          {voucher ? "Cập nhật thông tin" : "Thêm mới voucher"}
+        <Button disabled={isLoading} type="submit">
+          Thêm mới voucher
+        </Button>
+      </form>
+    </Form>
+  );
+}
+
+export function VoucherUpdateForm({ voucher }: FormProps) {
+  const voucherFormSchema = updateVoucherFormSchema;
+  type VoucherFormValues = z.infer<typeof voucherFormSchema>;
+  const form = useForm<VoucherFormValues>({
+    resolver: zodResolver(voucherFormSchema),
+    defaultValues: {
+      type: voucher?.type,
+      expire_date: voucher?.expire_date
+        ? new Date(voucher.expire_date)
+        : addDays(new Date(), 1),
+      usage_count: voucher?.usage_count?.toString(),
+      discount:
+        voucher?.type === "percent"
+          ? (voucher?.discount * 100)?.toString()
+          : voucher?.discount.toString(),
+      public: voucher?.public ?? false,
+      min_price: voucher?.min_price?.toString(),
+      max_discount: voucher?.max_discount?.toString(),
+    },
+  });
+  const { mutateAsync: updateVoucher, isLoading: isUpdating } =
+    VoucherUseMutation.update(voucher?.voucher_id!);
+  const router = useRouter();
+
+  async function onSubmit(data: VoucherFormValues) {
+    mutatingToast();
+    const sendValues = {
+      ...data,
+      usage_count: Number(data.usage_count),
+      discount:
+        data.type == "fixed"
+          ? Number(data.discount)
+          : Number(data.discount) / 100,
+      public: data?.public || false,
+      max_discount: data?.max_discount ? Number(data.max_discount) : null,
+      min_price: data?.min_price ? Number(data.min_price) : null,
+    };
+
+    await updateVoucher(sendValues);
+    router.push("/dashboard/voucher");
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="public"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Sử dung cho tất cả người dùng (công khai)</FormLabel>
+                <FormDescription>
+                  Nếu chọn, voucher sẽ hiển thị cho tất cả người dùng. Nếu
+                  không, người dùng chỉ có thể sử dụng voucher khi có được mã.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="usage_count"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Số lượng voucher được tung ra</FormLabel>
+              <FormControl>
+                <Input type="number" defaultValue={field.value} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Loại giảm giá</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn loại giảm giá" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value={VoucherTypes.Fixed}>
+                    {voucherTypeToString(VoucherTypes.Fixed)}
+                  </SelectItem>
+                  <SelectItem value={VoucherTypes.Percent}>
+                    {voucherTypeToString(VoucherTypes.Percent)}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="discount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Số giảm</FormLabel>
+              <FormControl>
+                <Input type="number" defaultValue={field.value} {...field} />
+              </FormControl>
+              <FormDescription>
+                {form.getValues().type == "percent"
+                  ? "Nhập số phần trăm được giảm (1 - 100)."
+                  : "Nhập số tiền được giảm"}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="max_discount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Số tiền giảm tối đa</FormLabel>
+              <FormControl>
+                <Input type="number" defaultValue={field.value} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="min_price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Số tiền tối thiểu để sử dụng voucher</FormLabel>
+              <FormControl>
+                <Input type="number" defaultValue={field.value} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="expire_date"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Ngày hết hạn</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(new Date(field.value), "dd/MM/yyyy")
+                      ) : (
+                        <span>Chọn 1 ngày</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      date <= new Date() || date > new Date("2090-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button disabled={isUpdating} type="submit">
+          Cập nhật thông tin
         </Button>
       </form>
     </Form>

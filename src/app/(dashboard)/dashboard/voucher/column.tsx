@@ -70,15 +70,19 @@ export const columns: ColumnDef<IVoucher>[] = [
       return (
         <div className="flex flex-col md:flex-row justify-between">
           <div className={voucherVariant({ variant: type })}>
-            {voucherTypeToString(type)}
-          </div>
-          <div className={"text-bold"}>
             {type == VoucherTypes.Fixed
               ? discount.toLocaleString()
               : `${discount * 100}%`}
           </div>
         </div>
       );
+    },
+  },
+  {
+    header: "Còn lại",
+    cell: (ctx) => {
+      const usageCount = ctx.row.original.usage_count;
+      return <span>{usageCount?.toLocaleString()}</span>;
     },
   },
   {

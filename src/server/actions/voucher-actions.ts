@@ -1,9 +1,6 @@
 import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
 import { $fetch } from "@/lib/axios";
-import {
-  errorToast,
-  successToast,
-} from "@/lib/quick-toast";
+import { errorToast, successToast } from "@/lib/quick-toast";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
@@ -17,6 +14,9 @@ export class VoucherUseMutation {
         usage_count?: number;
         discount: number;
         expire_date?: Date;
+        public: boolean;
+        min_price?: number | null;
+        max_discount?: number | null;
       }) =>
         $fetch(REQUEST_URLS_CURRENT.VOUCHERS, {
           method: "POST",
@@ -40,6 +40,9 @@ export class VoucherUseMutation {
         usage_count?: number;
         discount?: number;
         expire_date?: Date;
+        public?: boolean;
+        min_price?: number | null;
+        max_discount?: number | null;
       }) =>
         $fetch(`${REQUEST_URLS_CURRENT.VOUCHERS}/${voucher_id}`, {
           method: "PATCH",
