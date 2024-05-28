@@ -62,9 +62,9 @@ export default function NotificationList() {
       <div
         className={cn("flex flex-wrap gap-2", !isOpenFilterList && "hidden")}
       >
-        {notificationTypesArray.map((type) => (
+        {notificationTypesArray.map((type, index) => (
           <Button
-            key={type}
+            key={`${type}-${index}`}
             variant={types.includes(type) ? "default" : "outline"}
             onClick={() => {
               if (types.includes(type)) {
@@ -84,9 +84,9 @@ export default function NotificationList() {
       </div>
 
       <div className="max-h-[500px] overflow-y-auto no-scrollbar">
-        {data?.pages.map((page) => {
+        {data?.pages.map((page, index) => {
           return (
-            <Fragment key={page.result.page}>
+            <Fragment key={index}>
               {page?.result.data
                 .filter((notification: INotification) => {
                   if (isUnread) {

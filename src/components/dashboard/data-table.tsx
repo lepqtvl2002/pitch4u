@@ -325,16 +325,14 @@ export function DataTable<TData, TValue>({
         <Pagination>
           <PaginationContent>
             <PaginationPrevious onClick={() => table.previousPage()} />
-            <PaginationItem
+            <PaginationEllipsis
               className={
                 table.getState().pagination.pageIndex > 5 ||
                 !table.getPageCount()
                   ? "flex"
                   : "hidden"
               }
-            >
-              <PaginationEllipsis />
-            </PaginationItem>
+            />
             {Array.from({ length: table.getPageCount() }, (_, i) => i).map(
               (pageIndex) => {
                 return (
@@ -360,15 +358,13 @@ export function DataTable<TData, TValue>({
                 );
               }
             )}
-            <PaginationItem
+            <PaginationEllipsis
               className={
                 table.getPageCount() - table.getState().pagination.pageIndex > 6
                   ? "flex"
                   : "hidden"
               }
-            >
-              <PaginationEllipsis />
-            </PaginationItem>
+            />
             <PaginationNext onClick={() => table.nextPage()} />
           </PaginationContent>
         </Pagination>
