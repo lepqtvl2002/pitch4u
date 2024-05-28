@@ -2,25 +2,18 @@ import PitchOrder from "@/components/landing/order";
 import Review, { ReviewType } from "@/components/landing/review";
 import { notFound } from "next/navigation";
 import { Stars } from "@/components/ui/vote-stars";
-import { $fetch } from "@/lib/axios";
+import { $globalFetch } from "@/lib/axios";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/server/auth";
 import { IPitch } from "@/types/pitch";
 
 const PitchDetail = async ({ params }: { params: { slug: string } }) => {
   const slug = params.slug;
-  const session = await getServerSession(authOptions);
-  const res = await $fetch.get(`/v1/pitches/slugs/${slug}`, {
-    headers: {
-      Authorization: `Bearer ${session?.accessToken?.token}`,
-    },
-  });
+  const res = await $globalFetch.get(`/v1/pitches/slugs/${slug}`);
   const pitch = {
-    ...res.data.result as IPitch,
+    ...(res.data.result as IPitch),
   };
 
-  if (res.status === 400) return notFound();
+  if (res.status === 404) return notFound();
   return (
     <div className={"w-full flex flex-col"}>
       <PitchOrder pitch={pitch} />
