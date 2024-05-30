@@ -27,6 +27,8 @@ export const REQUEST_URLS = {
     PITCH_TYPES: "/v1/pitches/pitch-type",
     SUB_PITCH_TYPES: "/v1/pitches/subpitch-type",
     SUB_PITCH_PRICES_CONFIG: "/v1/pitches/subpitches/config-price",
+    POSTS: "/v1/posts",
+    POST_DETAIL: "/v1/posts/detail",
   },
 };
 

@@ -1,69 +1,205 @@
-import Footer from "@/components/landing/footer";
-import Navbar from "@/components/landing/navbar";
-import Link from "next/link";
+"use client";
 
-const contents = [
-  {
-    id: "target",
-    title: "Mục đích",
-    content:
-      "Cộng đồng bóng đá Đà Nẵng được thành lập với mục đích mang đến cho người chơi bóng đá ở Đà Nẵng một sân chơi lành mạnh và bổ ích. Chúng tôi mong muốn tạo ra một cộng đồng nơi mọi người có thể giao lưu, học hỏi, và phát triển cùng nhau.",
-  },
-  {
-    id: "history",
-    title: "Lịch sử",
-    content:
-      "Cộng đồng bóng đá Đà Nẵng được thành lập vào năm 2023 bởi một nhóm bạn trẻ yêu bóng đá. Chúng tôi đã tổ chức thành công nhiều giải đấu và sự kiện, thu hút hàng nghìn người chơi tham gia.",
-  },
-  {
-    id: "member",
-    title: "Thành viên",
-    content:
-      "Cộng đồng của chúng tôi bao gồm các chủ sân, người chơi, và các nhà tài trợ. Chúng tôi luôn chào đón những thành viên mới tham gia vào cộng đồng",
-  },
-  {
-    id: "activity",
-    title: "Hoạt động",
-    content:
-      "Cộng đồng của chúng tôi thường xuyên tổ chức các giải đấu, sự kiện, và các hoạt động cộng đồng. Chúng tôi cũng cung cấp các dịch vụ hỗ trợ cho người chơi, bao gồm các khóa đào tạo, các chương trình thi đấu, và các dịch vụ liên quan đến bóng đá. \nTham gia vào cộng đồng, bạn sẽ có cơ hội gặp gỡ giao lưu với những người có cùng sở thích, đam mê; có thể tìm ra những người bạn, những người đồng đội cùng tham gia những trận đấu lớn nhỏ; có thể giao lưu với những đội bóng mạnh và có thể tham gia những giải đấu đỉnh cao.",
-  },
-];
+import { AvatarCustom } from "@/components/ui/avatar-custom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { PostUseMutation } from "@/server/actions/post-actions";
+import { PostUseQuery } from "@/server/queries/post-queries";
+import { IPost } from "@/types/post";
+import {
+  MessageCircleIcon,
+  SendHorizontalIcon,
+  Share2Icon,
+  ThumbsUpIcon,
+} from "lucide-react";
+import { User } from "next-auth";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useEffect, useRef, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { CreatePostForm } from "@/components/dashboard/create-post-form";
 
 export default function CommunityPage() {
+  const { data, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } =
+    PostUseQuery.getPostsInfinite({});
+  const { data: session, status } = useSession();
+  const { mutateAsync: createPostMutate } = PostUseMutation.createPost();
+
+  const lastPostElementRef = useRef(null);
+
+  async function handleCreatePost() {
+    createPostMutate({ text: "Hello", images: [] });
+    await refetch();
+  }
+
+  function loadMorePosts() {
+    if (!hasNextPage || isFetchingNextPage) return;
+    fetchNextPage();
+  }
+
+  useEffect(() => {
+    if (status === "loading") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMorePosts();
+        }
+      },
+      { threshold: 1 }
+    );
+
+    const currentRef = lastPostElementRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [status, lastPostElementRef]);
+
   return (
-    <main>
-      <Navbar />
-      <div className="px-2 md:container">
-        <div className="flex text-justify">
-          <aside className="hidden w-[240px] mr-4 md:flex flex-col space-y-2 p-2 rounded bg-white">
-            <ul className="list-disc space-y-2 pl-6 pt-10">
-              {contents.map((content, index) => (
-                <li key={index}>
-                  <Link className="underline" href={`#${content}`}>
-                    {content.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </aside>
-          <div className="flex-1 bg-white rounded p-2 pt-6 md:p-6">
-            <h2 className="font-bold text-3xl mb-10">
-              Giới thiệu về cộng đồng
-            </h2>
-            {contents.map((content, index) => (
-              <section key={index} id={content.id} className=" pt-4 md:pt-10">
-                <h3 className="text-xl font-semibold">{content.title}</h3>
-                <p className="indent-8">{content.content}</p>
-              </section>
-            ))}
-            <p className="mt-10">
-              Hãy tham gia cộng đồng của chúng tôi ngay hôm nay để tận hưởng
-              những trải nghiệm bóng đá tuyệt vời!
-            </p>
-          </div>
-        </div>
-        <Footer />
+    <div className="p-2 md:p-6 w-full max-w-2xl">
+      {status === "loading" ? (
+        "Loading..."
+      ) : session ? (
+        <CreatePostForm
+          user={session.user}
+          onSuccess={() => {
+            refetch();
+          }}
+        />
+      ) : null}
+      <div className="flex flex-col gap-2">
+        {data?.pages.map((page, pageIndex) =>
+          page.result.data.map((post, postIndex) =>
+            pageIndex === data.pages.length - 1 &&
+            postIndex === page.result.data.length - 1 ? (
+              <div key={post.post_id} ref={lastPostElementRef}>
+                <PostItem post={post} user={session?.user} />
+              </div>
+            ) : (
+              <PostItem key={post.post_id} post={post} user={session?.user} />
+            )
+          )
+        )}
+        {isFetchingNextPage ? "Đang tải thêm" : null}
       </div>
-    </main>
+    </div>
+  );
+}
+
+function PostItem({ post, user }: { post: IPost; user?: User }) {
+  const { mutateAsync: likePostMutate } = PostUseMutation.likePost();
+
+  const isLikedPost =
+    user &&
+    post.likes.findIndex((like) => like.user_like.user_id == user.userId) !==
+      -1;
+
+  const [isLiked, setIsLiked] = useState(isLikedPost);
+  const [numberOfLike, setNumberOfLike] = useState(post.like_count);
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
+
+  function handleLike(post_id: string | number) {
+    likePostMutate({ post_id });
+    setIsLiked(!isLiked);
+    setNumberOfLike(isLiked ? numberOfLike - 1 : numberOfLike + 1);
+  }
+  return (
+    <div
+      key={post.post_id}
+      className="grid gap-2 rounded-xl shadow-lg p-2 md:p-4 bg-white"
+    >
+      <div className="flex gap-2 items-center">
+        <AvatarCustom
+          avatarUrl={post.author.avatar}
+          name={post.author.fullname}
+        />
+        <div>
+          <div>{post.author.fullname}</div>
+          <p className="text-sm text-gray-500">{post.createdAt}</p>
+        </div>
+      </div>
+      <div>{post.text}</div>
+      <div className="flex w-full overflow-auto">
+        {post.media?.map((media) => (
+          <Image
+            key={media.media_id}
+            alt={media.path}
+            src={media.path}
+            width={1000}
+            height={1000}
+            className="max-h-[60vh] object-contain"
+          />
+        ))}
+      </div>
+      <div className="flex justify-between items-center mt-2 -mb-2 md:-mb-3 border-t">
+        <Button
+          variant="ghost"
+          className="flex-1"
+          onClick={() => {
+            handleLike(post.post_id);
+          }}
+        >
+          {numberOfLike}
+          <ThumbsUpIcon
+            className="ml-2 text-emerald-500"
+            fill={isLiked ? "currentColor" : "transparent"}
+          />
+        </Button>
+        <Button
+          variant="ghost"
+          className="flex-1"
+          onClick={() => {
+            setIsOpenDialog(true);
+          }}
+        >
+          {post.comment_count} <MessageCircleIcon className="ml-2" />
+        </Button>
+        <Button variant="ghost" className="flex-1">
+          <Share2Icon />
+        </Button>
+      </div>
+      <PostDialog
+        post={post}
+        user={user}
+        open={isOpenDialog}
+        setOpen={setIsOpenDialog}
+      />
+    </div>
+  );
+}
+
+export function PostDialog({
+  post,
+  user,
+  open,
+  setOpen,
+}: {
+  post: IPost;
+  user?: User;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={setOpen} modal={true}>
+      <DialogContent className="sm:max-w-xl p-0 overflow-hidden">
+        <ScrollArea className="max-h-screen md:max-h-[90vh] overflow-y-auto pb-10">
+          <PostItem post={post} user={user} />
+        </ScrollArea>
+        <div className="flex justify-between fixed bottom-0 right-0 left-0 p-1 gap-2">
+          <Input placeholder="Viết bình luận..." />
+          <Button>
+            <SendHorizontalIcon />
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -59,7 +59,7 @@ export class PitchUseQuery {
     return useQuery({
       queryKey: ["pitches", query],
       queryFn: () =>
-        $fetch(`/v1/pitches`, {
+        $fetch(REQUEST_URLS_CURRENT.PITCHES, {
           params: query,
         }).then(
           (res) => res.data as { result: { data: IPitch[] } & IPaginated }

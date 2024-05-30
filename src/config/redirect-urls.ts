@@ -43,7 +43,7 @@ export const REDIRECT_URLS = {
   VERIFY_EMAIL: "/verify-email",
   VERIFY_PHONE: "/verify-phone",
   CONTACT: "/contact",
-  ABOUT_US: "/about-uS",
+  ABOUT_US: "/about-us",
   TERMS_OF_USE: "/terms-of-use",
   PRIVACY: "/privacy",
   PRIVACY_POLICY: "/privacy-policy",
