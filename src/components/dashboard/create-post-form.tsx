@@ -19,6 +19,7 @@ import { PostUseMutation } from "@/server/actions/post-actions";
 import { AvatarCustom } from "../ui/avatar-custom";
 import { Button } from "../ui/button";
 import { User } from "next-auth";
+import { Textarea } from "../ui/textarea";
 
 const createFormSchema = z.object({
   text: z.string(),
@@ -74,8 +75,7 @@ export function CreatePostForm({
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <Input
-                      type="text"
+                    <Textarea
                       placeholder="Bạn đang nghĩ gì?"
                       defaultValue={field.value}
                       {...field}
