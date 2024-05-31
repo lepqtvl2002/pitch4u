@@ -36,3 +36,33 @@ interface Media {
   updatedAt: string;
   deletedAt: null;
 }
+
+export interface IPostDetail extends IPost {
+  comments: Comment[];
+}
+
+interface Comment {
+  text: string;
+  like_count: number;
+  comment_id: number;
+  parent_id: null;
+  replies: Reply[];
+  user_comment: Usercomment;
+}
+
+interface Reply {
+  text: string;
+  like_count: number;
+  comment_id: number;
+  parent_id: number;
+  user_comment: Usercomment;
+}
+
+interface Usercomment {
+  avatar: string;
+  user_id: number;
+  fullname: string;
+  phone: string;
+  email: string;
+  is_suspended: boolean;
+}

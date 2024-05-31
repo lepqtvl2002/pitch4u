@@ -20,6 +20,7 @@ import { AvatarCustom } from "../ui/avatar-custom";
 import { Button } from "../ui/button";
 import { User } from "next-auth";
 import { Textarea } from "../ui/textarea";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const createFormSchema = z.object({
   text: z.string(),
@@ -52,7 +53,6 @@ export function CreatePostForm({
       Array.from(data.uploadPhotos)?.map((file) => uploadImage({ image: file }))
     );
     const images = imageUrls.map((imageUrl) => imageUrl?.result);
-    console.log(images);
     await createPostMutate({
       text: data.text,
       images,
@@ -116,9 +116,9 @@ export function CreatePostForm({
               Đăng bài
             </Button>
           </div>
-          <div className="flex flex-col items-center space-y-2">
+          <ScrollArea className="flex flex-col w-full items-center space-y-2">
             {form.watch("uploadPhotos")?.length > 0 && (
-              <pre className={"inline-flex overflow-auto gap-2 border-muted"}>
+              <pre className={"inline-flex items-center gap-2 border-muted"}>
                 {Array.from(form.getValues("uploadPhotos"))?.map(
                   (uploadPhoto: any, index: number) => (
                     <Image
@@ -141,14 +141,15 @@ export function CreatePostForm({
                       src={URL.createObjectURL(uploadPhoto)}
                       alt={form.getValues("uploadPhotos")}
                       width={1000}
-                      height={100}
-                      className="w-full border max-h-96"
+                      height={1000}
+                      className="h-full border max-h-80 cursor-pointer"
                     />
                   )
                 )}
               </pre>
             )}
-          </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </div>
       </form>
     </Form>

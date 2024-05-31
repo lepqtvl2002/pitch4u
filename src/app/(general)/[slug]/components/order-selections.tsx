@@ -360,7 +360,11 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
           {bookingTimes.reduce((prev, cur) => prev + Number(cur.price), 0)}
         </span>
       </div>
-      {voucher && <VoucherSelectedItem voucher={voucher} />}
+      {voucher && (
+        <div onClick={() => setVoucher(undefined)}>
+          <VoucherSelectedItem voucher={voucher} />
+        </div>
+      )}
       <VoucherDialog
         pitchId={pitch.pitch_id}
         voucher={voucher}
@@ -430,7 +434,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
 
 function VoucherSelectedItem({ voucher }: { voucher: IVoucher }) {
   return (
-    <div className="flex border-2 border-emerald-400 rounded overflow-hidden">
+    <div className="flex border-2 border-emerald-400 rounded overflow-hidden cursor-pointer">
       <div className=" bg-emerald-500 text-center p-4">
         <TicketIcon className="w-6 h-6 text-white font-semibold" />
       </div>

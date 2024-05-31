@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PostUseMutation } from "@/server/actions/post-actions";
 import { PostUseQuery } from "@/server/queries/post-queries";
-import { IPost } from "@/types/post";
+import { Comment, IPost } from "@/types/post";
 import {
   MessageCircleIcon,
   SendHorizontalIcon,
@@ -17,7 +17,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useEffect, useRef, useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CreatePostForm } from "@/components/dashboard/create-post-form";
 
 export default function CommunityPage() {
@@ -27,9 +27,9 @@ export default function CommunityPage() {
 
   const lastPostElementRef = useRef(null);
 
-  function loadMorePosts() {
+  async function loadMorePosts() {
     if (!hasNextPage || isFetchingNextPage) return;
-    fetchNextPage();
+    await fetchNextPage();
   }
 
   useEffect(() => {
@@ -120,18 +120,21 @@ function PostItem({ post, user }: { post: IPost; user?: User }) {
         </div>
       </div>
       <div>{post.text}</div>
-      <div className="flex w-full overflow-auto">
-        {post.media?.map((media) => (
-          <Image
-            key={media.media_id}
-            alt={media.path}
-            src={media.path}
-            width={1000}
-            height={1000}
-            className="max-h-[60vh] object-contain"
-          />
-        ))}
-      </div>
+      <ScrollArea className="w-full">
+        <div className="flex space-x-4 w-fit">
+          {post.media?.map((media) => (
+            <Image
+              key={media.media_id}
+              alt={media.path}
+              src={media.path}
+              width={1000}
+              height={1000}
+              className="max-h-[60vh] object-contain"
+            />
+          ))}
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
       <div className="flex justify-between items-center mt-2 -mb-2 md:-mb-3 border-t">
         <Button
           variant="ghost"
@@ -180,19 +183,68 @@ function PostDialog({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) {
+  const [commentValue, setCommentValue] = useState("");
+  const { data, isFetching, refetch } = PostUseQuery.getPostDetail({
+    post_id: post.post_id,
+  });
+
+  const { mutateAsync: commentMutate, isLoading } = PostUseMutation.comment();
+
+  async function handleSendComment() {
+    await commentMutate({ post_id: post.post_id, text: commentValue });
+    setCommentValue("");
+    await refetch();
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen} modal={true}>
       <DialogContent className="sm:max-w-xl p-0 overflow-hidden">
-        <ScrollArea className="max-h-screen md:max-h-[90vh] overflow-y-auto pb-10">
+        <ScrollArea className="max-h-screen min-h-[60vh] md:max-h-[90vh] overflow-y-auto pb-10">
           <PostItem post={post} user={user} />
+          {isFetching
+            ? "Loading..."
+            : data?.result.comments.map((comment) => (
+                <CommentItem key={comment.comment_id} comment={comment} />
+              ))}
         </ScrollArea>
         <div className="flex justify-between fixed bottom-0 right-0 left-0 p-1 gap-2">
-          <Input placeholder="Viết bình luận..." />
-          <Button>
+          <Input
+            value={commentValue}
+            onChange={(e) => setCommentValue(e.target.value)}
+            placeholder="Viết bình luận..."
+          />
+          <Button disabled={isLoading} onClick={handleSendComment}>
             <SendHorizontalIcon />
           </Button>
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function CommentItem({ comment }: { comment: Comment }) {
+  return (
+    <div className="relative grid gap-2 rounded-xl shadow-lg p-2 md:p-4 bg-white my-2">
+      <div className="flex items-center">
+        <AvatarCustom
+          avatarUrl={comment.user_comment.avatar}
+          name={comment.user_comment.fullname}
+        />
+        <span className="font-semibold text-emerald-500">
+          {comment.user_comment.fullname}
+        </span>
+      </div>
+      <p className="pb-2">{comment.text}</p>
+      <div className="absolute -bottom-2 right-10 flex justify-end z-10">
+        <div className="flex gap-2">
+          <Button variant="ghost">
+            {comment.like_count} <ThumbsUpIcon className="ml-2" />
+          </Button>
+          <Button size="sm" variant="ghost">
+            Trả lời
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -3,7 +3,7 @@ import { $fetch, $globalFetch } from "@/lib/axios";
 import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
 import { LIMIT_DEFAULT } from "@/lib/constants";
 import { config } from "./commom";
-import { IPost } from "@/types/post";
+import { IPost, IPostDetail } from "@/types/post";
 
 export class PostUseQuery {
   static getPostsInfinite = (params: Record<string, any>) => {
@@ -39,8 +39,8 @@ export class PostUseQuery {
     return useQuery({
       queryKey: ["postDetail", post_id],
       queryFn: () =>
-        $globalFetch(`${REQUEST_URLS_CURRENT.POST_DETAIL}/${post_id}`).then(
-          (res) => res.data
+        $globalFetch(`${REQUEST_URLS_CURRENT.POSTS}/${post_id}`).then(
+          (res) => res.data as { result: IPostDetail }
         ),
       ...config,
     });

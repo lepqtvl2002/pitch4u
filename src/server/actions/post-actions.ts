@@ -20,4 +20,12 @@ export class PostUseMutation {
           .post(`${REQUEST_URLS_CURRENT.POSTS}/like`, data)
           .then((res) => res.data),
     });
+
+  static comment = () =>
+    useMutation({
+      mutationFn: (data: { post_id: string | number; text: string }) =>
+        $fetch
+          .post(`${REQUEST_URLS_CURRENT.POSTS}/comment`, data)
+          .then((res) => res.data),
+    });
 }
