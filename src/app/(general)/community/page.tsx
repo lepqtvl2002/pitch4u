@@ -3,7 +3,6 @@
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { PostUseMutation } from "@/server/actions/post-actions";
 import { PostUseQuery } from "@/server/queries/post-queries";
 import { IPost } from "@/types/post";
@@ -25,14 +24,8 @@ export default function CommunityPage() {
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } =
     PostUseQuery.getPostsInfinite({});
   const { data: session, status } = useSession();
-  const { mutateAsync: createPostMutate } = PostUseMutation.createPost();
 
   const lastPostElementRef = useRef(null);
-
-  async function handleCreatePost() {
-    createPostMutate({ text: "Hello", images: [] });
-    await refetch();
-  }
 
   function loadMorePosts() {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -176,7 +169,7 @@ function PostItem({ post, user }: { post: IPost; user?: User }) {
   );
 }
 
-export function PostDialog({
+function PostDialog({
   post,
   user,
   open,
