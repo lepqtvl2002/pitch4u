@@ -15,6 +15,9 @@ export default withAuth(
           return token?.userRole === UserRoles.SuperAdmin;
         }
         if (req.nextUrl.pathname.startsWith("/dashboard")) {
+          if (req.nextUrl.pathname.includes("staff")) {
+            return token?.userRole === UserRoles.Admin;
+          }
           return (
             token?.userRole === UserRoles.Admin ||
             token?.userRole === UserRoles.Staff

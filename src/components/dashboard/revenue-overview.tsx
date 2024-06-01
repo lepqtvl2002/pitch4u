@@ -6,6 +6,9 @@ import {
   Bar,
   BarChart,
   Cell,
+  Legend,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -128,7 +131,11 @@ const renderCustomizedLabelLine = ({
 
   return (
     <g>
-      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke="black" fill="none" />
+      <path
+        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+        stroke="black"
+        fill="none"
+      />
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
@@ -164,6 +171,51 @@ export function RevenueOverviewByPitch({
         </Pie>
         <Tooltip />
       </PieChart>
+    </ResponsiveContainer>
+  );
+}
+
+export function RevenueChart({
+  data,
+  typeTime,
+}: {
+  data: { time: number; revenue: number }[];
+  typeTime: "year" | "month";
+}) {
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart
+        width={500}
+        height={300}
+        data={data}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <XAxis
+          dataKey="time"
+          tickFormatter={(time) => `${typeTime === "year" ? time + 1 : time}`}
+        />
+        <YAxis tickFormatter={(volume) => `${volume.toLocaleString()}`} />
+        <Tooltip
+          labelFormatter={(time) =>
+            `${typeTime === "year" ? "Tháng" : "Ngày"} ${
+              typeTime === "year" ? time + 1 : time
+            }`
+          }
+          formatter={(data) => `${data.toLocaleString()}`}
+        />
+        <Legend />
+        <Line
+          type="monotone"
+          name="Doanh thu"
+          dataKey="revenue"
+          stroke="#82ca9d"
+        />
+      </LineChart>
     </ResponsiveContainer>
   );
 }

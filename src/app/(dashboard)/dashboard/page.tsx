@@ -9,25 +9,25 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatisticUseQuery } from "@/server/queries/statistic-queries";
-import { compareAmount, comparePercent } from "@/lib/utils";
 import {
-  RevenueOverview,
-  RevenueOverviewByDate,
+  RevenueChart,
   RevenueOverviewByPitch,
 } from "@/components/dashboard/revenue-overview";
 import { useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import MonthPicker from "@/components/dashboard/month-picker";
 import { RecentOrder } from "@/components/dashboard/recent-orders";
-import CardStatDashboard from "@/components/card-stats-dashboard";
 import StatCard from "@/components/dashboard/stat-card";
 import { SelectMyPitch } from "@/components/dashboard/pitch-picker";
 import YearPicker from "@/components/dashboard/year-picker";
-import { useSession } from "next-auth/react";
-import UserRoles from "@/enums/roles";
-import { redirect } from "next/navigation";
 import { errorToastWithCode } from "@/lib/quick-toast";
 import { AxiosError } from "axios";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type All = {
   revenue: number;
@@ -79,58 +79,22 @@ const TabItems = [
     value: "overview",
   },
   {
-    name: "Chi tiết",
-    value: "detail",
-  },
-  {
     name: "Doanh thu theo sân",
     value: "revenueByPitch",
   },
-  // {
-  //   name: "Thông báo",
-  //   value: "notifications",
-  // },
 ];
 
-const fakeData = {
-  result: {
-    all: { revenue: 0, orders: 0 },
-    thisMonthOverview: { revenue: 0, orders: 0 },
-    lastMonthOverview: { revenue: 0, orders: 0 },
-    staffs: [],
-    pitches: [],
-    revenueByMonths: [],
-    revenueByDates: [],
-  },
-};
-
 export default function DashboardPage() {
+  const [typeTime, setTypeTime] = useState<"month" | "year">("month");
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
   const [pitchId, setPitchId] = useState<number | undefined>();
   const params = pitchId ? { pitch_id: pitchId, month, year } : { month, year };
-  const { data: session, status } = useSession();
-  const { data, isLoading, error } =
-    status === "authenticated" && session.user.userRole === UserRoles.Admin
-      ? StatisticUseQuery.getPitchStats(params)
-      : {
-          data: fakeData,
-          isLoading: false,
-          error: null,
-        };
+  const { data, isLoading, error } = StatisticUseQuery.getPitchStats(params);
 
-  const { data: topPitches } =
-    status === "authenticated" && session.user.userRole === UserRoles.Admin
-      ? StatisticUseQuery.getPitchesByRevenue({
-          limit: 20,
-        })
-      : {
-          data: { result: { data: [] } },
-        };
-
-  if (session?.user.userRole === UserRoles.Staff) {
-    redirect("/dashboard/booking");
-  }
+  const { data: topPitches } = StatisticUseQuery.getPitchesByRevenue({
+    limit: 20,
+  });
 
   if (error) {
     errorToastWithCode({
@@ -149,10 +113,9 @@ export default function DashboardPage() {
               </TabsTrigger>
             ))}
           </TabsList>
-          <div className="max-w-1/2">
-            <SelectMyPitch pitchId={pitchId} setPitchId={setPitchId} />
+          <div className="flex items-center gap-2 max-w-1/2">
+            Sân <SelectMyPitch pitchId={pitchId} setPitchId={setPitchId} />
           </div>
-          <YearPicker selectedYear={year} setSelectedYear={setYear} />
         </div>
         {/* Overview */}
         <TabsContent value="overview" className="space-y-4">
@@ -185,22 +148,47 @@ export default function DashboardPage() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <Card className="col-span-4">
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Biểu đồ thống kê doanh thu theo tháng
+                <CardTitle className="flex items-center justify-between flex-wrap">
+                  <span>Biểu đồ thống kê tổng quan theo</span>
+                  <Select
+                    onValueChange={(value) =>
+                      setTypeTime(value as "month" | "year")
+                    }
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder={`Tháng`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="month">Tháng</SelectItem>
+                      <SelectItem value="year">Năm</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </CardTitle>
+                <div className="flex gap-2 justify-end">
+                  {typeTime === "month" && (
+                    <MonthPicker
+                      selectedMonth={month}
+                      setSelectedMonth={setMonth}
+                    />
+                  )}
+                  <YearPicker selectedYear={year} setSelectedYear={setYear} />
+                </div>
               </CardHeader>
-              <CardContent className="pl-2">
-                {isLoading ? (
-                  <div className="flex gap-2">
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                  </div>
-                ) : (
-                  <RevenueOverview data={data?.result.revenueByMonths || []} />
-                )}
+              <CardContent className="h-96">
+                <RevenueChart
+                  typeTime={typeTime}
+                  data={
+                    typeTime === "year"
+                      ? data?.result.revenueByMonths.map((e) => ({
+                          time: e.month,
+                          revenue: e.revenue,
+                        })) || []
+                      : data?.result.revenueByDates.map((e) => ({
+                          time: new Date(e.date).getDate(),
+                          revenue: e.revenue,
+                        })) || []
+                  }
+                />
               </CardContent>
             </Card>
             <Card className="col-span-4 md:col-span-3">
@@ -213,66 +201,6 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <RecentOrder pitchId={pitchId} />
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-        {/* Detail */}
-        <TabsContent value="detail" className="space-y-4">
-          <div className="flex items-center gap-2 justify-end">
-            <MonthPicker selectedMonth={month} setSelectedMonth={setMonth} />
-          </div>
-          <div className="grid grid-cols-1 gap-2 lg:gap-x-4 lg:grid-cols-4">
-            <div className="grid gap-2">
-              <CardStatDashboard
-                title={`Doanh thu trong tháng ${Number(month) + 1}`}
-                value={data?.result.thisMonthOverview.revenue.toLocaleString()}
-                miniIcon="dollar"
-                description={`${comparePercent(
-                  data?.result.thisMonthOverview.revenue,
-                  data?.result.lastMonthOverview.revenue
-                )}
-                % so với tháng trước đó`}
-              />
-              <CardStatDashboard
-                title={`Số lượt đặt sân trong tháng ${Number(month) + 1}`}
-                value={data?.result.thisMonthOverview.orders.toLocaleString()}
-                miniIcon="history"
-                description={`${compareAmount(
-                  data?.result.thisMonthOverview.orders,
-                  data?.result.lastMonthOverview.orders
-                )} so với tháng trước đó`}
-              />
-              <CardStatDashboard
-                title={`Số nhân viên`}
-                value={data?.result.staffs.length.toLocaleString()}
-                miniIcon="user"
-                description={`${
-                  data?.result.staffs.length || 0
-                } nhân viên dưới quyền quản lý`}
-              />
-            </div>
-            <Card className="col-span-1 lg:col-span-3">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Biểu đồ thống kê doanh thu theo ngày trong tháng{" "}
-                  {Number(month) + 1}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="md:pl-2">
-                {isLoading ? (
-                  <div className="flex gap-2">
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                    <Skeleton className="w-1/5 h-60" />
-                  </div>
-                ) : (
-                  <RevenueOverviewByDate
-                    data={data?.result.revenueByDates || []}
-                  />
-                )}
               </CardContent>
             </Card>
           </div>
