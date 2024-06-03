@@ -5,12 +5,10 @@ import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import Link from "next/link";
 import { ArrowDownIcon } from "lucide-react";
-import Chatbot from "@/components/chatbot";
 
 export default async function Home() {
   return (
     <main className="scroll-smooth bg-gray-50">
-      <Chatbot />
       <Navbar />
       <div className="md:container px-2 flex min-h-screen flex-col items-center justify-between">
         <section

@@ -29,7 +29,7 @@ export default function Navbar({
   return (
     <nav
       className={cn(
-        "w-full sticky z-50 top-0 left-0 right-0 md:px-4 md:m-0 bg-gradient-to-b from-emerald-300 from-60%",
+        "w-full z-50 top-0 left-0 right-0 md:px-4 md:m-0",
         className
       )}
       {...props}

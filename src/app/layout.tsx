@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import AuthProviderHelper from "@/providers/auth-provider-helper";
 import PageProgress from "@/components/progress-bar";
 import SocketProvider from "@/providers/socket-provider";
+import Chatbot from "@/components/chatbot";
 
 const nunito = Nunito({ subsets: ["latin"] });
 
@@ -49,6 +50,7 @@ export default function RootLayout({
             <AuthProviderHelper>
               <SocketProvider>
                 {children}
+                <Chatbot />
                 <PageProgress />
               </SocketProvider>
               <Toaster />
