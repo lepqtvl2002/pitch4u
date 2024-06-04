@@ -117,24 +117,28 @@ export function MessageCard({
   name,
   lastMessage,
   lastUser = "",
+  onClick,
+  className,
 }: {
   avatarUrl?: string | null;
   name?: string | null;
   lastMessage: string;
   lastUser?: string;
+  onClick?: () => void;
+  className?: string;
 }) {
   return (
     <div
-      className={
-        "flex space-x-2 items-center hover:bg-gray-300 cursor-pointer p-2 rounded max-w-xs"
-      }
+      className={cn(
+        "flex space-x-2 items-center hover:bg-gray-300 cursor-pointer p-2 rounded max-w-xs w-full overflow-hidden",
+        className
+      )}
+      onClick={onClick}
     >
       <AvatarCustom avatarUrl={avatarUrl} name={name ?? "Unknown"} />
-      <div className="flex flex-col">
-        <p className={"font-semibold text-lg truncate"}>{name}</p>
-        <span
-          className={"text-sm truncate"}
-        >{`${lastUser}: ${lastMessage}`}</span>
+      <div className="flex flex-col w-60">
+        <p className="font-semibold text-lg truncate">{name}</p>
+        <span className="text-sm truncate">{`${lastUser}: ${lastMessage}`}</span>
       </div>
     </div>
   );
@@ -333,7 +337,7 @@ export function SidebarChats({
           "absolute top-16 bottom-0 left-0 right-0 flex flex-col space-y-3 p-2 overflow-y-auto"
         }
       >
-        {conversations.length && !debounceValue.length ? (
+        {conversations.length && !searchValue.length ? (
           conversations
             .filter((chat) =>
               chat.members.find((e) => e.email !== session?.user.email)
@@ -510,25 +514,22 @@ export function PopupChatList({ className }: { className?: string }) {
               );
 
               return (
-                <div
+                <MessageCard
                   key={user?.user_id.toString()}
                   onClick={() => {
                     setUser({ avatar: user?.avatar, fullname: user?.fullname });
                     setChatId((chat as ChatObject).chat_id.toString());
                     setOpenPopup(true);
                   }}
-                >
-                  <MessageCard
-                    avatarUrl={user?.avatar}
-                    name={user?.fullname}
-                    lastMessage={chat?.last_message?.text}
-                    lastUser={
-                      chat?.last_message?.user_id == session?.user?.userId
-                        ? "you"
-                        : user?.fullname
-                    }
-                  />
-                </div>
+                  avatarUrl={user?.avatar}
+                  name={user?.fullname}
+                  lastMessage={chat?.last_message?.text}
+                  lastUser={
+                    chat?.last_message?.user_id == session?.user?.userId
+                      ? "you"
+                      : user?.fullname
+                  }
+                />
               );
             })
         ) : isLoading ? (
@@ -547,7 +548,7 @@ export function PopupChatList({ className }: { className?: string }) {
               }
             });
             return !chat ? (
-              <div
+              <MessageCard
                 key={user.user_id}
                 onClick={async () => {
                   mutatingToast();
@@ -557,34 +558,28 @@ export function PopupChatList({ className }: { className?: string }) {
                   setChatId(newChat.result.chat_id);
                   setOpenPopup(true);
                 }}
-              >
-                <MessageCard
-                  avatarUrl={user.avatar}
-                  name={user.fullname}
-                  lastMessage={""}
-                />
-              </div>
+                avatarUrl={user.avatar}
+                name={user.fullname}
+                lastMessage={""}
+              />
             ) : (
-              <div
+              <MessageCard
                 key={user.user_id}
                 onClick={() => {
                   setUser({ avatar: user.avatar, fullname: user.fullname });
                   setChatId((chat as ChatObject).chat_id.toString());
                   setOpenPopup(true);
                 }}
-              >
-                <MessageCard
-                  avatarUrl={user.avatar}
-                  name={user.fullname}
-                  lastMessage={(chat as ChatObject)?.last_message?.text}
-                  lastUser={
-                    (chat as ChatObject).last_message?.user_id ==
-                    session?.user?.userId
-                      ? "you"
-                      : user?.fullname
-                  }
-                />
-              </div>
+                avatarUrl={user.avatar}
+                name={user.fullname}
+                lastMessage={(chat as ChatObject)?.last_message?.text}
+                lastUser={
+                  (chat as ChatObject).last_message?.user_id ==
+                  session?.user?.userId
+                    ? "you"
+                    : user?.fullname
+                }
+              />
             );
           })
         )}
