@@ -141,14 +141,12 @@ const dashboardNavItems: Record<string, NavItem> = {
 
 export const dashboardConfig: DashboardConfig = {
   mainNav: [
-    dashboardNavItems.overview,
     dashboardNavItems.pitch,
     dashboardNavItems.booking,
     dashboardNavItems.voucher,
     dashboardNavItems.advertisement,
   ],
   sidebarNav: [
-    dashboardNavItems.overview,
     dashboardNavItems.pitch,
     dashboardNavItems.booking,
     dashboardNavItems.voucher,
@@ -159,8 +157,13 @@ export const dashboardConfig: DashboardConfig = {
 
 export const dashboardConfigOperator: DashboardConfig = {
   ...dashboardConfig,
-  mainNav: [dashboardNavItems.staff, ...dashboardConfig.mainNav],
+  mainNav: [
+    dashboardNavItems.overview,
+    dashboardNavItems.staff,
+    ...dashboardConfig.mainNav,
+  ],
   sidebarNav: [
+    dashboardNavItems.overview,
     dashboardNavItems.staff,
     ...dashboardConfig.sidebarNav,
     dashboardNavItems.service,

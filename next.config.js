@@ -6,6 +6,9 @@ const nextConfig = {
   images: {
     domains: ["api.pitch4u.me", "i.imgur.com"],
   },
+  env: {
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  },
 };
 
 module.exports = nextConfig;
