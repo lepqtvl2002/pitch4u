@@ -59,6 +59,8 @@ const SearchBar: React.FC = () => {
     name: searchQuery,
     rate_gte: rate,
     pitchType,
+    sort: "asc",
+    sortBy: "createdAt",
   });
 
   const handleSearchQueryChange = (

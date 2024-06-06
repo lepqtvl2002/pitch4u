@@ -27,7 +27,7 @@ export interface IPitch {
     pitch_id: number | string;
     open_at: number;
     close_at: number;
-    time_frames: number[number[]];
+    time_frames: number[][];
     open_days: string[];
     active: boolean;
     createdAt: Date;

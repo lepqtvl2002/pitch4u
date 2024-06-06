@@ -6,11 +6,12 @@ import IPaginated from "@/types/paginated";
 import { BookingStatus } from "@/enums/bookingStatuses";
 import { config } from "./commom";
 import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
+import { PaymentType } from "@/enums/paymentTypes";
 
 export type Booking = {
   booking_id: number;
   user_id: number;
-  payment_type: string;
+  payment_type: PaymentType;
   status: BookingStatus;
   discount: number;
   total: number;

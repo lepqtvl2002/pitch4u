@@ -3,6 +3,7 @@ import SoccerPitchTypes from "@/enums/soccerPitchTypes";
 import RegistrationStatuses from "@/enums/registrationStatuses";
 import ReportTypes from "@/enums/reportTypes";
 import NotificationTypes from "@/enums/notificationTypes";
+import BookingStatuses from "@/enums/bookingStatuses";
 
 export const stringToRegistrationStatus = (status: string) => {
   switch (status) {
@@ -174,5 +175,24 @@ export function notificationTypeToString(type: string) {
       return "Đã bị hủy";
     default:
       return "Thông báo";
+  }
+}
+
+export function bookingStatusToIcon(status: string) {
+  switch (status) {
+    case BookingStatuses.Pending:
+      return "clock";
+    case "pending":
+      return "clock";
+    case BookingStatuses.Success:
+      return "check";
+    case "approved":
+      return "check";
+    case BookingStatuses.Canceled:
+      return "close";
+    case "canceled":
+      return "close";
+    default:
+      return "clock";
   }
 }

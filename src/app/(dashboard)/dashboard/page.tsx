@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { StaffList } from "@/components/dashboard/staff-list";
 
 type All = {
   revenue: number;
@@ -77,10 +78,6 @@ const TabItems = [
   {
     name: "Tổng quan",
     value: "overview",
-  },
-  {
-    name: "Doanh thu theo sân",
-    value: "revenueByPitch",
   },
 ];
 
@@ -193,21 +190,17 @@ export default function DashboardPage() {
             </Card>
             <Card className="col-span-4 md:col-span-3">
               <CardHeader>
-                <CardTitle>Những lượt đặt sân gần nhất</CardTitle>
+                <CardTitle>Danh sách nhân viên</CardTitle>
                 <CardDescription>
-                  Bạn đã có {data?.result.thisMonthOverview.orders || 0} lượt
-                  đặt trong tháng này.
+                  Có {data?.result.staffs.length.toLocaleString() || "0"} đang
+                  làm việc tại đây.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <RecentOrder pitchId={pitchId} />
+                <StaffList staffs={data?.result.staffs ?? []} />
               </CardContent>
             </Card>
-          </div>
-        </TabsContent>
-        {/* Revenue by pitch */}
-        <TabsContent value="revenueByPitch" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+
             <Card className="col-span-4">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -227,6 +220,18 @@ export default function DashboardPage() {
                     }
                   />
                 )}
+              </CardContent>
+            </Card>
+            <Card className="col-span-4 md:col-span-3">
+              <CardHeader>
+                <CardTitle>Những lượt đặt sân gần nhất</CardTitle>
+                <CardDescription>
+                  Bạn đã có {data?.result.thisMonthOverview.orders || 0} lượt
+                  đặt trong tháng này.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RecentOrder pitchId={pitchId} />
               </CardContent>
             </Card>
           </div>
