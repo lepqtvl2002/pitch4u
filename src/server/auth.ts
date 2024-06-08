@@ -9,6 +9,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { IToken } from "@/types/token";
 import { $fetch, $globalFetch } from "@/lib/axios";
 import { UserRole } from "@/enums/roles";
+import { IUser } from "@/types/user";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -24,20 +25,9 @@ declare module "next-auth" {
     error?: string;
   }
 
-  interface User {
-    id: string;
-    name: string;
-    password: string;
-    email: string;
-    phoneNumber: string;
-    access: IToken;
-    refresh: IToken;
+  interface User extends IUser {
     userRole: UserRole;
     userId: string | number;
-    role: {
-      name: UserRole;
-    };
-    user_id: string | number;
   }
 }
 
@@ -78,6 +68,7 @@ export const authOptions: NextAuthOptions = {
             ...session.user,
             userId: token?.userId,
             userRole: token?.userRole,
+            ...token?.user,
           },
         };
       }
@@ -101,6 +92,7 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = data.tokens.refresh;
         token.userRole = data.user?.role.name;
         token.userId = data.user?.user_id;
+        token.user = data.user;
 
         return token;
       }
@@ -110,6 +102,7 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = user?.refresh;
         token.userRole = user?.role.name;
         token.userId = user?.user_id;
+        token.user = user;
       }
 
       return token;

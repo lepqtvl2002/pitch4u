@@ -196,3 +196,20 @@ export function bookingStatusToIcon(status: string) {
       return "clock";
   }
 }
+
+export function pitchTypeToIcon(type: string) {
+  switch (type) {
+    case PitchTypes.Soccer:
+      return "soccer";
+    case PitchTypes.Tennis:
+      return "tennis";
+    case PitchTypes.Volleyball:
+      return "volleyball";
+    case PitchTypes.Basketball:
+      return "basketball";
+    case PitchTypes.Badminton:
+      return "badminton";
+    default:
+      return "soccer";
+  }
+}

@@ -6,7 +6,7 @@ import { toast } from "@/components/ui/use-toast";
 import { mutatingToast } from "@/lib/quick-toast";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
-import { Search, XIcon } from "lucide-react";
+import { HeartOffIcon, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function FavoritePage() {
@@ -48,12 +48,13 @@ export default function FavoritePage() {
               >
                 <PitchItem pitch={pitch} />
                 <Button
-                  variant="destructive"
+                  size="icon"
+                  className="rounded-full"
                   onClick={async () => {
                     await unLikePitch(pitch.pitch_id);
                   }}
                 >
-                  <XIcon />
+                  <HeartOffIcon />
                 </Button>
               </div>
             ))

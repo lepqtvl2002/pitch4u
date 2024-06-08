@@ -252,7 +252,7 @@ export const reportTypeVariant = cva(
   }
 );
 
-export const pitchTypeVariant = cva(
+export const soccerPitchTypeVariant = cva(
   "text-sm font-medium rounded-full px-2 py-1 text-center h-fit w-fit",
   {
     variants: {
@@ -400,26 +400,20 @@ export const stringToRoleSlug = (type: string) => {
   }
 };
 
-enum ENUM_ROLE_SLUG {
-  SUPER_ADMIN = "super_admin",
-  ADMIN = "admin",
-  STAFF = "staff",
-  USER = "user",
-}
 export const isAppManager = (user: IUser) => {
-  return user.role.name === ENUM_ROLE_SLUG.SUPER_ADMIN;
+  return user.role.name === UserRoles.SuperAdmin;
 };
 
 export const isPitchManager = (user: IUser) => {
-  return user.role.name === ENUM_ROLE_SLUG.ADMIN;
+  return user.role.name === UserRoles.Admin;
 };
 
 export const isPitchStaff = (user: IUser) => {
-  return user.role.name === ENUM_ROLE_SLUG.STAFF;
+  return user.role.name === UserRoles.Staff;
 };
 
 export const isAppUser = (user: IUser) => {
-  return user.role.name === ENUM_ROLE_SLUG.USER;
+  return user.role.name === UserRoles.User;
 };
 
 export const comparePercent = (revenueA?: number, revenueB?: number) => {

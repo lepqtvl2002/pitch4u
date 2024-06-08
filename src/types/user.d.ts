@@ -1,20 +1,27 @@
-export type IUser = {
-  avatar: string;
+import { UserRole } from "@/enums/roles";
+import { IToken } from "./token";
+
+export interface IUser {
   user_id: number;
+  avatar: string | null;
   fullname: string;
-  phone: string;
+  phone: string | null;
   email: string;
   provider: string;
-  password: string; // Note: You might want to use a more secure type here
+  password?: string;
   is_verified: boolean;
-  gender: "male" | "female" | "other"; // Adjust as needed
-  birthday: string; // You might want to use a Date type here
+  gender: "male" | "female" | "other";
+  birthday: string;
   role_id: number;
   is_suspended: boolean;
-  createdAt: string; // You might want to use a Date type here
-  updatedAt: string; // You might want to use a Date type here
-  deletedAt: string | null; // You might want to use a Date type here
-  role: {
-    name: "admin" | "user" | "staff" | "super_admin"; // Adjust as needed
-  };
-};
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  role: Role;
+  access: IToken;
+  refresh: IToken;
+}
+
+interface Role {
+  name: UserRole;
+}

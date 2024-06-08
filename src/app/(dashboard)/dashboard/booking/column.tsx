@@ -6,7 +6,7 @@ import {
   bookingStatusToString,
   cn,
   formatMoney,
-  pitchTypeVariant,
+  soccerPitchTypeVariant,
 } from "@/lib/utils";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Booking } from "@/server/queries/statistic-queries";
@@ -45,7 +45,7 @@ export const columns: ColumnDef<Booking>[] = [
     cell: (ctx) => {
       const pitchType = ctx.row.original.booking_pitches[0].sub_pitch?.type;
       return (
-        <div className={pitchTypeVariant({ variant: null })}>
+        <div className={soccerPitchTypeVariant({ variant: null })}>
           {soccerPitchTypeToString(pitchType)}
         </div>
       );
@@ -54,8 +54,19 @@ export const columns: ColumnDef<Booking>[] = [
   {
     header: "Người đặt",
     cell: (ctx) => {
-      const userName = ctx.row.original.user?.fullname ?? "Người dùng đã bị xóa";
-      return <div className={cn(ctx.row.original.user?.fullname ? "text-bold" : "line-through italic text-gray-400")}>{userName}</div>;
+      const userName =
+        ctx.row.original.user?.fullname ?? "Người dùng đã bị xóa";
+      return (
+        <div
+          className={cn(
+            ctx.row.original.user?.fullname
+              ? "text-bold"
+              : "line-through italic text-gray-400"
+          )}
+        >
+          {userName}
+        </div>
+      );
     },
   },
   {

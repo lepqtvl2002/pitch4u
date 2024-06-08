@@ -37,7 +37,7 @@ export function DropdownMenuProfile({
             size="icon"
             className="relative rounded-full"
           >
-            <AvatarCustom avatarUrl={user?.image} name={user.name} />
+            <AvatarCustom avatarUrl={user?.avatar} name={user.fullname} />
             <ChevronDown
               size={18}
               className="absolute bottom-0 -right-1 rounded-full bg-white"
@@ -45,12 +45,12 @@ export function DropdownMenuProfile({
           </Button>
         ) : (
           <Button variant="outline">
-            {user.name ?? user.email} <ChevronDown className="ml-2" />
+            {user.fullname ?? user.email} <ChevronDown className="ml-2" />
           </Button>
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>{user.name ?? user.email}</DropdownMenuLabel>
+        <DropdownMenuLabel>{user.fullname ?? user.email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {personalNavConfig.mainNav.map((item) => {

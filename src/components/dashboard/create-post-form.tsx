@@ -68,7 +68,7 @@ export function CreatePostForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid gap-2 rounded-xl shadow-lg p-2 md:p-4 bg-white mb-2">
           <div className="flex justify-between items-center gap-2">
-            <AvatarCustom avatarUrl={user.image} name={user.name} />
+            <AvatarCustom avatarUrl={user.avatar} name={user.fullname} />
             <FormField
               control={form.control}
               name="text"

@@ -11,14 +11,10 @@ import { UserNav } from "@/components/dashboard/user-nav";
 import { SidebarNavItem } from "@/types";
 import { SIDEBAR_SHIRK_KEY } from "@/lib/constants";
 import UserRoles, { UserRole } from "@/enums/roles";
+import { User } from "next-auth";
 
 type Props = {
-  user?: {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    userRole: UserRole;
-  };
+  user?: User;
   items: SidebarNavItem[];
 };
 
@@ -122,7 +118,7 @@ function DashboardSidebar({ user, items }: Props) {
               }
             >
               <UserNav />
-              <span className="truncate">{user?.name || user?.email}</span>
+              <span className="truncate">{user?.fullname || user?.email}</span>
             </div>
           </motion.div>
         )}

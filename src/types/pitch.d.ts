@@ -2,6 +2,7 @@ import { Booking } from "@/server/queries/statistic-queries";
 import { ISubPitch } from "./subPitch";
 import { ReviewType } from "@/components/landing/review";
 import { ILike } from "./like";
+import { PitchType } from "@/enums/pitchTypes";
 
 export interface IPitch {
   pitch_id: number;
@@ -21,7 +22,7 @@ export interface IPitch {
   min_price: number;
   rate: string;
   images: string[];
-  type: string;
+  type: PitchType;
   config?: {
     pitch_config_id: number | string;
     pitch_id: number | string;

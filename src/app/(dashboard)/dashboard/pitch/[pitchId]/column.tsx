@@ -4,7 +4,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { ISubPitch } from "@/types/subPitch";
 import { format } from "date-fns";
 import { soccerPitchTypeToString } from "@/lib/convert";
-import { activeVariant, pitchTypeVariant } from "@/lib/utils";
+import { activeVariant, soccerPitchTypeVariant } from "@/lib/utils";
 
 export const columns: ColumnDef<ISubPitch>[] = [
   {
@@ -26,7 +26,7 @@ export const columns: ColumnDef<ISubPitch>[] = [
     cell: (ctx) => {
       const type = ctx.row.original.type;
       return (
-        <div className={pitchTypeVariant({ variant: null })}>
+        <div className={soccerPitchTypeVariant({ variant: null })}>
           {soccerPitchTypeToString(type)}
         </div>
       );

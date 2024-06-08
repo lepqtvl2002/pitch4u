@@ -8,10 +8,12 @@ import { CircleDollarSign, MapPin, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Stars } from "../ui/vote-stars";
-import { pitchTypeToString } from "@/lib/convert";
+import { pitchTypeToIcon, pitchTypeToString } from "@/lib/convert";
 import { Input } from "../ui/input";
 import SelectPitchType from "../select-pitch-type";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
+import { Icons } from "../icons";
+import { pitchTypeVariant } from "@/lib/variant";
 
 const Conditions = [
   { title: "Gần bạn", value: "near" },
@@ -180,6 +182,7 @@ const SearchBar: React.FC = () => {
 export default SearchBar;
 
 export function PitchItem({ pitch }: { pitch: IPitch }) {
+  const Icon = Icons[pitchTypeToIcon(pitch.type)];
   const handleNavigateToGoogleMap = () => {
     let href = `https://www.google.com/maps/place/`;
     if (pitch.lat && pitch.long)
@@ -204,13 +207,20 @@ export function PitchItem({ pitch }: { pitch: IPitch }) {
           width={200}
           height={200}
           alt={pitch.name}
-          className="border rounded w-1/3"
+          className="border rounded w-40 h-40 object-cover"
         />
         <div className="flex flex-col justify-between h-full flex-1">
           <div className="md:space-y-2">
-            <h3 className="text-md md:text-xl font-semibold text-gray-800">
-              {pitchTypeToString(pitch.type)} {pitch?.name}
-            </h3>
+            <h3 className="text-md md:text-xl font-medium">{pitch?.name}</h3>
+            <p
+              className={cn(
+                "inline-flex items-center",
+                pitchTypeVariant({ variant: pitch.type })
+              )}
+            >
+              <Icon className={cn("w-4 h-4 mr-2")} />
+              {pitchTypeToString(pitch.type)}
+            </p>
             <p className="text-gray-600 text-xs md:text-sm">{pitch.address}</p>
             <Stars className="flex text-sm" rating={Number(pitch?.rate)} />
           </div>

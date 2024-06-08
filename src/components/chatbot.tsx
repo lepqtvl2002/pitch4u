@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { chatSession } from "@/lib/genAI";
 import { errorToastWithCode } from "@/lib/quick-toast";
+import Draggable from "react-draggable";
 
 export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,12 +56,14 @@ export default function Chatbot() {
 
   return (
     <Popover onOpenChange={setOpen}>
-      <PopoverTrigger className="fixed bottom-20 right-10 z-50 ">
-        <div className="bg-primary p-4 rounded-full text-white relative">
-          <BotMessageSquareIcon />
-          <div className="animate-ping bg-emerald-500 w-10 h-10 absolute top-2 left-2 rounded-full" />
-        </div>
-      </PopoverTrigger>
+      <Draggable>
+        <PopoverTrigger className="fixed bottom-20 right-10 z-50 ">
+          <div className="bg-primary p-4 rounded-full text-white relative">
+            <BotMessageSquareIcon />
+            <div className="animate-ping bg-emerald-500 w-10 h-10 absolute top-2 left-2 rounded-full" />
+          </div>
+        </PopoverTrigger>
+      </Draggable>
       <PopoverContent
         ref={chatContainerRef}
         className="w-screen md:w-[360px] p-0 pb-10 overflow-hidden"
