@@ -1,5 +1,4 @@
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { MoreVertical, ThumbsDown, ThumbsUp } from "lucide-react";
 import { format } from "date-fns";
 import { IUser } from "@/types/user";
+import { AvatarCustom } from "../ui/avatar-custom";
 
 export type ReviewType = {
   review_id: number;
@@ -39,10 +39,10 @@ const Review = ({
       className={cn("comment flex items-start space-x-2", className)}
       {...props}
     >
-      <Avatar>
-        <AvatarImage src={review.user.avatar} alt="@shadcn" />
-        <AvatarFallback>{review.user.fullname}</AvatarFallback>
-      </Avatar>
+      <AvatarCustom
+        avatarUrl={review.user.avatar}
+        name={review.user.fullname}
+      />
       <div className={"flex flex-1 flex-col space-y-1 pb-6"}>
         <h2 className="commentAuthor text-sm font-semibold">
           {review.user.fullname}
