@@ -11,9 +11,13 @@ import DropdownMenuSubPitch from "./dropdown-menu-action";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
+import UserRoles from "@/enums/roles";
 
 function PitchDetailTable() {
   const params = useParams();
+  const { data: session, status } = useSession();
+  const isStaff = session?.user.userRole === UserRoles.Staff;
   const [search, setSearch] = React.useState<string>();
   const [sort, setSort] = React.useState<{
     columnName: string;
@@ -96,12 +100,18 @@ function PitchDetailTable() {
         pageIndex={pageIndex}
         pageSize={pageSize}
         headerPrefix={
-          <Link href={`/dashboard/pitch/${params.pitchId}/create?type=${data?.result.type}`}>
-            <Button variant="secondary">
-              <span className="mr-2 hidden md:inline-block">Thêm sân con</span>
-              <PlusIcon />
-            </Button>
-          </Link>
+          isStaff ? null : (
+            <Link
+              href={`/dashboard/pitch/${params.pitchId}/create?type=${data?.result.type}`}
+            >
+              <Button variant="secondary">
+                <span className="mr-2 hidden md:inline-block">
+                  Thêm sân con
+                </span>
+                <PlusIcon />
+              </Button>
+            </Link>
+          )
         }
         search={{
           placeholder: "Tìm kiếm",

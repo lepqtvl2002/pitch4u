@@ -16,8 +16,12 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import VoucherStatCards from "./stat-cards";
 import { PlusIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
+import UserRoles from "@/enums/roles";
 
 function VoucherTable() {
+  const { data: session, status } = useSession();
+  const isStaff = session?.user.userRole === UserRoles.Staff;
   const [types, setTypes] = React.useState<VoucherType[]>([]);
   const [statuses, setStatuses] = React.useState<VoucherStatus[]>([]);
   const [sort, setSort] = React.useState<{
@@ -75,27 +79,31 @@ function VoucherTable() {
       />
       <div className="mx-auto py-10">
         <DataTable
-          columns={[
-            ...columns,
-            {
-              id: "actions",
-              cell: ({ row }) => {
-                const voucher_id = row.original.voucher_id;
-                const params = new URLSearchParams(
-                  row.original as unknown as Record<string, string>
-                );
-                return (
-                  <DropdownMenuActions
-                    refetchTable={refetch}
-                    id={voucher_id}
-                    link={`/dashboard/voucher/${voucher_id}?${params}`}
-                  />
-                );
-              },
-            },
-          ]}
+          columns={
+            isStaff
+              ? columns
+              : [
+                  ...columns,
+                  {
+                    id: "actions",
+                    cell: ({ row }) => {
+                      const voucher_id = row.original.voucher_id;
+                      const params = new URLSearchParams(
+                        row.original as unknown as Record<string, string>
+                      );
+                      return (
+                        <DropdownMenuActions
+                          refetchTable={refetch}
+                          id={voucher_id}
+                          link={`/dashboard/voucher/${voucher_id}?${params}`}
+                        />
+                      );
+                    },
+                  },
+                ]
+          }
           data={data?.result.data}
-          isLoading={!isFetched}
+          isLoading={!isFetched || status === "loading" || !session}
           pageCount={Math.floor((data?.result.total! - 1) / pageSize) + 1}
           setPagination={setPagination}
           pageIndex={pageIndex}
@@ -115,12 +123,14 @@ function VoucherTable() {
             },
           ]}
           headerPrefix={
-            <Link href="/dashboard/voucher/create">
-              <Button variant="secondary">
-                <span className="hidden md:inline-block">Thêm voucher</span>
-                <PlusIcon />
-              </Button>
-            </Link>
+            !isStaff ? (
+              <Link href="/dashboard/voucher/create">
+                <Button variant="secondary">
+                  <span className="hidden md:inline-block">Thêm voucher</span>
+                  <PlusIcon />
+                </Button>
+              </Link>
+            ) : null
           }
           sort={{
             columnName: sort.columnName,

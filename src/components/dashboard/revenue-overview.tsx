@@ -153,7 +153,7 @@ export function RevenueOverviewByPitch({
   // data = data.sort((a, b) => b.value - a.value);
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <PieChart width={600} height={600}>
+      <PieChart className="w-96 h-96">
         <Pie
           dataKey="value"
           isAnimationActive={false}

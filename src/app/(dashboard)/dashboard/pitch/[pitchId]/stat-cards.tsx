@@ -19,17 +19,23 @@ import {
   decimalToTimeString,
 } from "@/lib/utils";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
+import UserRoles from "@/enums/roles";
+import { useSession } from "next-auth/react";
 
 function PitchDetailStatCards({ pitch }: { pitch: IPitch }) {
+  const { data: session, status } = useSession();
+  const isStaff = session?.user.userRole === UserRoles.Staff;
   return (
     <div className="grid grid-cols-4">
       <Card className="relative h-fit col-span-4 lg:col-span-3">
-        <Link
-          href={`/dashboard/pitch/${pitch?.pitch_id}/edit`}
-          className="absolute px-4 py-2 hover:bg-gray-300 top-2 right-2"
-        >
-          <FileEdit />
-        </Link>
+        {!isStaff && (
+          <Link
+            href={`/dashboard/pitch/${pitch?.pitch_id}/edit`}
+            className="absolute px-4 py-2 hover:bg-gray-300 top-2 right-2"
+          >
+            <FileEdit />
+          </Link>
+        )}
         <CardHeader>
           <CardTitle>{pitch?.name}</CardTitle>
           <CardDescription>{pitch?.address}</CardDescription>
