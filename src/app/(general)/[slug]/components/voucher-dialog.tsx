@@ -17,6 +17,7 @@ import { activeVariant, cn } from "@/lib/utils";
 import { format } from "date-fns";
 import VoucherTypes from "@/enums/voucherTypes";
 import { TicketIcon } from "lucide-react";
+import { useState } from "react";
 
 type VoucherDialogProps = {
   pitchId: number | string;
@@ -29,8 +30,14 @@ export function VoucherDialog({
   voucher,
   setVoucher,
 }: VoucherDialogProps) {
+  const [code, setCode] = useState<string>("");
   const { data: voucherList, isFetching } =
-    VoucherUseQuery.getVoucherListForUser({ pitch_id: pitchId });
+    VoucherUseQuery.getVoucherListForUser({ pitch_id: pitchId, code });
+
+  const handleApplyVoucher = () => {
+    if (voucherList?.result.length === 0) return;
+    setVoucher(voucherList?.result.at(0));
+  };
 
   return (
     <Dialog>
@@ -55,8 +62,15 @@ export function VoucherDialog({
               id="code"
               placeholder="Mã voucher Pitch4u"
               className="flex-1"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
             />
-            <Button disabled>ÁP DỤNG</Button>
+            <Button
+              disabled={voucherList?.result.length === 0 || code.length === 0}
+              onClick={handleApplyVoucher}
+            >
+              ÁP DỤNG
+            </Button>
           </div>
           <ScrollArea className="h-96 max-h-[70vh] rounded-md border">
             <div className="p-4">

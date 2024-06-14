@@ -25,7 +25,10 @@ export class VoucherUseQuery {
   };
 
   //Get vouchers for user
-  static getVoucherListForUser = (query?: { pitch_id: number | string }) => {
+  static getVoucherListForUser = (query?: {
+    pitch_id: number | string;
+    code?: string;
+  }) => {
     return useQuery({
       queryKey: ["user-vouchers", query],
       queryFn: async () =>

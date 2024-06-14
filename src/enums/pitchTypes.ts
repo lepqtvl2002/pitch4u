@@ -11,8 +11,8 @@ export default PitchTypes;
 
 export type PitchType =
   | PitchTypes.Soccer
+  | PitchTypes.Badminton
   | PitchTypes.Basketball
   | PitchTypes.Tennis
   | PitchTypes.Volleyball
-  | PitchTypes.Badminton
   | PitchTypes.Other;

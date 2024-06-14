@@ -130,7 +130,7 @@ export function MessageCard({
   return (
     <div
       className={cn(
-        "flex space-x-2 items-center hover:bg-gray-300 cursor-pointer p-2 rounded max-w-xs w-full overflow-hidden",
+        "flex space-x-2 items-center hover:bg-gray-300 cursor-pointer p-2 rounded md:max-w-xs w-full overflow-hidden",
         className
       )}
       onClick={onClick}
