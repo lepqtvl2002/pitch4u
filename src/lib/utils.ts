@@ -8,6 +8,8 @@ import VoucherTypes, { VoucherType } from "@/enums/voucherTypes";
 import UserRoles from "@/enums/roles";
 import PaymentTypes from "@/enums/paymentTypes";
 import { AxiosError } from "axios";
+import { IVoucher } from "@/types/voucher";
+import { toast } from "@/components/ui/use-toast";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -619,4 +621,62 @@ export function handleAxiosErrorMessage(error: AxiosError) {
 
 export function isEmptyObject(obj: any) {
   return Object.keys(obj).length === 0;
+}
+
+export function calculateDiscount({
+  voucher,
+  originalPrice,
+}: {
+  voucher?: IVoucher;
+  originalPrice: number;
+}): number {
+  if (!voucher) return 0;
+
+  if (!voucher.active) {
+    toast({
+      title: "Mã giảm giá không hợp lệ",
+      variant: "destructive",
+    });
+    return 0;
+  }
+
+  const currentDate = new Date();
+  if (voucher.expire_date < currentDate) {
+    toast({
+      title: "Mã giảm giá không hợp lệ",
+      description: "Mã giảm giá đã hết hạn",
+      variant: "destructive",
+    });
+    return 0;
+  }
+
+  if (voucher.min_price && originalPrice < voucher.min_price) {
+    toast({
+      title: "Mã giảm giá không hợp lệ",
+      description: "Đơn hàng không đủ điều kiện để sử dụng mã giảm giá",
+      variant: "destructive",
+    });
+    return 0;
+  }
+
+  let discountAmount =
+    voucher.type === VoucherTypes.Percent
+      ? originalPrice * voucher.discount
+      : voucher.discount;
+
+  if (voucher.max_discount && discountAmount > voucher.max_discount) {
+    discountAmount = voucher.max_discount;
+  }
+
+  return discountAmount;
+}
+
+export function priceApplyVoucher({
+  voucher,
+  originalPrice,
+}: {
+  voucher?: IVoucher;
+  originalPrice: number;
+}) {
+  return originalPrice - calculateDiscount({ voucher, originalPrice });
 }

@@ -38,9 +38,11 @@ export default function SelectPitchType({
         )}
       >
         <Icon className="w-8 h-8" />
-        <SelectValue className="truncate">
-          {pitchTypeToString(pitchType)}
-        </SelectValue>
+        <div className="hidden md:block">
+          <SelectValue className="truncate">
+            {pitchTypeToString(pitchType)}
+          </SelectValue>
+        </div>
       </SelectTrigger>
       <SelectContent>
         {isLoadingPitchTypes ? (

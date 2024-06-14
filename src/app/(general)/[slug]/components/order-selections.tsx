@@ -28,7 +28,7 @@ import {
 import { format, isSameDay } from "date-fns";
 import { useSession } from "next-auth/react";
 import { subPitchTypeToString } from "@/lib/convert";
-import { activeVariant, cn, formatMoney } from "@/lib/utils";
+import { activeVariant, cn, formatMoney, priceApplyVoucher } from "@/lib/utils";
 import { ReportForm } from "./report-form";
 import { IPitch, ITimeFrame } from "@/types/pitch";
 import { mutatingToast } from "@/lib/quick-toast";
@@ -38,6 +38,12 @@ import PaymentTypes from "@/enums/paymentTypes";
 import { VoucherDialog } from "./voucher-dialog";
 import { IVoucher } from "@/types/voucher";
 import VoucherTypes from "@/enums/voucherTypes";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface GroupedType {
   [key: string]: any[];
@@ -233,40 +239,49 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
         </div>
         <div className={"flex space-x-2 items-center"}>
           <Label className={"text-gray-500 w-1/4"}>Chọn thời gian</Label>
-          <Select
-            onValueChange={(value) => {
-              setTimeFrame(value);
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder={"Chọn thời gian"} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup className="max-h-60 overflow-auto">
-                {timeFrames.map((timeFrame) => {
-                  const value = timeFrameToString(timeFrame.frame);
-                  const canBookThisTime = isToday
-                    ? timeFrame.frame[0] > new Date().getHours()
-                    : true;
-                  return (
-                    <SelectItem
-                      disabled={
-                        !canBookThisTime ||
-                        timeFrame.free.length === 0 ||
-                        timeFrame.busy.findIndex(
-                          (e) => e.subpitch_id === currentSubPitch?.subpitch_id
-                        ) !== -1
-                      }
-                      key={value}
-                      value={value}
-                    >
-                      {value}
-                    </SelectItem>
-                  );
-                })}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <Popover>
+            <PopoverTrigger>
+              <Button variant="outline">
+                {bookingTimes.length > 0
+                  ? `Đã chọn ${bookingTimes.length} khung giờ`
+                  : "Chọn khung giờ"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="max-h-96">
+              <ScrollArea>
+                <div className="grid grid-cols-2 gap-2">
+                  {timeFrames.map((timeFrame) => {
+                    const value = timeFrameToString(timeFrame.frame);
+                    const canBookThisTime = isToday
+                      ? timeFrame.frame[0] > new Date().getHours()
+                      : true;
+                    const isChosen = bookingTimes.some(
+                      (time) =>
+                        time.date === date && time.timeFrameString === value
+                    );
+
+                    return (
+                      <Button
+                        key={value}
+                        variant={isChosen ? "default" : "outline"}
+                        disabled={
+                          !canBookThisTime ||
+                          timeFrame.free.length === 0 ||
+                          timeFrame.busy.findIndex(
+                            (e) =>
+                              e.subpitch_id === currentSubPitch?.subpitch_id
+                          ) !== -1
+                        }
+                        onClick={() => setTimeFrame(value)}
+                      >
+                        {value}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+            </PopoverContent>
+          </Popover>
         </div>
         {subPitchTypes.length > 0 && (
           <div className={"space-x-2 space-y-2 items-center"}>
@@ -357,7 +372,15 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
       >
         <Label>Tổng Giá</Label>
         <span>
-          {bookingTimes.reduce((prev, cur) => prev + Number(cur.price), 0)}
+          {formatMoney(
+            priceApplyVoucher({
+              voucher,
+              originalPrice: bookingTimes.reduce(
+                (prev, cur) => prev + Number(cur.price),
+                0
+              ),
+            })
+          )}
         </span>
       </div>
       {voucher && (

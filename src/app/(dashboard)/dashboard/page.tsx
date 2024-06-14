@@ -207,7 +207,7 @@ export default function DashboardPage() {
                   Biểu đồ thống kê doanh thu theo từng sân
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-2">
+              <CardContent className="p-2 h-96">
                 {isLoading ? (
                   <div className="flex gap-2">Loading...</div>
                 ) : (
