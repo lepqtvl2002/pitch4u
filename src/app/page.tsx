@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import SearchBar from "@/components/landing/search-bar";
+import SearchBar from "@/app/(general)/[slug]/components/search-bar";
 import Navbar from "@/components/landing/navbar";
 import Footer from "@/components/landing/footer";
 import Link from "next/link";

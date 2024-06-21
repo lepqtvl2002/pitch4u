@@ -5,21 +5,17 @@ import useDebounce from "@/hooks/use-debounce";
 import { IPitch } from "@/types/pitch";
 import Link from "next/link";
 import { CircleDollarSign, MapPin, Star } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, sortDirectionToString } from "@/lib/utils";
 import Image from "next/image";
-import { Stars } from "../ui/vote-stars";
+import { Stars } from "../../../../components/ui/vote-stars";
 import { pitchTypeToIcon, pitchTypeToString } from "@/lib/convert";
-import { Input } from "../ui/input";
-import SelectPitchType from "../select-pitch-type";
+import { Input } from "../../../../components/ui/input";
+import SelectPitchType from "../../../../components/select-pitch-type";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
-import { Icons } from "../icons";
+import { Icons } from "../../../../components/icons";
 import { pitchTypeVariant } from "@/lib/variant";
-
-const Conditions = [
-  { title: "Gần bạn", value: "near" },
-  { title: "Chất lượng", value: "quality" },
-  { title: "Giá cả", value: "price" },
-];
+import FilterSelector from "./filter-selector";
+import { CITIES, STAR_RATING } from "@/lib/constants";
 
 /**
  * SearchBar component.
@@ -32,7 +28,6 @@ const SearchBar: React.FC = () => {
 
   const [pitchType, setPitchType] = React.useState<string>("");
 
-  const [conditions, setConditions] = useState<string[]>([]);
   const [location, setLocation] = useState<{ long?: number; lat?: number }>({
     long: undefined,
     lat: undefined,
@@ -41,10 +36,11 @@ const SearchBar: React.FC = () => {
     sortBy: string;
     direction: "asc" | "desc";
   }>({
-    sortBy: "createdAt",
-    direction: "desc",
+    sortBy: "price",
+    direction: "asc",
   });
-  const [rate, setRate] = useState(0);
+  const [city, setCity] = useState("");
+  const [starRating, setStarRating] = useState(0);
 
   const {
     data,
@@ -59,10 +55,11 @@ const SearchBar: React.FC = () => {
     long: location.long,
     lat: location.lat,
     name: searchQuery,
-    rate_gte: rate,
+    rate_gte: starRating,
     pitchType,
-    sort: "asc",
-    sortBy: "createdAt",
+    sort: sort.direction,
+    sortBy: sort.sortBy,
+    city,
   });
 
   const handleSearchQueryChange = (
@@ -71,40 +68,9 @@ const SearchBar: React.FC = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleConditionChange = (condition: string) => {
-    const newConditions = conditions.includes(condition)
-      ? conditions.filter((c) => c !== condition)
-      : [...conditions, condition];
-
-    if (newConditions?.includes("near")) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          long: position.coords.longitude,
-        });
-      });
-    } else {
-      setLocation({
-        lat: undefined,
-        long: undefined,
-      });
-    }
-    if (newConditions.includes("quality")) {
-      setRate(4);
-    } else {
-      setRate(0);
-    }
-    if (newConditions.includes("price")) {
-      setSort({ sortBy: "price", direction: "asc" });
-    } else {
-      setSort({ sortBy: "createdAt", direction: "desc" });
-    }
-    setConditions(newConditions);
-  };
-
   useEffect(() => {
     refetch();
-  }, [debounceValue, rate, location.lat, location.long, sort, refetch]);
+  }, [debounceValue, location, refetch, sort, city, starRating]);
 
   useEffect(() => {
     remove();
@@ -118,33 +84,84 @@ const SearchBar: React.FC = () => {
         <Input
           type="text"
           className="rounded-full flex-2"
-          placeholder="Tìm kiếm"
+          placeholder="Tìm kiếm theo tên sân"
           value={searchQuery}
           onChange={handleSearchQueryChange}
         />
       </div>
-      <div className="mt-4 flex justify-around space-x-2 md:space-x-4 ">
-        {Conditions.map((condition) => (
-          <Button
-            key={condition.value}
-            className={cn(
-              "rounded-full w-1/3 hover:bg-blue-200",
-              conditions.includes(condition.value)
-                ? "bg-emerald-500 text-white"
-                : "bg-gray-200 text-gray-500"
-            )}
-            onClick={() => handleConditionChange(condition.value)}
-          >
-            <span className="mr-2">{condition.title}</span>
-            {condition.value === "near" ? (
-              <MapPin />
-            ) : condition.value === "quality" ? (
-              <Star />
-            ) : (
-              <CircleDollarSign />
-            )}
-          </Button>
-        ))}
+      <div className="mt-4 flex justify-around space-x-2 md:space-x-4">
+        <FilterSelector
+          className="rounded-full"
+          onChange={setCity}
+          items={CITIES.map((city) => ({
+            title: city.value,
+            value: city.value,
+          }))}
+          trigger={
+            <span className="flex items-center">
+              <MapPin className="w-4 h-4 mr-2 text-emerald-500" />
+              {city ? city : "Gần bạn"}
+            </span>
+          }
+          specialItems={[
+            <Button
+              key="near"
+              size="sm"
+              className={cn("rounded-full w-full bg-emerald-400 ")}
+              onClick={() => {
+                navigator.geolocation.getCurrentPosition((position) => {
+                  setLocation({
+                    lat: position.coords.latitude,
+                    long: position.coords.longitude,
+                  });
+                });
+                setCity("Gần bạn");
+              }}
+            >
+              <span className="mr-2">Gần bạn</span>
+              <MapPin className="w-4 h-4" />
+            </Button>,
+          ]}
+        />
+        <FilterSelector
+          className="rounded-full"
+          onChange={(value) => setStarRating(Number(value))}
+          items={STAR_RATING.map((item) => ({
+            title: item.value,
+            value: item.key,
+          }))}
+          trigger={
+            <span className="flex items-center">
+              <Star className="w-4 h-4 mr-2 text-yellow-300" />
+              {starRating ? `${starRating} sao` : "Tất cả"}
+            </span>
+          }
+        />
+        <FilterSelector
+          className="rounded-full"
+          onChange={(value) =>
+            setSort({ sortBy: "price", direction: value as "asc" | "desc" })
+          }
+          items={[
+            {
+              title: "Tăng dần",
+              value: "asc",
+            },
+            {
+              title: "Giảm dần",
+              value: "desc",
+            },
+          ]}
+          trigger={
+            <span className="flex items-center">
+              <CircleDollarSign
+                fill="yellow"
+                className="w-4 h-4 mr-2 text-yellow-500"
+              />
+              Giá cả {sortDirectionToString(sort.direction)}
+            </span>
+          }
+        />
       </div>
       <div className="mt-4 list-inside list-disc no-scrollbar">
         {isInitialLoading ? (

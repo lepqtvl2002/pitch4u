@@ -1,5 +1,5 @@
 "use client";
-import { PitchItem } from "@/components/landing/search-bar";
+import { PitchItem } from "@/app/(general)/[slug]/components/search-bar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";

@@ -680,3 +680,11 @@ export function priceApplyVoucher({
 }) {
   return originalPrice - calculateDiscount({ voucher, originalPrice });
 }
+
+export function isNumber(str: string) {
+  return !isNaN(parseFloat(str));
+}
+
+export function sortDirectionToString(sortDirection: string) {
+  return sortDirection === "asc" ? "tăng dần" : "giảm dần";
+}
