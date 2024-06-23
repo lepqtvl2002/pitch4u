@@ -30,7 +30,6 @@ import { ImageUseMutation } from "@/server/actions/image-actions";
 import GoogleMapReact, { ClickEventValue } from "google-map-react";
 import { IPitch } from "@/types/pitch";
 import { UserProfile } from "@/server/queries/user-queries";
-import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import SelectPitchType from "../select-pitch-type";
 
 const formSchema = z.object({
@@ -65,8 +64,6 @@ export function PitchRegisterForm({
   const [step, setStep] = React.useState(1);
   const [pitchType, setPitchType] = React.useState("soccer");
   const { mutateAsync } = PitchUseMutation.pitchRegister();
-  const { data: pitchTypes, isLoading: isLoadingPitchTypes } =
-    PitchUseQuery.getPitchTypes();
   const router = useRouter();
   const [markerPos, setMarkerPos] = React.useState({
     lat: 16.0544068,
@@ -267,10 +264,11 @@ export function PitchRegisterForm({
                 )}
                 {step === 2 && (
                   <>
+                    <FormLabel>Loại sân đăng ký</FormLabel>
                     <SelectPitchType
                       pitchType={pitchType}
                       setPitchType={setPitchType}
-                      className="rounded-md"
+                      className="rounded-md w-full"
                     />
 
                     <FormField
@@ -310,7 +308,7 @@ export function PitchRegisterForm({
                         </FormItem>
                       )}
                     />
-                    <div className="relative h-screen pb-10 mb-10">
+                    <div className="relative h-[80vh] pb-10 mb-10 md:-mx-20 max-w-screen-lg">
                       <FormLabel>Địa chỉ trên Google map</FormLabel>
                       <FormDescription>
                         Hãy chọn chính xác địa chỉ sân bóng của bạn trên bản đồ

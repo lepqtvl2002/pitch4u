@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function PitchRegisterPage() {
   return (
-    <div className="m-auto p-10">
+    <div className="m-auto p-4 md:p-10">
       <PitchRegisterForm />
     </div>
   );

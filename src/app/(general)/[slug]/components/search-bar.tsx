@@ -16,6 +16,11 @@ import { Icons } from "../../../../components/icons";
 import { pitchTypeVariant } from "@/lib/variant";
 import FilterSelector from "./filter-selector";
 import { CITIES, STAR_RATING } from "@/lib/constants";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 /**
  * SearchBar component.
@@ -69,13 +74,18 @@ const SearchBar: React.FC = () => {
   };
 
   useEffect(() => {
-    refetch();
-  }, [debounceValue, location, refetch, sort, city, starRating]);
-
-  useEffect(() => {
     remove();
     refetch();
-  }, [pitchType, refetch, remove]);
+  }, [
+    debounceValue,
+    location,
+    sort,
+    city,
+    starRating,
+    pitchType,
+    refetch,
+    remove,
+  ]);
 
   return (
     <div className="flex flex-col space-y-4 w-full lg:w-2/3 xl:w-1/2">
@@ -90,39 +100,45 @@ const SearchBar: React.FC = () => {
         />
       </div>
       <div className="mt-4 flex justify-around space-x-2 md:space-x-4">
-        <FilterSelector
-          className="rounded-full"
-          onChange={setCity}
-          items={CITIES.map((city) => ({
-            title: city.value,
-            value: city.value,
-          }))}
-          trigger={
-            <span className="flex items-center">
-              <MapPin className="w-4 h-4 mr-2 text-emerald-500" />
-              {city ? city : "Gần bạn"}
-            </span>
-          }
-          specialItems={[
-            <Button
-              key="near"
-              size="sm"
-              className={cn("rounded-full w-full bg-emerald-400 ")}
-              onClick={() => {
-                navigator.geolocation.getCurrentPosition((position) => {
-                  setLocation({
-                    lat: position.coords.latitude,
-                    long: position.coords.longitude,
+        <div className="relative flex w-full">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="outline"
+                className="rounded-full border-emerald-500 p-2 z-10"
+                onClick={() => {
+                  navigator.geolocation.getCurrentPosition((position) => {
+                    setLocation({
+                      lat: position.coords.latitude,
+                      long: position.coords.longitude,
+                    });
                   });
-                });
-                setCity("Gần bạn");
-              }}
-            >
-              <span className="mr-2">Gần bạn</span>
-              <MapPin className="w-4 h-4" />
-            </Button>,
-          ]}
-        />
+                  setCity("");
+                }}
+              >
+                <MapPin className="text-emerald-500" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Tìm sân gần bạn</p>
+            </TooltipContent>
+          </Tooltip>
+          <div className="absolute w-10 p-2 left-2 rounded-e-full bg-emerald-50 h-full border-r"></div>
+          <FilterSelector
+            className="rounded-e-full"
+            onChange={setCity}
+            items={CITIES.map((city) => ({
+              title: city.value,
+              value: city.value,
+            }))}
+            trigger={
+              <span className="flex justify-end items-center">
+                {city ? city : "Gần bạn"}
+              </span>
+            }
+          />
+        </div>
         <FilterSelector
           className="rounded-full"
           onChange={(value) => setStarRating(Number(value))}

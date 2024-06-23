@@ -24,11 +24,7 @@ export default function FilterSelector({
     <Select onValueChange={onChange}>
       <SelectTrigger className={className}>{trigger}</SelectTrigger>
       <SelectContent>
-        {specialItems?.map((item, i) => (
-          <SelectItem key={i} value={""}>
-            {item}
-          </SelectItem>
-        ))}
+        {specialItems?.map((item, i) => item)}
         {items.map((item) => (
           <SelectItem key={item.value} value={item.value}>
             {item.title}
