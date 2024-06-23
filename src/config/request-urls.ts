@@ -18,6 +18,7 @@ export const REQUEST_URLS = {
     STATISTIC_SYSTEM: "/v1/statistic/system",
     STATISTIC_REVENUE: "/v1/statistic/revenue",
     STATISTIC_BOOKING: "/v1/booking",
+    STATISTIC_NUMBER_BOOKING_BY_TIME_FRAME: "/v1/statistic/owner/frames",
     PITCHES: "/v1/pitches",
     MY_PITCHES: "/v1/pitches/my-pitches",
     PITCH_SLUG: "/v1/pitches/slug",

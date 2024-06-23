@@ -132,4 +132,26 @@ export class StatisticUseQuery {
       ...config,
     });
   };
+
+  static getNumberBookingByTimeFrame = (params?: {
+    start_time?: string;
+    end_time?: string;
+  }) => {
+    return useQuery({
+      queryKey: ["numberBookingByTimeFrame", params],
+      queryFn: () =>
+        $fetch(REQUEST_URLS_CURRENT.STATISTIC_NUMBER_BOOKING_BY_TIME_FRAME, {
+          params,
+        }).then(
+          (res) =>
+            res.data as {
+              result: {
+                pitch_id: number;
+                frame: { time: string; orders: number }[];
+              }[];
+            }
+        ),
+      ...config,
+    });
+  };
 }

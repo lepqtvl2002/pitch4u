@@ -10,6 +10,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatisticUseQuery } from "@/server/queries/statistic-queries";
 import {
+  NumberBookingByTimeFrame,
   RevenueChart,
   RevenueOverviewByPitch,
 } from "@/components/dashboard/revenue-overview";
@@ -81,6 +82,44 @@ const TabItems = [
   },
 ];
 
+interface InputData {
+  result: {
+    pitch_id: number;
+    frame: {
+      time: string;
+      orders: number;
+    }[];
+  }[];
+}
+
+interface TransformedData {
+  time: string;
+  data: { pitch_id: number; orders: number }[];
+}
+
+function transformData(input: InputData): TransformedData[] {
+  const transformed: TransformedData[] = [];
+
+  input.result.forEach((pitch) => {
+    pitch.frame.forEach((frame) => {
+      const existingTime = transformed.find((t) => t.time === frame.time);
+      if (existingTime) {
+        existingTime.data.push({
+          pitch_id: pitch.pitch_id,
+          orders: frame.orders,
+        });
+      } else {
+        transformed.push({
+          time: frame.time,
+          data: [{ pitch_id: pitch.pitch_id, orders: frame.orders }],
+        });
+      }
+    });
+  });
+
+  return transformed;
+}
+
 export default function DashboardPage() {
   const [typeTime, setTypeTime] = useState<"month" | "year">("month");
   const [month, setMonth] = useState(new Date().getMonth());
@@ -92,6 +131,11 @@ export default function DashboardPage() {
   const { data: topPitches } = StatisticUseQuery.getPitchesByRevenue({
     limit: 20,
   });
+
+  const {
+    data: numberBookingByTimeFrame,
+    isLoading: isLoadingNumberBookingByTimeFrame,
+  } = StatisticUseQuery.getNumberBookingByTimeFrame();
 
   if (error) {
     errorToastWithCode({
@@ -204,6 +248,39 @@ export default function DashboardPage() {
             <Card className="col-span-4">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
+                  Biểu đồ thống kê số lượt đặt sân theo khung giờ
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2 h-96">
+                {isLoadingNumberBookingByTimeFrame ? (
+                  <div className="flex gap-2">Loading...</div>
+                ) : (
+                  <NumberBookingByTimeFrame
+                    data={
+                      numberBookingByTimeFrame
+                        ? transformData(numberBookingByTimeFrame)
+                        : []
+                    }
+                  />
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="col-span-4 md:col-span-3">
+              <CardHeader>
+                <CardTitle>Những lượt đặt sân gần nhất</CardTitle>
+                <CardDescription>
+                  Bạn đã có {data?.result.thisMonthOverview.orders || 0} lượt
+                  đặt trong tháng này.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RecentOrder pitchId={pitchId} />
+              </CardContent>
+            </Card>
+            <Card className="col-span-4">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
                   Biểu đồ thống kê doanh thu theo từng sân
                 </CardTitle>
               </CardHeader>
@@ -220,18 +297,6 @@ export default function DashboardPage() {
                     }
                   />
                 )}
-              </CardContent>
-            </Card>
-            <Card className="col-span-4 md:col-span-3">
-              <CardHeader>
-                <CardTitle>Những lượt đặt sân gần nhất</CardTitle>
-                <CardDescription>
-                  Bạn đã có {data?.result.thisMonthOverview.orders || 0} lượt
-                  đặt trong tháng này.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RecentOrder pitchId={pitchId} />
               </CardContent>
             </Card>
           </div>

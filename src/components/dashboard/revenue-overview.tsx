@@ -1,10 +1,11 @@
 "use client";
 
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, getRandomColor } from "@/lib/utils";
 // @ts-ignore
 import {
   Bar,
   BarChart,
+  CartesianGrid,
   Cell,
   Legend,
   Line,
@@ -216,6 +217,49 @@ export function RevenueChart({
           stroke="#82ca9d"
         />
       </LineChart>
+    </ResponsiveContainer>
+  );
+}
+
+type NumberBookingByTimeFrameDataProps = {
+  data: {
+    time: string;
+    data: { pitch_id: number; orders: number }[];
+  }[];
+};
+
+export function NumberBookingByTimeFrame(
+  props: NumberBookingByTimeFrameDataProps
+) {
+  console.log(props);
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        width={500}
+        height={500}
+        data={props.data}
+        margin={{
+          top: 20,
+          right: 30,
+          left: 20,
+          bottom: 50,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="time" angle={90} textAnchor="start" />
+        <YAxis />
+        <Tooltip />
+        {props.data[0]?.data.map((item, index) => (
+          <Bar
+            key={item.pitch_id}
+            dataKey={`data.${index}.orders`}
+            stackId="a"
+            name={`Sân ${item.pitch_id}`}
+            fill={getRandomColor()}
+          />
+        ))}
+        <Legend layout="horizontal" align="right" verticalAlign="top" />
+      </BarChart>
     </ResponsiveContainer>
   );
 }
