@@ -1,6 +1,7 @@
 "use client";
 
-import { formatMoney, getRandomColor } from "@/lib/utils";
+import { formatMoney } from "@/lib/utils";
+import { useState } from "react";
 // @ts-ignore
 import {
   Bar,
@@ -80,7 +81,18 @@ export function RevenueOverviewByDate({
   );
 }
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#AD1457",
+  "#7B1FA2",
+  "#303F9F",
+  "#0288D1",
+  "#009688",
+  "#FF5722",
+];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -231,6 +243,7 @@ type NumberBookingByTimeFrameDataProps = {
 export function NumberBookingByTimeFrame(
   props: NumberBookingByTimeFrameDataProps
 ) {
+  const [hiddenBars, setHiddenBars] = useState<string[]>([]);
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -252,12 +265,25 @@ export function NumberBookingByTimeFrame(
           <Bar
             key={item.pitch_id}
             dataKey={`data.${index}.orders`}
+            hide={hiddenBars.includes(`data.${index}.orders`) ? true : false}
             stackId="a"
             name={`Sân ${item.pitch_name}`}
-            fill={getRandomColor()}
+            fill={COLORS[index % COLORS.length]}
           />
         ))}
-        <Legend layout="horizontal" align="right" verticalAlign="top" />
+        <Legend
+          layout="horizontal"
+          align="right"
+          verticalAlign="top"
+          onClick={(a) => {
+            console.log(a);
+            if (hiddenBars.includes(a.dataKey)) {
+              setHiddenBars(hiddenBars.filter((item) => item !== a.dataKey));
+            } else {
+              setHiddenBars([...hiddenBars, a.dataKey]);
+            }
+          }}
+        />
       </BarChart>
     </ResponsiveContainer>
   );
