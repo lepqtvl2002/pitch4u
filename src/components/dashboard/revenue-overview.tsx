@@ -224,25 +224,24 @@ export function RevenueChart({
 type NumberBookingByTimeFrameDataProps = {
   data: {
     time: string;
-    data: { pitch_id: number; orders: number }[];
+    data: { pitch_id: number; pitch_name: string; orders: number }[];
   }[];
 };
 
 export function NumberBookingByTimeFrame(
   props: NumberBookingByTimeFrameDataProps
 ) {
-  console.log(props);
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         width={500}
-        height={500}
+        height={900}
         data={props.data}
         margin={{
           top: 20,
           right: 30,
           left: 20,
-          bottom: 50,
+          bottom: 90,
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
@@ -254,7 +253,7 @@ export function NumberBookingByTimeFrame(
             key={item.pitch_id}
             dataKey={`data.${index}.orders`}
             stackId="a"
-            name={`Sân ${item.pitch_id}`}
+            name={`Sân ${item.pitch_name}`}
             fill={getRandomColor()}
           />
         ))}

@@ -147,6 +147,7 @@ export class StatisticUseQuery {
             res.data as {
               result: {
                 pitch_id: number;
+                pitch_name: string;
                 frame: { time: string; orders: number }[];
               }[];
             }

@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StaffList } from "@/components/dashboard/staff-list";
+import { timeFrameToString } from "@/lib/format-datetime";
 
 type All = {
   revenue: number;
@@ -85,6 +86,7 @@ const TabItems = [
 interface InputData {
   result: {
     pitch_id: number;
+    pitch_name: string;
     frame: {
       time: string;
       orders: number;
@@ -94,28 +96,39 @@ interface InputData {
 
 interface TransformedData {
   time: string;
-  data: { pitch_id: number; orders: number }[];
+  data: { pitch_id: number; pitch_name: string; orders: number }[];
 }
 
 function transformData(input: InputData): TransformedData[] {
-  const transformed: TransformedData[] = [];
+  let transformed: TransformedData[] = [];
 
   input.result.forEach((pitch) => {
     pitch.frame.forEach((frame) => {
-      const existingTime = transformed.find((t) => t.time === frame.time);
+      const existingTime = transformed.find(
+        (t) => t.time === timeFrameToString(JSON.parse(frame.time))
+      );
       if (existingTime) {
         existingTime.data.push({
           pitch_id: pitch.pitch_id,
+          pitch_name: pitch.pitch_name,
           orders: frame.orders,
         });
       } else {
         transformed.push({
-          time: frame.time,
-          data: [{ pitch_id: pitch.pitch_id, orders: frame.orders }],
+          time: timeFrameToString(JSON.parse(frame.time)),
+          data: [
+            {
+              pitch_id: pitch.pitch_id,
+              pitch_name: pitch.pitch_name,
+              orders: frame.orders,
+            },
+          ],
         });
       }
     });
   });
+
+  transformed = transformed.sort((a, b) => (a.time > b.time ? 1 : -1));
 
   return transformed;
 }
@@ -251,7 +264,7 @@ export default function DashboardPage() {
                   Biểu đồ thống kê số lượt đặt sân theo khung giờ
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-2 h-96">
+              <CardContent className="p-2 md:h-[600px] ">
                 {isLoadingNumberBookingByTimeFrame ? (
                   <div className="flex gap-2">Loading...</div>
                 ) : (
