@@ -117,6 +117,8 @@ export const stringToPitchType = (type: string) => {
 export const pitchTypeToString = (type: string | null) => {
   if (!type) return "Tất cả";
   switch (type) {
+    case PitchTypes.All:
+      return "Tất cả";
     case PitchTypes.Soccer:
       return "Sân bóng đá";
     case PitchTypes.Tennis:
@@ -128,7 +130,7 @@ export const pitchTypeToString = (type: string | null) => {
     case PitchTypes.Badminton:
       return "Sân cầu lông";
     default:
-      return "Loại sân chưa xác định";
+      return "Loại sân khác";
   }
 };
 
@@ -199,6 +201,9 @@ export function bookingStatusToIcon(status: string) {
 
 export function pitchTypeToIcon(type: string) {
   switch (type) {
+    case "":
+    case PitchTypes.All:
+      return "trophy";
     case PitchTypes.Soccer:
       return "soccer";
     case PitchTypes.Tennis:
@@ -210,6 +215,6 @@ export function pitchTypeToIcon(type: string) {
     case PitchTypes.Badminton:
       return "badminton";
     default:
-      return "soccer";
+      return "help";
   }
 }

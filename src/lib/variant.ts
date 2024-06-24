@@ -48,19 +48,21 @@ export const pitchTypeVariant = cva(
         [PitchTypes.Soccer]:
           "bg-green-300/50 text-green-600 dark:text-green-400 dark:bg-green-600/50",
         [PitchTypes.Tennis]:
-          "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
+          "bg-emerald-300/50 text-emerald-600 dark:text-emerald-400 dark:bg-emerald-600/50",
         [PitchTypes.Volleyball]:
           "bg-blue-300/50 text-blue-600 dark:text-blue-400 dark:bg-blue-600/50",
         [PitchTypes.Badminton]:
           "bg-teal-300/50 text-teal-600 dark:text-teal-400 dark:bg-teal-600/50",
         [PitchTypes.Basketball]:
           "bg-red-300/50 text-red-600 dark:text-red-400 dark:bg-red-600/50",
+        [PitchTypes.All]:
+          "bg-yellow-200/50 text-yellow-400 dark:text-yellow-400 dark:bg-yellow-600/50",
         [PitchTypes.Other]:
-          "bg-yellow-300/50 text-yellow-600 dark:text-yellow-400 dark:bg-yellow-600/50",
+          "bg-gray-300/50 text-gray-600 dark:text-gray-400 dark:bg-gray-600/50",
       },
     },
     defaultVariants: {
-      variant: PitchTypes.Soccer,
+      variant: PitchTypes.All,
     },
   }
 );

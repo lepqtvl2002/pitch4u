@@ -21,6 +21,7 @@ export interface IPitch {
   max_price: number;
   min_price: number;
   rate: string;
+  active: boolean;
   images: string[];
   type: PitchType;
   config?: {
@@ -38,6 +39,7 @@ export interface IPitch {
   sub_pitches?: ISubPitch[];
   reviews: ReviewType[];
   likes?: ILike[];
+  services: string[];
 }
 
 export type BookingPitch = {

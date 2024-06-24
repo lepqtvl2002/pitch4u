@@ -39,19 +39,18 @@ export const columns: ColumnDef<IPitch>[] = [
     cell: (ctx) => {
       const rate = ctx.row.original?.rate;
       return (
-        <div
-          className="font-bold text-yellow-400"
-        >
+        <div className="font-bold text-yellow-400">
           {Number(rate).toFixed(1)}
         </div>
       );
     },
   },
   {
+    id: "status",
     header: "Trạng thái",
     accessorKey: "status",
     cell: (ctx) => {
-      const isSuspended = ctx.row.original?.suspended;
+      const isSuspended = !ctx.row.original.active;
       return (
         <div
           className={userStateVariant({

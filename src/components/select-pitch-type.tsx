@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { PitchType, pitchTypesArray } from "@/enums/pitchTypes";
+import PitchTypes, { PitchType, pitchTypesArray } from "@/enums/pitchTypes";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { cn } from "@/lib/utils";
 import { Icons } from "./icons";
@@ -23,7 +23,7 @@ export default function SelectPitchType({
   setPitchType,
   className,
 }: SelectPitchTypeProps) {
-  const { data: pitchTypes, isLoading: isLoadingPitchTypes } =
+  const { data: pitchTypeData, isLoading: isLoadingPitchTypes } =
     PitchUseQuery.getPitchTypes();
 
   const Icon = Icons[pitchTypeToIcon(pitchType)];
@@ -32,12 +32,12 @@ export default function SelectPitchType({
     <Select onValueChange={setPitchType}>
       <SelectTrigger
         className={cn(
-          "w-full min-w-[100px] md:min-w-[200px] rounded-full flex-1",
           pitchTypeVariant({ variant: pitchType as PitchType }),
+          "w-full min-w-[100px] md:min-w-[200px] rounded-full flex-1 h-full",
           className
         )}
       >
-        <Icon className="w-8 h-8" />
+        <Icon className="w-6 h-6" />
         <div className="hidden md:block">
           <SelectValue className="truncate">
             {pitchTypeToString(pitchType)}
@@ -55,7 +55,9 @@ export default function SelectPitchType({
                 key={type}
                 value={type}
                 disabled={
-                  pitchTypes && !(type.toUpperCase() in pitchTypes?.result)
+                  pitchTypeData &&
+                  type !== PitchTypes.All &&
+                  !(type.toUpperCase() in pitchTypeData?.result)
                 }
                 className="flex w-full items-center"
               >

@@ -62,6 +62,7 @@ import {
   SearchIcon,
   GroupIcon,
   PhoneIcon,
+  TrophyIcon,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -259,6 +260,7 @@ export const Icons = {
       />
     </svg>
   ),
+  trophy: TrophyIcon,
   chart: BarChartBigIcon,
   favorite: FolderHeartIcon,
   history: History,

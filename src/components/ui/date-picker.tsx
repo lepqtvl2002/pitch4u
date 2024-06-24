@@ -36,10 +36,11 @@ export function DatePickerBookingPitch({
   date: Date;
   setDate: React.Dispatch<React.SetStateAction<any>>;
 }) {
+  const [open, setOpen] = React.useState(false);
   const maxDate = addDays(new Date(), 30);
   const yesterday = subDays(new Date(), 1);
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -56,7 +57,10 @@ export function DatePickerBookingPitch({
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(date) => {
+            setDate(date);
+            setOpen(false);
+          }}
           disabled={(date) => date < yesterday || date > maxDate}
           initialFocus
         />

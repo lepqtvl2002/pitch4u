@@ -5,10 +5,12 @@ import { roleSlugToString } from "@/lib/utils";
 import { LayoutDashboardIcon, PlusIcon, StepBackIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function PitchPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   if (status === "loading") return <>Loading...</>;
 
@@ -41,7 +43,11 @@ export default function PitchPage() {
           </Button>
           {(session?.user.userRole === UserRoles.Admin ||
             session?.user.userRole === UserRoles.Staff) && (
-            <Button className="gap-2" onClick={() => router.push("/dashboard")}>
+            <Button
+              disabled={isRedirecting}
+              className={`gap-2 ${isRedirecting && "animate-spin"}`}
+              onClick={() => router.push("/dashboard")}
+            >
               <LayoutDashboardIcon /> Đi tới bảng điều khiển
             </Button>
           )}

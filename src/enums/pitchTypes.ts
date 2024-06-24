@@ -1,4 +1,5 @@
 enum PitchTypes {
+  All = "",
   Soccer = "soccer",
   Badminton = "badminton",
   Basketball = "basketball",
@@ -10,6 +11,7 @@ export const pitchTypesArray = Object.values(PitchTypes);
 export default PitchTypes;
 
 export type PitchType =
+  | PitchTypes.All
   | PitchTypes.Soccer
   | PitchTypes.Badminton
   | PitchTypes.Basketball

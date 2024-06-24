@@ -4,7 +4,8 @@ import { toast } from "@/components/ui/use-toast";
 import { PaymentType } from "@/enums/paymentTypes";
 import { BookingStatus } from "@/enums/bookingStatuses";
 import { AxiosError } from "axios";
-import { errorToast } from "@/lib/quick-toast";
+import { errorToast, successToast } from "@/lib/quick-toast";
+import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
 
 export type PitchInfo = {
   card_id: string;
@@ -138,6 +139,22 @@ export class PitchUseMutation {
       },
       onError: (error: AxiosError) => {
         errorToast({ actionName: "Thêm sân con", error: error });
+      },
+    });
+  };
+
+  // Active pitch
+  static activePitch = (pitch_id: number | string) => {
+    return useMutation({
+      mutationFn: (active: boolean) =>
+        $fetch
+          .patch(`${REQUEST_URLS_CURRENT.PITCHES}/${pitch_id}`, { active })
+          .then((res) => res.data),
+      onSuccess: () => {
+        successToast({ actionName: "Mở khóa sân" });
+      },
+      onError: (error: AxiosError) => {
+        errorToast({ actionName: "Mở/Khóa sân", error: error });
       },
     });
   };

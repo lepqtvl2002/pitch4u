@@ -14,7 +14,7 @@ import SelectPitchType from "@/components/select-pitch-type";
 
 type PitchStatus = "suspended" | "active";
 function PitchTable() {
-  const [statuses, setStatuses] = React.useState<PitchStatus[]>(["active"]);
+  const [statuses, setStatuses] = React.useState<PitchStatus[]>([]);
   const [search, setSearch] = React.useState<string>();
   const [type, setType] = React.useState("");
   const debouncedSearch = useDebounce(search);
@@ -32,25 +32,20 @@ function PitchTable() {
       pageSize: 10,
     });
 
-  const pitchParams =
-    statuses.length === 1
-      ? {
-          limit: pageSize,
-          page: pageIndex + 1,
-          name: debouncedSearch,
-          sort_by: sort.columnName,
-          sort: sort.direction,
-          pitchType: type,
-          is_suspended: statuses.includes("suspended") ? true : false,
-        }
-      : {
-          limit: pageSize,
-          page: pageIndex + 1,
-          name: debouncedSearch,
-          sort_by: sort.columnName,
-          sort: sort.direction,
-          pitchType: type,
-        };
+  const pitchParams = {
+    limit: pageSize,
+    page: pageIndex + 1,
+    name: debouncedSearch,
+    sort_by: sort.columnName,
+    sort: sort.direction,
+    pitchType: type,
+    active:
+      statuses.length === 1
+        ? statuses.includes("suspended")
+          ? false
+          : true
+        : "all",
+  };
 
   const { data, isError, isFetching, refetch } =
     PitchUseQuery.getMyPitches(pitchParams);
@@ -81,7 +76,7 @@ function PitchTable() {
             return (
               <DropdownMenuPitch
                 refetch={refetch}
-                pitchId={row.original.pitch_id}
+                pitch={row.original}
                 url={`/dashboard/pitch/${row.original.pitch_id}`}
               />
             );

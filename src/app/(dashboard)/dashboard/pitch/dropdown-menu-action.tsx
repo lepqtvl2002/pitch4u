@@ -6,25 +6,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { mutatingToast } from "@/lib/quick-toast";
+import { cn } from "@/lib/utils";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
+import { IPitch } from "@/types/pitch";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 type DropdownMenuPitchProps = {
-  pitchId: string | number;
+  pitch: IPitch;
   url: string;
   refetch?: any;
 };
 export default function DropdownMenuPitch({
-  pitchId,
+  pitch,
   url,
   refetch,
 }: DropdownMenuPitchProps) {
   const { mutateAsync: suspendPitch, isLoading } =
     PitchUseMutation.suspendPitch();
+  const { mutateAsync: activePitch, isLoading: isActiveMutating } =
+    PitchUseMutation.activePitch(pitch.pitch_id);
   async function handelSuspendPitch() {
     mutatingToast();
-    await suspendPitch(pitchId);
+    await suspendPitch(pitch.pitch_id);
+    refetch();
+  }
+  async function handleActivePitch(value: boolean) {
+    mutatingToast();
+    await activePitch(value);
     refetch();
   }
   return (
@@ -38,16 +47,20 @@ export default function DropdownMenuPitch({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link href={`/dashboard/pitch/${pitchId}/edit`}>Cài đặt sân</Link>
+          <Link href={`/dashboard/pitch/${pitch.pitch_id}/edit`}>
+            Cài đặt sân
+          </Link>
         </DropdownMenuItem>
-        {/* <DropdownMenuSeparator />
         <DropdownMenuItem
-          disabled={isLoading}
-          onClick={handelSuspendPitch}
-          className="bg-red-500 text-white"
+          disabled={isActiveMutating}
+          onClick={() => handleActivePitch(!pitch.active)}
+          className={cn(
+            "text-white",
+            pitch.active ? "bg-red-500" : "bg-green-500"
+          )}
         >
-          Tạm dừng hoạt động
-        </DropdownMenuItem> */}
+          {pitch.active ? "Khóa sân" : "Mở khóa"}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

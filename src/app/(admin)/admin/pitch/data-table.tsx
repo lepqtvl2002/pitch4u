@@ -41,6 +41,7 @@ function PitchTable() {
           sort_by: sort.columnName,
           sort: sort.direction,
           suspended: statuses.includes("suspended") ? true : false,
+          active: "all",
           pitchType: type,
         }
       : {
@@ -49,6 +50,7 @@ function PitchTable() {
           name: debouncedSearch,
           sort_by: sort.columnName,
           sort: sort.direction,
+          active: "all",
           pitchType: type,
         };
 

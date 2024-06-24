@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import GoogleMapReact, { ClickEventValue } from "google-map-react";
 
@@ -18,12 +18,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { useRouter } from "next/navigation";
-import { toast } from "../ui/use-toast";
 import Image from "next/image";
 import { Label } from "../ui/label";
 import { ImageUseMutation } from "@/server/actions/image-actions";
 import { AvatarCustom } from "../ui/avatar-custom";
 import { useState } from "react";
+import { IPitch } from "@/types/pitch";
+import { mutatingToast } from "@/lib/quick-toast";
+import { PlusIcon, XIcon } from "lucide-react";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -49,6 +51,7 @@ const createFormSchema = z.object({
       "Chỉ nhận file .jpg, .jpeg, .png and .webp "
     ),
   uploadPhotos: z.any().nullable(),
+  services: z.array(z.string()),
 });
 
 const updateFormSchema = z.object({
@@ -71,10 +74,11 @@ const updateFormSchema = z.object({
       "Chỉ nhận file .jpg, .jpeg, .png and .webp "
     ),
   uploadPhotos: z.any().nullable(),
+  services: z.array(z.string()).optional(),
 });
 
 type FormProps = {
-  pitch?: any;
+  pitch?: IPitch;
 };
 type MarkerProps = {
   lat: number;
@@ -90,21 +94,24 @@ export function EditPitchForm({ pitch }: FormProps) {
     defaultValues: {
       name: pitch?.name,
       address: pitch?.address,
+      services: pitch?.services,
     },
-    // mode: "onChange",
+    mode: "onChange",
   });
-  const { mutateAsync, isLoading } = PitchUseMutation.updatePitch(pitch?.pitch_id);
+  const serviceArray = useFieldArray({
+    control: form.control,
+    name: "services",
+  });
+
+  const { mutateAsync: updatePitchMutate, isLoading } =
+    PitchUseMutation.updatePitch(pitch?.pitch_id as unknown as string);
   const { mutateAsync: uploadImage } = ImageUseMutation.upload();
-  const route = useRouter();
   const [markerPos, setMarkerPos] = useState({
-    lat: pitch.lat || 16.0544068,
-    lng: pitch.long || 108.1655063,
+    lat: pitch?.lat || 16.0544068,
+    lng: pitch?.long || 108.1655063,
   });
   async function onSubmit(data: z.infer<typeof schema>) {
-    toast({
-      title: "Đang xử lý yêu cầu",
-      description: "Vui lòng chờ trong giây lát",
-    });
+    mutatingToast();
     const logoUrl = data?.thumbnail[0]
       ? await uploadImage({ image: data.thumbnail[0] })
       : null;
@@ -113,7 +120,7 @@ export function EditPitchForm({ pitch }: FormProps) {
     );
     const { thumbnail, uploadPhotos, ...values } = data;
     let sendValues: Record<string, any> = {};
-    if (logoUrl) sendValues = { ...values, logo: logoUrl?.result };
+    sendValues = logoUrl ? { ...values, logo: logoUrl?.result } : values;
     if (imageUrls?.length > 0)
       sendValues = {
         ...sendValues,
@@ -121,7 +128,8 @@ export function EditPitchForm({ pitch }: FormProps) {
       };
     sendValues["lat"] = markerPos.lat;
     sendValues["long"] = markerPos.lng;
-    await mutateAsync({ ...sendValues });
+    console.log(sendValues);
+    await updatePitchMutate({ ...sendValues });
   }
   const mapDefaultProps = {
     center: {
@@ -309,6 +317,46 @@ export function EditPitchForm({ pitch }: FormProps) {
               {...form.register("uploadPhotos")}
             />
           </div>
+        </div>
+
+        {/* Services */}
+        <div className="grid gap-4">
+          <FormLabel>Dịch vụ</FormLabel>
+          {serviceArray.fields.map((field, index) => (
+            <div className="flex gap-2" key={field.id}>
+              <FormField
+                control={form.control}
+                name={`services.${index}`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Dịch vụ"
+                        defaultValue={field.value}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                onClick={() => serviceArray.remove(index)}
+                type="button"
+                size="icon"
+              >
+                <XIcon />
+              </Button>
+            </div>
+          ))}
+          <Button
+            onClick={() => serviceArray.append("")}
+            type="button"
+            variant="secondary"
+          >
+            Thêm dịch vụ <PlusIcon className="ml-2" />
+          </Button>
         </div>
 
         <Button disabled={isLoading} type="submit">

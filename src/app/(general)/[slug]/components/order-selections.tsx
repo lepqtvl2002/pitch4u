@@ -51,7 +51,6 @@ interface GroupedType {
 
 export default function OrderSelections({ pitch }: { pitch: IPitch }) {
   const { data: session } = useSession();
-  const [price, setPrice] = React.useState(0);
   const [subPitchTypes, setSubPitchTypes] = React.useState<string[]>([]);
   const [type, setType] = React.useState<string>("");
   const [date, setDate] = React.useState<Date>(new Date());
@@ -74,6 +73,8 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
       price: number;
     }[]
   >([]);
+
+  const [openTimePopover, setOpenTimePopover] = React.useState(false);
 
   const { data: dataSubPitchType } = PitchUseQuery.getSubPitchTypes({
     pitchType: pitch.type,
@@ -133,50 +134,68 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
     await likePitchMutate(pitch.pitch_id);
   }
 
-  useEffect(() => {
-    if (dataSubPitchType?.result) {
-      setSubPitchTypes(Object.values(dataSubPitchType.result));
+  function handleAddBookingTime(timeFrame: string) {
+    if (
+      bookingTimes.every(
+        (time) =>
+          time.date !== date ||
+          time.timeFrameString !== timeFrame ||
+          time.subPitchId !== currentSubPitch?.subpitch_id
+      ) &&
+      currentSubPitch
+    ) {
+      const currentTimeFrame = stringToTimeFrame(timeFrame);
+      const currentPrice = currentSubPitch.price_by_hour?.find(
+        (price) => price.time_frame[0] == currentTimeFrame[0]
+      );
+      setBookingTimes([
+        ...bookingTimes,
+        {
+          date,
+          timeFrameString: timeFrame,
+          subPitchId: currentSubPitch.subpitch_id,
+          subPitchName: currentSubPitch.name,
+          price: currentPrice?.price ?? currentSubPitch.price,
+        },
+      ]);
+    } else {
+      setBookingTimes(
+        bookingTimes.filter(
+          (time) =>
+            time.date !== date ||
+            time.timeFrameString !== timeFrame ||
+            time.subPitchId !== currentSubPitch?.subpitch_id
+        )
+      );
     }
-  }, [dataSubPitchType]);
+  }
 
   useEffect(() => {
     // Get price
     if (currentSubPitch) {
       const currentTimeFrame = stringToTimeFrame(timeFrame);
-      for (const subPitch of subPitches) {
-        if (subPitch.subpitch_id == currentSubPitch.subpitch_id) {
-          const currentPrice = subPitch.price_by_hour?.find(
-            (price) => price.time_frame[0] == currentTimeFrame[0]
-          );
-          setPrice(currentPrice?.price ?? subPitch.price);
-          // Add booking time
-          if (
-            bookingTimes.every(
-              (time) =>
-                time.date !== date ||
-                time.timeFrameString !== timeFrame ||
-                time.subPitchId !== subPitch.subpitch_id
-            ) &&
-            subPitches.findIndex(
-              (e) => e.subpitch_id === currentSubPitch.subpitch_id
-            ) !== -1
-          ) {
-            setBookingTimes([
-              ...bookingTimes,
-              {
-                date,
-                timeFrameString: timeFrame,
-                subPitchId: subPitch.subpitch_id,
-                subPitchName: subPitch.name,
-                price: currentPrice?.price ?? subPitch.price,
-              },
-            ]);
-          }
-          break;
-        }
+      if (bookingTimes.length === 0) {
+        const currentPrice = currentSubPitch.price_by_hour?.find(
+          (price) => price.time_frame[0] == currentTimeFrame[0]
+        );
+        setBookingTimes([
+          {
+            date,
+            timeFrameString: timeFrame,
+            subPitchId: currentSubPitch.subpitch_id,
+            subPitchName: currentSubPitch.name,
+            price: currentPrice?.price ?? currentSubPitch.price,
+          },
+        ]);
       }
     }
   }, [currentSubPitch, subPitches, timeFrame]);
+
+  useEffect(() => {
+    if (dataSubPitchType?.result) {
+      setSubPitchTypes(Object.values(dataSubPitchType.result));
+    }
+  }, [dataSubPitchType]);
 
   useEffect(() => {
     // Get sub pitches
@@ -233,21 +252,23 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
         </Link>
       </div>
       <div className="flex flex-col space-y-2">
-        <div className={"flex items-center space-x-2"}>
-          <Label className={"text-gray-500 w-1/4"}>Chọn ngày</Label>
-          <DatePickerBookingPitch date={date} setDate={setDate} />
-        </div>
         <div className={"flex space-x-2 items-center"}>
           <Label className={"text-gray-500 w-1/4"}>Chọn thời gian</Label>
-          <Popover>
+          <Popover open={openTimePopover} onOpenChange={setOpenTimePopover}>
             <PopoverTrigger>
               <Button variant="outline">
                 {bookingTimes.length > 0
                   ? `Đã chọn ${bookingTimes.length} khung giờ`
-                  : "Chọn khung giờ"}
+                  : timeFrame
+                  ? `${format(date, "dd/MM/yyyy")} | ${timeFrame}`
+                  : "Chọn ngày giờ"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="max-h-96">
+              <div className="flex items-center space-x-2 mb-2">
+                <Label className="text-gray-500 w-1/4">Chọn ngày</Label>
+                <DatePickerBookingPitch date={date} setDate={setDate} />
+              </div>
               <ScrollArea>
                 <div className="grid grid-cols-2 gap-2">
                   {timeFrames.map((timeFrame) => {
@@ -257,7 +278,9 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
                       : true;
                     const isChosen = bookingTimes.some(
                       (time) =>
-                        time.date === date && time.timeFrameString === value
+                        time.date === date &&
+                        time.timeFrameString === value &&
+                        time.subPitchId === currentSubPitch?.subpitch_id
                     );
 
                     return (
@@ -272,7 +295,13 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
                               e.subpitch_id === currentSubPitch?.subpitch_id
                           ) !== -1
                         }
-                        onClick={() => setTimeFrame(value)}
+                        onClick={() => {
+                          setTimeFrame(value);
+                          handleAddBookingTime(value);
+                          if (bookingTimes.length === 0) {
+                            setOpenTimePopover(false);
+                          }
+                        }}
                       >
                         {value}
                       </Button>
@@ -445,7 +474,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
             "w-1/2 md:w-auto rounded-none md:rounded-md  bg-emerald-500 hover:bg-emerald-300",
             !session && "hidden"
           )}
-          disabled={!price || isLoading}
+          disabled={isLoading}
           onClick={handleBookingPitch}
         >
           Đặt sân ngay
