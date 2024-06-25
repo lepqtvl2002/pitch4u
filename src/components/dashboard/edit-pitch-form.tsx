@@ -148,7 +148,7 @@ export function EditPitchForm({ pitch }: FormProps) {
         {/* Logo */}
         <div className="grid gap-2">
           <div>
-            <Label htmlFor="thumbnail">Logo sân bóng</Label>
+            <Label htmlFor="thumbnail">Logo sân</Label>
             <p className="text-sm text-muted-foreground">
               Hình ảnh tượng trưng cho sân
             </p>
@@ -196,7 +196,7 @@ export function EditPitchForm({ pitch }: FormProps) {
               <FormLabel>Tên sân</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Tên sân bóng của bạn"
+                  placeholder="Tên sân của bạn"
                   defaultValue={field.value}
                   {...field}
                 />
@@ -230,8 +230,8 @@ export function EditPitchForm({ pitch }: FormProps) {
         <div className="xl:w-[1000px] h-screen pb-10 xl:m-10">
           <FormLabel>Địa chỉ trên Google map</FormLabel>
           <FormDescription>
-            Hãy chọn chính xác địa chỉ sân bóng của bạn trên bản đồ để người
-            dùng có thể dễ dàng tìm kiếm.
+            Hãy chọn chính xác địa chỉ sân của bạn trên bản đồ để người dùng có
+            thể dễ dàng tìm kiếm.
           </FormDescription>
           <GoogleMapReact
             bootstrapURLKeys={{
@@ -253,9 +253,9 @@ export function EditPitchForm({ pitch }: FormProps) {
         {/* Images */}
         <div className="grid gap-2 pt-10">
           <div>
-            <Label htmlFor="uploadPhotos">Hình ảnh về sân bóng</Label>
+            <Label htmlFor="uploadPhotos">Hình ảnh về sân</Label>
             <p className="text-sm text-muted-foreground">
-              Thêm hình ảnh để mọi người biết thêm về sân bóng
+              Thêm hình ảnh để mọi người biết thêm về sân
             </p>
             {form.formState.errors.uploadPhotos && (
               <p className="text-sm text-red-500">

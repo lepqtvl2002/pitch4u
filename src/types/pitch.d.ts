@@ -7,6 +7,7 @@ import { PitchType } from "@/enums/pitchTypes";
 export interface IPitch {
   pitch_id: number;
   name: string;
+  description?: string;
   slug: string;
   address: string;
   logo: null | string;

@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import UserRoles from "@/enums/roles";
-import { roleSlugToString } from "@/lib/utils";
+import { cn, roleSlugToString } from "@/lib/utils";
 import { LayoutDashboardIcon, PlusIcon, StepBackIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -45,10 +45,15 @@ export default function PitchPage() {
             session?.user.userRole === UserRoles.Staff) && (
             <Button
               disabled={isRedirecting}
-              className={`gap-2 ${isRedirecting && "animate-spin"}`}
-              onClick={() => router.push("/dashboard")}
+              onClick={() => {
+                setIsRedirecting(true);
+                router.push("/dashboard");
+              }}
             >
-              <LayoutDashboardIcon /> Đi tới bảng điều khiển
+              <LayoutDashboardIcon
+                className={cn("mr-2", isRedirecting && "animate-spin")}
+              />
+              Đi tới bảng điều khiển
             </Button>
           )}
           <Button onClick={() => router.back()} variant="outline">

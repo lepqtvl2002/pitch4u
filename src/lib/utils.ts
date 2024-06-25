@@ -5,7 +5,7 @@ import { cva } from "class-variance-authority";
 import BookingStatuses from "@/enums/bookingStatuses";
 import VoucherStatuses from "@/enums/voucherStatues";
 import VoucherTypes, { VoucherType } from "@/enums/voucherTypes";
-import UserRoles from "@/enums/roles";
+import UserRoles, { UserRole } from "@/enums/roles";
 import PaymentTypes from "@/enums/paymentTypes";
 import { AxiosError } from "axios";
 import { IVoucher } from "@/types/voucher";
@@ -334,8 +334,10 @@ export const stringToBookingStatus = (string: string) => {
 export const stringToVoucherStatus = (status: string) => {
   switch (status) {
     case "Đang chạy":
+    case VoucherStatuses.Running:
       return VoucherStatuses.Running;
     case "Đã dừng":
+    case VoucherStatuses.Stopped:
       return VoucherStatuses.Stopped;
     default:
       return VoucherStatuses.Expired;
@@ -697,3 +699,7 @@ export function getRandomColor() {
     .toString(16)
     .padStart(2, "0")}${blue.toString(16).padStart(2, "0")}`;
 }
+
+export const isPitchOwner = (role?: UserRole) => {
+  return role === UserRoles.Admin;
+};

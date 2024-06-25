@@ -163,7 +163,7 @@ export class PitchUseMutation {
   static suspendPitch = () => {
     return useMutation({
       mutationFn: (pitch_id: number | string) =>
-        $fetch.post(`/v1/pitches/${pitch_id}/suspend`).then((res) => res.data),
+        $fetch.patch(`/v1/pitches/${pitch_id}/suspend`).then((res) => res.data),
       onSuccess: () => {
         toast({ title: "Đã khóa sân thành công", variant: "success" });
       },

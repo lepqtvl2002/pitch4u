@@ -11,7 +11,6 @@ import {
   type OnChangeFn,
   type PaginationState,
 } from "@tanstack/react-table";
-
 import {
   Select,
   SelectContent,
@@ -27,7 +26,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
 import { type ReactNode } from "react";
 import { Icons } from "@/components/icons";
 import LoadingTable from "./loading-table";
@@ -136,7 +134,14 @@ export function DataTable<TData, TValue>({
                 title={facet.title}
                 column={table.getColumn(facet.columnName)}
                 options={facet.options}
-                onChange={facet.onChange}
+                onChange={(values) => {
+                  facet.onChange(values);
+                  if (setPagination)
+                    setPagination({
+                      pageIndex: 0,
+                      pageSize: table.getState().pagination.pageSize,
+                    });
+                }}
               />
             ))}
         </section>
@@ -162,7 +167,13 @@ export function DataTable<TData, TValue>({
             <Input
               placeholder={search.placeholder}
               value={search.value}
-              onChange={(e) => search.onChange(e.target.value)}
+              onChange={(e) => {
+                search.onChange(e.target.value);
+                setPagination?.({
+                  pageIndex: 0,
+                  pageSize: table.getState().pagination.pageSize,
+                });
+              }}
               className="hidden w-[180px] md:block"
             />
           )}
@@ -203,7 +214,13 @@ export function DataTable<TData, TValue>({
         <Input
           placeholder={search.placeholder}
           value={search.value}
-          onChange={(e) => search.onChange(e.target.value)}
+          onChange={(e) => {
+            search.onChange(e.target.value);
+            setPagination?.({
+              pageIndex: 0,
+              pageSize: table.getState().pagination.pageSize,
+            });
+          }}
           className="block md:hidden"
         />
       )}

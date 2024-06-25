@@ -95,7 +95,7 @@ interface InputData {
 }
 
 interface TransformedData {
-  time: string;
+  time: number;
   data: { pitch_id: number; pitch_name: string; orders: number }[];
 }
 
@@ -105,7 +105,7 @@ function transformData(input: InputData): TransformedData[] {
   input.result.forEach((pitch) => {
     pitch.frame.forEach((frame) => {
       const existingTime = transformed.find(
-        (t) => t.time === timeFrameToString(JSON.parse(frame.time))
+        (t) => t.time === JSON.parse(frame.time)?.at(0)
       );
       if (existingTime) {
         existingTime.data.push({
@@ -115,7 +115,7 @@ function transformData(input: InputData): TransformedData[] {
         });
       } else {
         transformed.push({
-          time: timeFrameToString(JSON.parse(frame.time)),
+          time: JSON.parse(frame.time)?.at(0),
           data: [
             {
               pitch_id: pitch.pitch_id,
@@ -253,7 +253,7 @@ export default function DashboardPage() {
                   làm việc tại đây.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="max-h-96 overflow-y-auto">
                 <StaffList staffs={data?.result.staffs ?? []} />
               </CardContent>
             </Card>
@@ -291,7 +291,7 @@ export default function DashboardPage() {
                 <RecentOrder pitchId={pitchId} />
               </CardContent>
             </Card>
-            <Card className="col-span-4">
+            <Card className="col-span-7">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Biểu đồ thống kê doanh thu theo từng sân

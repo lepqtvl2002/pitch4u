@@ -1,6 +1,5 @@
 "use client";
 import { DataTable } from "@/components/dashboard/data-table";
-import { stringToBookingStatus } from "@/lib/utils";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
 import { bookingStatusOptions, columns } from "./column";
@@ -37,8 +36,7 @@ export default function BookingTable() {
   });
 
   const setStatusesHandler = useCallback((values: string[]) => {
-    //Convert string to voucher type
-    setStatuses(values.map((value) => stringToBookingStatus(value)));
+    setStatuses(values as BookingStatus[]);
   }, []);
 
   if (isError) {
@@ -71,7 +69,7 @@ export default function BookingTable() {
 
             const subPitches = row.original.booking_pitches;
             subPitches.forEach(
-              ({ sub_pitch: subPitch, start_time, end_time }, index) => {
+              ({ sub_pitch: subPitch, start_time, end_time }) => {
                 params.append(`subpitch_ids`, subPitch.subpitch_id.toString());
                 params.append(`subpitch_names`, subPitch.name.toString());
                 params.append(`subpitch_start_time`, start_time);

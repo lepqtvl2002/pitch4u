@@ -1,17 +1,19 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatisticUseQuery } from "@/server/queries/statistic-queries";
 import { toast } from "../ui/use-toast";
 import { cn, formatMoney, paymentTypeToString } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
-import PaymentTypes from "@/enums/paymentTypes";
 import { Icons } from "../icons";
 import { bookingStatusToIcon } from "@/lib/convert";
 import BookingStatuses from "@/enums/bookingStatuses";
 import { paymentTypeVariant } from "@/lib/variant";
 import { AvatarCustom } from "../ui/avatar-custom";
 
+const LIMIT = 7;
+
 export function RecentOrder({ pitchId }: { pitchId?: number }) {
-  const params = pitchId ? { pitch_id: pitchId, limit: 5 } : { limit: 5 };
+  const params = pitchId
+    ? { pitch_id: pitchId, limit: LIMIT }
+    : { limit: LIMIT };
   const { data, isLoading, isError } = StatisticUseQuery.getBooking(params);
   if (isLoading)
     return (

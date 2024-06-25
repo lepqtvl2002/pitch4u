@@ -1,6 +1,6 @@
 "use client";
 
-import { formatMoney } from "@/lib/utils";
+import { decimalToTimeString, formatMoney } from "@/lib/utils";
 import { useState } from "react";
 // @ts-ignore
 import {
@@ -235,7 +235,7 @@ export function RevenueChart({
 
 type NumberBookingByTimeFrameDataProps = {
   data: {
-    time: string;
+    time: number;
     data: { pitch_id: number; pitch_name: string; orders: number }[];
   }[];
 };
@@ -254,11 +254,20 @@ export function NumberBookingByTimeFrame(
           top: 20,
           right: 30,
           left: 20,
-          bottom: 90,
+          bottom: 30,
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" angle={90} textAnchor="start" />
+        <XAxis
+          dataKey="time"
+          tickFormatter={(time) => decimalToTimeString(time)}
+          label={{
+            value: "Khung giờ",
+            position: "insideBottom",
+            offset: -20,
+            style: { fill: "#666", margin: "0px" },
+          }}
+        />
         <YAxis />
         <Tooltip />
         {props.data[0]?.data.map((item, index) => (

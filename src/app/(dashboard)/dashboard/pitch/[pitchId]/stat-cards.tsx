@@ -17,18 +17,17 @@ import {
   activeVariant,
   convertDayOfWeek,
   decimalToTimeString,
+  isPitchOwner,
 } from "@/lib/utils";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
-import UserRoles from "@/enums/roles";
 import { useSession } from "next-auth/react";
 
 function PitchDetailStatCards({ pitch }: { pitch: IPitch }) {
-  const { data: session, status } = useSession();
-  const isStaff = session?.user.userRole === UserRoles.Staff;
+  const { data: session } = useSession();
   return (
     <div className="grid grid-cols-4">
       <Card className="relative h-fit col-span-4 lg:col-span-3">
-        {!isStaff && (
+        {isPitchOwner(session?.user.userRole) && (
           <Link
             href={`/dashboard/pitch/${pitch?.pitch_id}/edit`}
             className="absolute px-4 py-2 hover:bg-gray-300 top-2 right-2"

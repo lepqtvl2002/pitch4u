@@ -1,13 +1,8 @@
 "use client";
 import { DataTable } from "@/components/dashboard/data-table";
-import {
-  stringToVoucherActivity,
-  stringToVoucherStatus,
-  stringToVoucherType,
-} from "@/lib/utils";
 import { type PaginationState } from "@tanstack/react-table";
 import React, { useCallback } from "react";
-import { columns, voucherStatus, vouchersTypeOptions } from "./column";
+import { columns, voucherStatusOptions, vouchersTypeOptions } from "./column";
 import { VoucherUseQuery } from "@/server/queries/voucher-queries";
 import DropdownMenuActions from "./dropdown-menu-actions";
 import { VoucherType } from "@/enums/voucherTypes";
@@ -38,36 +33,26 @@ function VoucherTable() {
       pageSize: 10,
     });
 
-  let params: any =
-    types.length === 1
-      ? {
-          page: pageIndex + 1,
-          limit: pageSize,
-          sort: sort.direction,
-          sort_by: sort.columnName,
-          type: types[0],
-        }
-      : {
-          page: pageIndex + 1,
-          limit: pageSize,
-          sort: sort.direction,
-          sort_by: sort.columnName,
-        };
+  let params: any = {
+    page: pageIndex + 1,
+    limit: pageSize,
+    sort: sort.direction,
+    sort_by: sort.columnName,
+  };
 
-  params =
-    statuses.length === 1
-      ? { ...params, active: statuses.at(0) == VoucherStatuses.Running }
-      : params;
+  if (types.length === 1) params = { ...params, type: types[0] };
+  if (statuses.length === 1)
+    params = { ...params, active: statuses.includes(VoucherStatuses.Running) };
+
   const { data, isError, isFetched, refetch } =
     VoucherUseQuery.getVoucherList(params);
 
   const setTypesHandler = useCallback((values: string[]) => {
-    const value = values.map((value) => stringToVoucherType(value));
-    setTypes(value);
+    setTypes(values as VoucherType[]);
   }, []);
 
   const setStatusesHandler = useCallback((values: string[]) => {
-    setStatuses(values.map((value) => stringToVoucherStatus(value)));
+    setStatuses(values as VoucherStatus[]);
   }, []);
 
   return (
@@ -118,7 +103,7 @@ function VoucherTable() {
             {
               title: "Trạng thái",
               columnName: "status",
-              options: voucherStatus,
+              options: voucherStatusOptions,
               onChange: setStatusesHandler,
             },
           ]}

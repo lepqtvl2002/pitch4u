@@ -51,7 +51,7 @@ export default function RootLayout({
             <AuthProviderHelper>
               <SocketProvider>
                 <TooltipProvider>{children}</TooltipProvider>
-                <Chatbot />
+                {/* <Chatbot /> */}
                 <PageProgress />
               </SocketProvider>
               <Toaster />

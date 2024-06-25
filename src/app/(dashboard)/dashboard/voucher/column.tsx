@@ -26,7 +26,7 @@ export const vouchersTypeOptions: DataFacetedOptionsType[] = [
   },
 ];
 
-export const voucherStatus: DataFacetedOptionsType[] = [
+export const voucherStatusOptions: DataFacetedOptionsType[] = [
   {
     label: voucherStatusToString(VoucherStatuses.Running),
     value: VoucherStatuses.Running,

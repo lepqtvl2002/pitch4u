@@ -5,6 +5,8 @@ import { Stars } from "@/components/ui/vote-stars";
 import { $globalFetch } from "@/lib/axios";
 import Link from "next/link";
 import { IPitch } from "@/types/pitch";
+import { CircleCheckBigIcon } from "lucide-react";
+import { activeVariant, cn } from "@/lib/utils";
 
 const PitchDetail = async ({ params }: { params: { slug: string } }) => {
   const slug = params.slug;
@@ -17,11 +19,23 @@ const PitchDetail = async ({ params }: { params: { slug: string } }) => {
   return (
     <div className={"w-full flex flex-col"}>
       <PitchOrder pitch={pitch} />
-      <div
-        className={
-          "flex flex-col space-y-4 p-2 md:p-4 mt-10 bg-white md:rounded"
-        }
-      >
+      <div className="flex flex-col space-y-4 p-2 md:p-4 mt-10 bg-white md:rounded">
+        <span>{pitch.description}</span>
+        <div className="flex flex-wrap gap-2">
+          {pitch.services.map((service, index) => (
+            <span
+              key={index}
+              className={cn(
+                "flex items-center",
+                activeVariant({ variant: true })
+              )}
+            >
+              <CircleCheckBigIcon className="mr-2" /> {service}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col space-y-4 p-2 md:p-4 mt-10 bg-white md:rounded">
         <h2 className={"md:text-3xl font-bold"}>Đánh giá, bình luận</h2>
         <section className={"voting"}>
           <div className={"border border-main md:rounded p-4"}>

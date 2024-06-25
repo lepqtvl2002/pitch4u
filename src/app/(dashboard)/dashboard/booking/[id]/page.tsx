@@ -105,12 +105,12 @@ export default function DetailBookingPage() {
     const endTimes = searchParams.getAll("subpitch_end_time");
     return (
       <div>
-        <p className="text-lg mt-2 font-medium mb-4">
-          Thông tin sân và thời gian đặt
-        </p>
         <div className="flex flex-col gap-4">
           {subpitchIds.map((subpitchId, index) => (
-            <div key={subpitchId} className="flex flex-col md:flex-row justify-between">
+            <div
+              key={subpitchId}
+              className="flex flex-col md:flex-row justify-between"
+            >
               <p>
                 <Label>Sân:</Label> {subpitchNames[index]}
               </p>
@@ -147,6 +147,9 @@ export default function DetailBookingPage() {
           <div className="flex flex-col gap-2 md:gap-5 px-2 md:px-10">
             {renderInfo()}
           </div>
+          <p className="text-xl font-medium my-4">
+            Thông tin sân và thời gian đặt
+          </p>
           <div className="flex flex-col gap-2 md:gap-5 px-2 md:px-10">
             {renderBookingPitchesInfo()}
           </div>
@@ -176,7 +179,7 @@ export default function DetailBookingPage() {
 
 const stringToLabel = (string: string) => {
   switch (string) {
-    case "payment_url": 
+    case "payment_url":
       return "Link thanh toán";
     case "booking_id":
       return "Mã đặt sân";

@@ -6,12 +6,10 @@ import {
   bookingStatusToString,
   cn,
   formatMoney,
-  soccerPitchTypeVariant,
 } from "@/lib/utils";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Booking } from "@/server/queries/statistic-queries";
 import { format } from "date-fns";
-import { soccerPitchTypeToString } from "@/lib/convert";
 import BookingStatuses from "@/enums/bookingStatuses";
 
 export const bookingStatusOptions: DataFacetedOptionsType[] = [
@@ -38,17 +36,6 @@ export const columns: ColumnDef<Booking>[] = [
     cell: (ctx) => {
       const pitchName = ctx.row.original.pitches.name;
       return <div className={"text-bold"}>{pitchName}</div>;
-    },
-  },
-  {
-    header: "Loại sân",
-    cell: (ctx) => {
-      const pitchType = ctx.row.original.booking_pitches[0].sub_pitch?.type;
-      return (
-        <div className={soccerPitchTypeVariant({ variant: null })}>
-          {soccerPitchTypeToString(pitchType)}
-        </div>
-      );
     },
   },
   {
