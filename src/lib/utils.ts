@@ -703,3 +703,7 @@ export function getRandomColor() {
 export const isPitchOwner = (role?: UserRole) => {
   return role === UserRoles.Admin;
 };
+
+export const isAdmin = (role?: UserRole) => {
+  return role === UserRoles.SuperAdmin;
+};

@@ -23,20 +23,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
-import { toast } from "../ui/use-toast";
 import { useState } from "react";
 import { IVoucher } from "@/types/voucher";
 import { VoucherUseMutation } from "@/server/actions/voucher-actions";
 import { mutatingToast } from "@/lib/quick-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { cn, voucherTypeToString } from "@/lib/utils";
+import { cn, isAdmin, isPitchOwner, voucherTypeToString } from "@/lib/utils";
 import { addDays, format } from "date-fns";
 import { CalendarIcon, XCircleIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import VoucherTypes from "@/enums/voucherTypes";
-import { SelectMultipleMyPitches, SelectMultiplePitches } from "./pitch-picker";
+import { SelectMultipleMyPitches } from "./pitch-picker";
 import { IPitch } from "@/types/pitch";
-import UserRoles, { UserRole } from "@/enums/roles";
+import { UserRole } from "@/enums/roles";
 
 const createVoucherFormSchema = z.object({
   code: z.string().min(2, {
@@ -76,24 +75,22 @@ export function VoucherCreateForm({ userRole }: { userRole: UserRole }) {
   const router = useRouter();
 
   async function onSubmit(data: VoucherFormValues) {
-    if (pitches.length > 0) {
-      mutatingToast();
-      await createVoucher({
-        ...data,
-        usage_count: Number(data?.usage_count),
-        discount:
-          data.type == "fixed"
-            ? Number(data.discount)
-            : Number(data.discount) / 100,
-        pitch_id: pitches.at(0)?.pitch_id,
-        public: data?.public || true,
-        max_discount: data?.max_discount ? Number(data.max_discount) : null,
-        min_price: data?.min_price ? Number(data.min_price) : null,
-      });
-      router.push("/dashboard/voucher");
-    } else {
-      toast({ title: "Vui lòng chọn sân áp dụng voucher này!" });
-    }
+    mutatingToast();
+    const sendValues: any = {
+      ...data,
+      usage_count: Number(data?.usage_count),
+      discount:
+        data.type == "fixed"
+          ? Number(data.discount)
+          : Number(data.discount) / 100,
+      public: data?.public || true,
+      max_discount: data?.max_discount ? Number(data.max_discount) : null,
+      min_price: data?.min_price ? Number(data.min_price) : null,
+    };
+    if (pitches.length > 0) sendValues.pitch_id = pitches[0].pitch_id;
+    await createVoucher(sendValues);
+    if (isPitchOwner(userRole)) router.push("/dashboard/voucher");
+    else router.push("/admin/voucher");
   }
 
   return (
@@ -267,46 +264,39 @@ export function VoucherCreateForm({ userRole }: { userRole: UserRole }) {
             </FormItem>
           )}
         />
-        <div className="space-y-2">
-          <FormLabel>Sân áp dụng</FormLabel>
-          <div className="flex gap-2">
-            {pitches?.map((pitch) => (
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                key={pitch.pitch_id}
-                onClick={() =>
-                  setPitches((prev) =>
-                    prev.filter(
-                      (prevPitch) => prevPitch.pitch_id !== pitch.pitch_id
+        {isPitchOwner(userRole) ? (
+          <div className="space-y-2">
+            <FormLabel>Sân áp dụng</FormLabel>
+            <div className="flex gap-2">
+              {pitches?.map((pitch) => (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  key={pitch.pitch_id}
+                  onClick={() =>
+                    setPitches((prev) =>
+                      prev.filter(
+                        (prevPitch) => prevPitch.pitch_id !== pitch.pitch_id
+                      )
                     )
-                  )
-                }
-              >
-                {pitch.name}
-                <XCircleIcon color="gray" size={20} className="ml-2" />
-              </Button>
-            ))}
-          </div>
-          {userRole === UserRoles.Admin ? (
+                  }
+                >
+                  {pitch.name}
+                  <XCircleIcon color="gray" size={20} className="ml-2" />
+                </Button>
+              ))}
+            </div>
             <SelectMultipleMyPitches
               pitches={pitches}
               setPitches={setPitches}
               prevPitchIDs={undefined}
             />
-          ) : userRole === UserRoles.SuperAdmin ? (
-            <SelectMultiplePitches
-              pitches={pitches}
-              setPitches={setPitches}
-              prevPitchIDs={undefined}
-            />
-          ) : null}
-        </div>
+          </div>
+        ) : null}
         <Button
           disabled={
-            isLoading ||
-            (userRole !== UserRoles.Admin && userRole != UserRoles.SuperAdmin)
+            isLoading || (!isAdmin(userRole) && !isPitchOwner(userRole))
           }
           type="submit"
         >

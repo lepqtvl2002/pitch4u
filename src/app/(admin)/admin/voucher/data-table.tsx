@@ -115,7 +115,7 @@ function VoucherTable() {
             },
           ]}
           headerPrefix={
-            <Link href="/dashboard/voucher/create">
+            <Link href="/admin/voucher/create">
               <Button variant="secondary">
                 <span className="hidden md:inline-block">Thêm voucher</span>
                 <PlusIcon />
