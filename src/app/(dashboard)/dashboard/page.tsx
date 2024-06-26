@@ -291,7 +291,7 @@ export default function DashboardPage() {
                 <RecentOrder pitchId={pitchId} />
               </CardContent>
             </Card>
-            <Card className="col-span-7">
+            <Card className="col-span-4 md:col-span-7">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Biểu đồ thống kê doanh thu theo từng sân

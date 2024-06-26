@@ -8,7 +8,7 @@ import { ArrowDownIcon } from "lucide-react";
 
 export default async function Home() {
   return (
-    <main className="scroll-smooth bg-gray-50">
+    <main className="scroll-smooth bg-white">
       <Navbar />
       <div className="md:container px-2 flex min-h-screen flex-col items-center justify-between">
         <section
