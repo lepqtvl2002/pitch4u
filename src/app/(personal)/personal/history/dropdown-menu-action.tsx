@@ -26,8 +26,9 @@ import {
 } from "@/lib/utils";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
 import { BookingHistory } from "@/server/queries/user-queries";
-import { addHours, format, set } from "date-fns";
+import { addHours, format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 type DropdownMenuProps = {
@@ -120,11 +121,10 @@ export default function DropdownMenuActions({
               Hủy đặt sân
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem
-              disabled
-              className="bg-green-500 text-white hover:cursor-pointer hover:bg-green-300"
-            >
-              Đặt lại
+            <DropdownMenuItem className="bg-green-500 text-white hover:cursor-pointer hover:bg-green-300">
+              <Link href={`/${booking.pitch.slug}`} className="w-full h-full">
+                Đặt lại
+              </Link>
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

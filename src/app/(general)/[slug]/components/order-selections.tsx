@@ -364,6 +364,7 @@ export default function OrderSelections({ pitch }: { pitch: IPitch }) {
                     <SelectItem
                       key={subPitch.subpitch_id}
                       value={JSON.stringify(subPitch)}
+                      disabled={!!bookingTimes.length}
                     >
                       {subPitch.name}
                     </SelectItem>

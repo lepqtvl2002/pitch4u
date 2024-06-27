@@ -57,7 +57,7 @@ export default function DropdownMenuPitch({
             pitch.active ? "bg-yellow-500" : "bg-green-500"
           )}
         >
-          {pitch.active ? "Tạm khóa sân" : "Mở khóa"}
+          {pitch.active ? "Tạm khóa sân" : "Mở cửa"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

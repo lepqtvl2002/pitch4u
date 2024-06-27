@@ -1,5 +1,5 @@
 "use client";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { $fetch, $globalFetch } from "@/lib/axios";
 import { useRouter } from "next/navigation";
@@ -33,14 +33,17 @@ function AuthProviderHelper({ children }: React.PropsWithChildren) {
           session.accessToken = tokens.access;
           session.refreshToken = tokens.refresh;
         } else {
+          await signOut();
           await signIn();
         }
       } catch (error) {
+        await signOut();
         await signIn();
       }
     };
 
     if (session?.error === "RefreshAccessTokenError") {
+      signOut();
       signIn();
     }
 
