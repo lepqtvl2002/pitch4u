@@ -13,7 +13,7 @@ import { Input } from "../../../../components/ui/input";
 import SelectPitchType from "../../../../components/select-pitch-type";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { Icons } from "../../../../components/icons";
-import { pitchTypeVariant } from "@/lib/variant";
+import { pitchTypeVariant } from "@/lib/variants";
 import FilterSelector from "./filter-selector";
 import { CITIES, STAR_RATING } from "@/lib/constants";
 import {

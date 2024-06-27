@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { MapPinIcon } from "lucide-react";
-import { registrationStatusVariant } from "@/lib/variant";
+import { registrationStatusVariant } from "@/lib/variants";
 import { RegistrationStatus } from "@/enums/registrationStatuses";
 import { CarouselImages } from "@/components/carousel-custom";
 import {

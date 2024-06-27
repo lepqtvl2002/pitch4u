@@ -14,12 +14,10 @@ import Link from "next/link";
 
 type DropdownMenuPitchProps = {
   pitch: IPitch;
-  url: string;
   refetch?: any;
 };
 export default function DropdownMenuPitch({
   pitch,
-  url,
   refetch,
 }: DropdownMenuPitchProps) {
   const { mutateAsync: suspendPitch, isLoading } =
@@ -43,7 +41,7 @@ export default function DropdownMenuPitch({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <Link href={url}>Xem chi tiết</Link>
+          <Link href={`/dashboard/pitch/${pitch.pitch_id}`}>Xem chi tiết</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
@@ -56,10 +54,10 @@ export default function DropdownMenuPitch({
           onClick={() => handleActivePitch(!pitch.active)}
           className={cn(
             "text-white",
-            pitch.active ? "bg-red-500" : "bg-green-500"
+            pitch.active ? "bg-yellow-500" : "bg-green-500"
           )}
         >
-          {pitch.active ? "Khóa sân" : "Mở khóa"}
+          {pitch.active ? "Tạm khóa sân" : "Mở khóa"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

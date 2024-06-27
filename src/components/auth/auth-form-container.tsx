@@ -1,10 +1,14 @@
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function AuthFormContainer({children}: {children: React.ReactNode}) {
+export default function AuthFormContainer({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
@@ -20,7 +24,7 @@ export default function AuthFormContainer({children}: {children: React.ReactNode
         <div className="absolute inset-0 bg-emerald-300" />
         <Link
           href="/"
-          className="relative z-20 flex items-center text-lg font-medium"          
+          className="relative z-20 flex items-center text-lg font-medium"
         >
           <Image
             src={"/pitch4u-logo.png"}
@@ -49,9 +53,7 @@ export default function AuthFormContainer({children}: {children: React.ReactNode
           </blockquote>
         </div>
       </div>
-      <div className="flex h-screen lg:p-8">
-        {children}
-      </div>
+      <div className="flex h-screen lg:p-8">{children}</div>
     </div>
   );
 }

@@ -5,11 +5,9 @@ import { type ColumnDef } from "@tanstack/react-table";
 import RegistrationStatuses, {
   RegistrationStatus,
 } from "@/enums/registrationStatuses";
-import {
-  registrationStatusToString,
-} from "@/lib/convert";
+import { registrationStatusToString } from "@/lib/convert";
 import IRegistration from "@/types/registration";
-import { registrationStatusVariant } from "@/lib/variant";
+import { registrationStatusVariant } from "@/lib/variants";
 
 export const registrationStatus: DataFacetedOptionsType[] = [
   {

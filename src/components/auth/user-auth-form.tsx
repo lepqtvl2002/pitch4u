@@ -7,7 +7,6 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signIn, useSession } from "next-auth/react";
-import { Facebook } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import {
@@ -207,7 +206,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
+              Hoặc tiếp tục với
             </span>
           </div>
         </div>
@@ -219,14 +218,6 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
             disabled={loading}
           >
             <Icons.google className="mr-2 h-4 w-4" /> Google
-          </Button>
-          <Button
-            onClick={() => signIn("facebook")}
-            variant="outline"
-            type="button"
-            disabled={loading}
-          >
-            <Facebook className="mr-2 h-4 w-4" /> Facebook
           </Button>
         </div>
       </div>

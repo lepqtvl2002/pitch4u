@@ -1,11 +1,13 @@
 "use client";
 
 import {
+  SortingState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
   type ColumnDef,
   type OnChangeFn,
@@ -26,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import { Icons } from "@/components/icons";
 import LoadingTable from "./loading-table";
 import TableFacet, { type DataFacetedOptionsType } from "./table-facet";
@@ -102,16 +104,21 @@ export function DataTable<TData, TValue>({
   headerSuffix,
   otherButton,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
   const table = useReactTable({
     data: data || [],
     columns,
     pageCount,
     state: {
+      sorting: sorting,
       pagination: {
         pageSize: pageSize || 10,
         pageIndex: pageIndex || 0,
       },
     },
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     onPaginationChange: setPagination,
     manualPagination: Boolean(setPagination),
     getCoreRowModel: getCoreRowModel(),

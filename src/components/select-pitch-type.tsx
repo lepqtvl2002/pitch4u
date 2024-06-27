@@ -10,7 +10,7 @@ import PitchTypes, { PitchType, pitchTypesArray } from "@/enums/pitchTypes";
 import { PitchUseQuery } from "@/server/queries/pitch-queries";
 import { cn } from "@/lib/utils";
 import { Icons } from "./icons";
-import { pitchTypeVariant } from "@/lib/variant";
+import { pitchTypeVariant } from "@/lib/variants";
 
 interface SelectPitchTypeProps {
   pitchType: string;

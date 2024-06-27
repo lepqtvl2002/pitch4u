@@ -63,6 +63,8 @@ import {
   GroupIcon,
   PhoneIcon,
   TrophyIcon,
+  UserCogIcon,
+  ContactIcon,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -323,4 +325,6 @@ export const Icons = {
   search: SearchIcon,
   group: GroupIcon,
   phone: PhoneIcon,
+  admin: UserCogIcon,
+  staff: ContactIcon,
 };

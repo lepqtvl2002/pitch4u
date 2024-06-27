@@ -5,7 +5,7 @@ import { Skeleton } from "../ui/skeleton";
 import { Icons } from "../icons";
 import { bookingStatusToIcon } from "@/lib/convert";
 import BookingStatuses from "@/enums/bookingStatuses";
-import { paymentTypeVariant } from "@/lib/variant";
+import { paymentTypeVariant } from "@/lib/variants";
 import { AvatarCustom } from "../ui/avatar-custom";
 
 const LIMIT = 7;

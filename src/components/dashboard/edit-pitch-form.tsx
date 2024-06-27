@@ -5,7 +5,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import GoogleMapReact, { ClickEventValue } from "google-map-react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -25,7 +25,8 @@ import { AvatarCustom } from "../ui/avatar-custom";
 import { useState } from "react";
 import { IPitch } from "@/types/pitch";
 import { mutatingToast } from "@/lib/quick-toast";
-import { PlusIcon, XIcon } from "lucide-react";
+import { CameraIcon, ImageIcon, PlusIcon, XIcon } from "lucide-react";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -87,6 +88,7 @@ type MarkerProps = {
 const Marker = (props: MarkerProps) => (
   <Image width={30} height={30} src={"/assets/marker-icon.png"} alt="marker" />
 );
+
 export function EditPitchForm({ pitch }: FormProps) {
   const schema = pitch ? updateFormSchema : createFormSchema;
   const form = useForm<z.infer<typeof schema>>({
@@ -110,6 +112,9 @@ export function EditPitchForm({ pitch }: FormProps) {
     lat: pitch?.lat || 16.0544068,
     lng: pitch?.long || 108.1655063,
   });
+
+  const [pitchImages, setPitchImages] = useState(pitch?.images || []);
+
   async function onSubmit(data: z.infer<typeof schema>) {
     mutatingToast();
     const logoUrl = data?.thumbnail[0]
@@ -121,15 +126,14 @@ export function EditPitchForm({ pitch }: FormProps) {
     const { thumbnail, uploadPhotos, ...values } = data;
     let sendValues: Record<string, any> = {};
     sendValues = logoUrl ? { ...values, logo: logoUrl?.result } : values;
-    if (imageUrls?.length > 0)
-      sendValues = {
-        ...sendValues,
-        images: imageUrls.map((imageUrl) => imageUrl?.result),
-      };
+    const images = [
+      ...pitchImages,
+      ...imageUrls.map((imageUrl) => imageUrl?.result),
+    ];
+
     sendValues["lat"] = markerPos.lat;
     sendValues["long"] = markerPos.lng;
-    console.log(sendValues);
-    await updatePitchMutate({ ...sendValues });
+    await updatePitchMutate({ ...sendValues, images });
   }
   const mapDefaultProps = {
     center: {
@@ -182,9 +186,16 @@ export function EditPitchForm({ pitch }: FormProps) {
             <Input
               id="thumbnail"
               placeholder="Thay đổi logo"
+              className="hidden"
               type="file"
               {...form.register("thumbnail")}
             />
+            <Label
+              htmlFor="thumbnail"
+              className={buttonVariants({ variant: "outline" })}
+            >
+              Chọn Logo <CameraIcon className="ml-2" />
+            </Label>
           </div>
         </div>
 
@@ -264,40 +275,9 @@ export function EditPitchForm({ pitch }: FormProps) {
             )}
           </div>
           <div className="flex flex-col items-center space-y-2">
-            {form.watch("uploadPhotos")?.length > 0 && (
-              <pre className={"inline-flex overflow-auto gap-2 border-muted"}>
-                {Array.from(form.getValues("uploadPhotos"))?.map(
-                  (uploadPhoto: any, index: number) => (
-                    <Image
-                      onClick={() => {
-                        const currentFileList = form.getValues("uploadPhotos");
-                        // Remove the file at the specified index
-                        const updatedFileList = Array.from(
-                          currentFileList
-                        ).filter((file, i) => i !== index);
-
-                        // Create a new FileList with the updated files
-                        const newFileList = new DataTransfer();
-                        updatedFileList.forEach((file: any) => {
-                          newFileList.items.add(file);
-                        });
-
-                        form.setValue("uploadPhotos", newFileList.files);
-                      }}
-                      key={index}
-                      src={URL.createObjectURL(uploadPhoto)}
-                      alt={form.getValues("name")}
-                      width={1000}
-                      height={100}
-                      className="w-full border"
-                    />
-                  )
-                )}
-              </pre>
-            )}
-            {pitch?.images && (
-              <pre className="inline-flex overflow-auto gap-2 border-muted">
-                {pitch?.images?.map((imageUrl: any, index: number) => (
+            <ScrollArea className="w-full">
+              <div className="flex gap-2 py-2">
+                {pitchImages?.map((imageUrl: any, index: number) => (
                   <Image
                     key={index}
                     src={imageUrl}
@@ -305,17 +285,59 @@ export function EditPitchForm({ pitch }: FormProps) {
                     width={2000}
                     height={1000}
                     className="w-full border"
+                    onClick={() => {
+                      setPitchImages(
+                        pitchImages.filter((url, i) => url !== imageUrl)
+                      );
+                    }}
                   />
                 ))}
-              </pre>
-            )}
+                {form.watch("uploadPhotos")?.length > 0 &&
+                  Array.from(form.getValues("uploadPhotos"))?.map(
+                    (uploadPhoto: any, index: number) => (
+                      <Image
+                        onClick={() => {
+                          const currentFileList =
+                            form.getValues("uploadPhotos");
+                          // Remove the file at the specified index
+                          const updatedFileList = Array.from(
+                            currentFileList
+                          ).filter((file, i) => i !== index);
+
+                          // Create a new FileList with the updated files
+                          const newFileList = new DataTransfer();
+                          updatedFileList.forEach((file: any) => {
+                            newFileList.items.add(file);
+                          });
+
+                          form.setValue("uploadPhotos", newFileList.files);
+                        }}
+                        key={index}
+                        src={URL.createObjectURL(uploadPhoto)}
+                        alt={form.getValues("name")}
+                        width={1000}
+                        height={100}
+                        className="w-full border"
+                      />
+                    )
+                  )}
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+
             <Input
               id="uploadPhotos"
-              placeholder="Thêm hình ảnh"
+              className="hidden"
               type="file"
               multiple
               {...form.register("uploadPhotos")}
             />
+            <Label
+              htmlFor="uploadPhotos"
+              className={buttonVariants({ variant: "outline" })}
+            >
+              Thêm hình ảnh về sân <ImageIcon className="ml-2" />
+            </Label>
           </div>
         </div>
 

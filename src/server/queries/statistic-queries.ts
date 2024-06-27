@@ -7,6 +7,7 @@ import { BookingStatus } from "@/enums/bookingStatuses";
 import { config } from "./commom";
 import { REQUEST_URLS_CURRENT } from "@/config/request-urls";
 import { PaymentType } from "@/enums/paymentTypes";
+import { IPitch } from "@/types/pitch";
 
 export type Booking = {
   booking_id: number;
@@ -106,7 +107,10 @@ export class StatisticUseQuery {
           (res) =>
             res.data as {
               result: {
-                data: ({ pitch: Pitch } & { revenue: number })[];
+                data: ({ pitch: IPitch } & {
+                  pitch_id: number;
+                  revenue: number;
+                })[];
               } & IPaginated;
             }
         ),

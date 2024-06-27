@@ -71,12 +71,12 @@ function PitchDetailStatCards({ pitch }: { pitch: IPitch }) {
         </CardContent>
         <CardFooter>
           <Label>Lần cập nhật gần nhất: </Label>
-          <span>
+          <span className="ml-2">
             {format(
               pitch?.updatedAt
                 ? new Date(pitch?.updatedAt)
                 : new Date(pitch?.createdAt),
-              "dd/MM/yyyy"
+              "HH:mm:ss dd/MM/yyyy"
             )}
           </span>
         </CardFooter>

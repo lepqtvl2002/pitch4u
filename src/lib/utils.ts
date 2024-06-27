@@ -368,13 +368,13 @@ export const voucherActivityToString = (active: boolean) => {
 
 export const roleSlugToString = (role: string) => {
   switch (role) {
-    case "super_admin":
+    case UserRoles.SuperAdmin:
       return "Quản trị viên";
-    case "user":
+    case UserRoles.User:
       return "Người dùng";
-    case "staff":
+    case UserRoles.Staff:
       return "Nhân viên";
-    case "admin":
+    case UserRoles.Admin:
       return "Chủ sân";
     default:
       return "Người dùng";

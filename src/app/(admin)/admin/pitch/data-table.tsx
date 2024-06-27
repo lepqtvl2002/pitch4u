@@ -62,7 +62,7 @@ function PitchTable() {
   }, []);
 
   const setStatusesHandler = useCallback((values: string[]) => {
-    setStatuses([...(values as PitchStatus[])]);
+    setStatuses(values as PitchStatus[]);
   }, []);
 
   if (isError) {
@@ -82,12 +82,7 @@ function PitchTable() {
             id: "actions",
             cell: ({ row }) => {
               return (
-                <DropdownMenuPitch
-                  refetch={refetch}
-                  pitchId={row.original.pitch_id}
-                  isSuspended={row.original.suspended}
-                  url={`/admin/pitch/${row.original.pitch_id}`}
-                />
+                <DropdownMenuPitch refetch={refetch} pitch={row.original} />
               );
             },
           },

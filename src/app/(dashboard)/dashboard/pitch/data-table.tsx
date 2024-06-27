@@ -73,13 +73,7 @@ function PitchTable() {
         {
           id: "actions",
           cell: ({ row }) => {
-            return (
-              <DropdownMenuPitch
-                refetch={refetch}
-                pitch={row.original}
-                url={`/dashboard/pitch/${row.original.pitch_id}`}
-              />
-            );
+            return <DropdownMenuPitch refetch={refetch} pitch={row.original} />;
           },
         },
       ]}

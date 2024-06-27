@@ -8,20 +8,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { mutatingToast } from "@/lib/quick-toast";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
+import { IPitch } from "@/types/pitch";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 type DropdownMenuPitchProps = {
-  pitchId: string | number;
-  url: string;
+  pitch: IPitch;
   refetch?: any;
-  isSuspended?: boolean | null;
 };
 export default function DropdownMenuPitch({
-  pitchId,
-  url,
+  pitch,
   refetch,
-  isSuspended,
 }: DropdownMenuPitchProps) {
   const { mutateAsync: suspendPitch, isLoading } =
     PitchUseMutation.suspendPitch();
@@ -29,12 +26,12 @@ export default function DropdownMenuPitch({
     PitchUseMutation.unsuspendPitch();
   async function handelSuspendPitch() {
     mutatingToast();
-    await suspendPitch(pitchId);
+    await suspendPitch(pitch.pitch_id);
     if (refetch) refetch();
   }
   async function handelUnsuspendPitch() {
     mutatingToast();
-    await unsuspendPitch(pitchId);
+    await unsuspendPitch(pitch.pitch_id);
     if (refetch) refetch();
   }
   return (
@@ -44,10 +41,10 @@ export default function DropdownMenuPitch({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>
-          <Link href={url}>Xem chi tiết</Link>
+          <Link href={`/admin/pitch/${pitch.pitch_id}`}>Xem chi tiết</Link>
         </DropdownMenuLabel>
 
-        {isSuspended ? (
+        {pitch.suspended === true ? (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem

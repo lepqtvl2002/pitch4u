@@ -141,15 +141,15 @@ export const subPitchTypeToString = ({
   subPitchType?: string;
   pitchType: string;
 }) => {
-  switch (subPitchType) {
-    case SoccerPitchTypes.Pitch5:
-      return "Sân 5";
-    case SoccerPitchTypes.Pitch7:
-      return "Sân 7";
-    case SoccerPitchTypes.Pitch9:
-      return "Sân 9";
-    case SoccerPitchTypes.Pitch11:
-      return "Sân 11";
+  switch (pitchType) {
+    case PitchTypes.Soccer:
+      return soccerPitchTypeToString(subPitchType ?? "");
+    case PitchTypes.Badminton:
+    case PitchTypes.Basketball:
+    case PitchTypes.Volleyball:
+    case PitchTypes.Tennis:
+    case PitchTypes.Other:
+    case PitchTypes.All:
     default:
       return pitchTypeToString(pitchType);
   }

@@ -137,7 +137,7 @@ export default function DashboardPage() {
             />
             <StatCard
               icon="history"
-              title="Số sân bóng trong hệ thống"
+              title="Số sân trong hệ thống"
               value={data?.result.all.pitches.toLocaleString() || "0"}
             />
           </div>
@@ -162,9 +162,9 @@ export default function DashboardPage() {
             </Card>
             <Card className="col-span-3">
               <CardHeader>
-                <CardTitle>Top những sân bóng có doanh thu cao nhất</CardTitle>
+                <CardTitle>Top những sân có doanh thu cao nhất</CardTitle>
                 <CardDescription>
-                  Những sân bóng có doanh thu cao nhất trong hệ thống.
+                  Những sân có doanh thu cao nhất trong hệ thống.
                 </CardDescription>
               </CardHeader>
               <CardContent>
