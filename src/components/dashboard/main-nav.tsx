@@ -24,6 +24,7 @@ import {
 import { DashboardNav } from "./dashboard-nav";
 import { SidebarNavItem } from "@/types";
 import { Button } from "../ui/button";
+import { BreadcrumbDashboard } from "../breadcrumb";
 
 export function MainNav({
   className,
@@ -39,7 +40,7 @@ export function MainNav({
   return (
     <nav
       className={cn(
-        "w-full flex items-center md:justify-end justify-between space-x-4 lg:space-x-6",
+        "w-full flex items-center justify-between space-x-4 lg:space-x-6",
         className
       )}
       {...props}
@@ -63,6 +64,8 @@ export function MainNav({
         </SheetContent>
       </Sheet>
 
+      <BreadcrumbDashboard />
+
       {/* <Search /> */}
       <div className="ml-auto flex items-center space-x-4">
         <Link
@@ -74,7 +77,10 @@ export function MainNav({
         </Link>
         <Popover>
           <PopoverTrigger>
-            <Button variant="ghost" className={"relative hover:bg-gray-200 rounded-full p-2"}>
+            <Button
+              variant="ghost"
+              className={"relative hover:bg-gray-200 rounded-full p-2"}
+            >
               {data?.result ? (
                 <NotificationBadge number={data?.result} />
               ) : null}

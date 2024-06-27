@@ -707,3 +707,7 @@ export const isPitchOwner = (role?: UserRole) => {
 export const isAdmin = (role?: UserRole) => {
   return role === UserRoles.SuperAdmin;
 };
+
+export const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
