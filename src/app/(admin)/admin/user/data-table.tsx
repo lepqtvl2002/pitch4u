@@ -14,7 +14,7 @@ type UserStatus = "suspended" | "active";
 function UserTable() {
   const [statuses, setStatuses] = React.useState<UserStatus[]>([]);
   const [roles, setRoles] = React.useState<UserRole[]>([]);
-  const [search, setSearch] = React.useState<string>();
+  const [search, setSearch] = React.useState<string>("");
   const debouncedSearch = useDebounce(search);
   const [sort, setSort] = React.useState<{
     columnName: string;
@@ -34,7 +34,7 @@ function UserTable() {
     q: debouncedSearch,
     page: pageIndex + 1,
     limit: pageSize,
-    // roles,
+    roles,
   };
 
   if (statuses.length === 1) {
