@@ -25,6 +25,7 @@ export interface IPitch {
   active: boolean;
   images: string[];
   type: PitchType;
+  distance?: number;
   config?: {
     pitch_config_id: number | string;
     pitch_id: number | string;

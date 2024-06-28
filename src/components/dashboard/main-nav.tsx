@@ -1,18 +1,12 @@
 "use client";
-import Link from "next/link";
 
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { UserNav } from "@/components/dashboard/user-nav";
 import { ModeToggle } from "@/components/theme-button";
-import { Bell, MessageCircle, PanelLeftOpenIcon } from "lucide-react";
+import { MessageCircle, PanelLeftOpenIcon } from "lucide-react";
 import { NotificationBadge } from "@/components/notification-badge";
 import { NotificationUseQuery } from "@/server/queries/notification-queries";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import NotificationList from "../notification-list";
 import {
   Sheet,
   SheetContent,
@@ -23,8 +17,8 @@ import {
 } from "@/components/ui/sheet";
 import { DashboardNav } from "./dashboard-nav";
 import { SidebarNavItem } from "@/types";
-import { Button } from "../ui/button";
 import { BreadcrumbDashboard } from "../breadcrumb";
+import NotificationPopover from "../notification-popover";
 
 export function MainNav({
   className,
@@ -66,7 +60,6 @@ export function MainNav({
 
       <BreadcrumbDashboard />
 
-      {/* <Search /> */}
       <div className="ml-auto flex items-center space-x-4">
         <Link
           href={`/${area}/message`}
@@ -75,23 +68,7 @@ export function MainNav({
           <NotificationBadge number={1} />
           <MessageCircle />
         </Link>
-        <Popover>
-          <PopoverTrigger>
-            <Button
-              variant="ghost"
-              className={"relative hover:bg-gray-200 rounded-full p-2"}
-            >
-              {data?.result ? (
-                <NotificationBadge number={data?.result} />
-              ) : null}
-              <Bell />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[360px]">
-            <NotificationList />
-          </PopoverContent>
-        </Popover>
-
+        <NotificationPopover />
         <UserNav />
         <ModeToggle />
       </div>

@@ -108,6 +108,10 @@ const SearchBar: React.FC = () => {
                 variant="outline"
                 className="rounded-full border-emerald-500 p-2 z-10"
                 onClick={() => {
+                  setSort({
+                    sortBy: "distance",
+                    direction: "asc",
+                  });
                   navigator.geolocation.getCurrentPosition((position) => {
                     setLocation({
                       lat: position.coords.latitude,
@@ -243,7 +247,7 @@ export function PitchItem({ pitch }: { pitch: IPitch }) {
           className="border rounded w-40 h-40 object-cover"
         />
         <div className="flex flex-col justify-between h-full flex-1">
-          <div className="md:space-y-2">
+          <div>
             <h3 className="text-md md:text-xl font-medium">{pitch?.name}</h3>
             <p
               className={cn(
@@ -255,6 +259,11 @@ export function PitchItem({ pitch }: { pitch: IPitch }) {
               {pitchTypeToString(pitch.type)}
             </p>
             <p className="text-gray-600 text-xs md:text-sm">{pitch.address}</p>
+            {/* {pitch?.distance && (
+              <p className="text-gray-600 text-xs">
+                {`Cách ${pitch.distance.toFixed(2)} km`}
+              </p>
+            )} */}
             <Stars className="flex text-sm" rating={Number(pitch?.rate)} />
           </div>
           <p className="font-semibold md:text-xl text-end pr-2 md:pr-10">
