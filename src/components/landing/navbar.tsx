@@ -16,6 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import NotificationList from "../notification-list";
 import { PopupMessage } from "../ui/message-components";
 import { NotificationUseQuery } from "@/server/queries/notification-queries";
+import NotificationPopover from "../notification-popover";
 
 export default function Navbar({
   className,
@@ -24,7 +25,6 @@ export default function Navbar({
   className?: string;
 }) {
   const { data: session, status } = useSession();
-  const { data } = NotificationUseQuery.getNumberOfUnread();
 
   return (
     <nav
@@ -72,20 +72,7 @@ export default function Navbar({
           ) : status === "authenticated" ? (
             <div className="flex gap-3">
               <PopupMessage />
-              <Popover>
-                <PopoverTrigger>
-                  <Button
-                    variant="ghost"
-                    className={"relative hover:bg-gray-200 rounded-full p-2"}
-                  >
-                    {data ? <NotificationBadge number={data.result} /> : null}
-                    <BellIcon />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[360px]">
-                  <NotificationList />
-                </PopoverContent>
-              </Popover>
+              <NotificationPopover />
               <DropdownMenuProfile
                 user={session?.user}
                 className={"hidden md:flex"}

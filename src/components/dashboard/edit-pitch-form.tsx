@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PitchUseMutation } from "@/server/actions/pitch-actions";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Label } from "../ui/label";
 import { ImageUseMutation } from "@/server/actions/image-actions";
@@ -27,39 +26,14 @@ import { IPitch } from "@/types/pitch";
 import { mutatingToast } from "@/lib/quick-toast";
 import { CameraIcon, ImageIcon, PlusIcon, XIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-
-const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-const createFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Tên phải chứa tối thiểu 3 ký tự.",
-  }),
-  address: z.string(),
-  thumbnail: z
-    .any()
-    .refine((files) => files?.length == 1, "Chỉ được chọn một file")
-    .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      `Kích thước file không được vượt quá ${MAX_FILE_SIZE / 1000}KB`
-    )
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      "Chỉ nhận file .jpg, .jpeg, .png and .webp "
-    ),
-  uploadPhotos: z.any().nullable(),
-  services: z.array(z.string()),
-});
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
 
 const updateFormSchema = z.object({
   name: z.string().min(2, {
-    message: "Tên phải chứa tối thiểu 3 ký tự.",
+    message: "Tên phải chứa tối thiểu 2 ký tự.",
   }),
-  address: z.string(),
+  address: z.string().optional(),
+  description: z.string().optional(),
   thumbnail: z
     .any()
     .nullable()
@@ -86,17 +60,24 @@ type MarkerProps = {
   lng: number;
 };
 const Marker = (props: MarkerProps) => (
-  <Image width={30} height={30} src={"/assets/marker-icon.png"} alt="marker" />
+  <Image
+    width={30}
+    height={30}
+    src={"/assets/marker-icon.png"}
+    alt="marker"
+    {...props}
+  />
 );
 
 export function EditPitchForm({ pitch }: FormProps) {
-  const schema = pitch ? updateFormSchema : createFormSchema;
+  const schema = updateFormSchema;
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: pitch?.name,
       address: pitch?.address,
       services: pitch?.services,
+      description: pitch?.description,
     },
     mode: "onChange",
   });
@@ -213,7 +194,28 @@ export function EditPitchForm({ pitch }: FormProps) {
                 />
               </FormControl>
               <FormDescription>
-                Đây là tên hiển thị công khai của bạn.
+                Đây là tên hiển thị công khai sân của bạn.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Mô tả về sân</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Sân đẹp tuyệt vời ..."
+                  defaultValue={field.value}
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Thêm mô tả để người dùng biết thêm về sân của bạn!
               </FormDescription>
               <FormMessage />
             </FormItem>

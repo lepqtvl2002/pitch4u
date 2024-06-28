@@ -25,13 +25,22 @@ import { Button } from "./ui/button";
 import { notificationTypeToString } from "@/lib/convert";
 import { NotificationUseQuery } from "@/server/queries/notification-queries";
 
-export default function NotificationList() {
+export default function NotificationList({
+  onClickUnread,
+}: {
+  onClickUnread: () => void;
+}) {
   const [isUnread, setIsUnread] = useState(false);
   const [isOpenFilterList, setIsOpenFilterList] = useState(false);
   const [types, setTypes] = useState<string[]>([]);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    NotificationUseQuery.getNotificationsInfinite();
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isInitialLoading,
+  } = NotificationUseQuery.getNotificationsInfinite();
 
   return (
     <div className="flex flex-col min-h-[400px] max-h-[80vh]">
@@ -100,7 +109,10 @@ export default function NotificationList() {
                 })
                 .map((notification: INotification) => (
                   <Fragment key={notification.notification_id}>
-                    <NotificationItem data={notification} />
+                    <NotificationItem
+                      onClickUnread={() => onClickUnread()}
+                      data={notification}
+                    />
                     <Separator className="my-3" />
                   </Fragment>
                 ))}
@@ -113,7 +125,7 @@ export default function NotificationList() {
           onClick={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
         >
-          {isFetchingNextPage
+          {isFetchingNextPage || isInitialLoading
             ? "Đang tải..."
             : hasNextPage
             ? "Tải thêm"
@@ -124,7 +136,13 @@ export default function NotificationList() {
   );
 }
 
-function NotificationItem({ data }: { data: INotification }) {
+function NotificationItem({
+  data,
+  onClickUnread,
+}: {
+  data: INotification;
+  onClickUnread: () => void;
+}) {
   const { mutate } = NotificationUseMutation.markAsRead();
   return (
     <div className={cn("flex items-center")}>
@@ -132,10 +150,9 @@ function NotificationItem({ data }: { data: INotification }) {
       <div
         onClick={() => {
           if (!data.is_read) {
-            mutate(data.notification_id);
             data.is_read = true;
-          } else {
-            data.is_read = false;
+            // onClickUnread();
+            mutate(data.notification_id);
           }
         }}
         className="flex-col cursor-pointer"

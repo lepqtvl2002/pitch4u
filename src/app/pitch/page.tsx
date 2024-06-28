@@ -36,6 +36,7 @@ export default function PitchPage() {
         </div>
         <div className="flex flex-col gap-2 p-4">
           <Button
+            disabled={isRedirecting}
             onClick={() => router.push("/pitch/register")}
             className="bg-emerald-500 hover:bg-emerald-300"
           >
@@ -56,7 +57,11 @@ export default function PitchPage() {
               Đi tới bảng điều khiển
             </Button>
           )}
-          <Button onClick={() => router.back()} variant="outline">
+          <Button
+            disabled={isRedirecting}
+            onClick={() => router.back()}
+            variant="outline"
+          >
             <StepBackIcon /> Trở về
           </Button>
         </div>
