@@ -1,6 +1,6 @@
 "use client";
 
-import { BotMessageSquareIcon, SendHorizontalIcon } from "lucide-react";
+import { BotMessageSquareIcon, SendHorizontalIcon, XIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Input } from "./ui/input";
@@ -55,11 +55,14 @@ export default function Chatbot() {
   }, [messages, open]);
 
   return (
-    <Popover onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
       <Draggable>
-        <PopoverTrigger className="fixed bottom-20 right-10 z-50 ">
+        <PopoverTrigger
+          className="fixed bottom-20 right-10 z-50"
+          onTouchStart={() => setOpen(!open)}
+        >
           <div className="bg-primary p-4 rounded-full text-white relative">
-            <BotMessageSquareIcon />
+            {open ? <XIcon /> : <BotMessageSquareIcon />}
             <div className="animate-ping bg-emerald-500 w-10 h-10 absolute top-2 left-2 rounded-full" />
           </div>
         </PopoverTrigger>
